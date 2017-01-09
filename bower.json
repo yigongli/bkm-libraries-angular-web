@@ -13,7 +13,6 @@
     "tests"
   ],
   "dependencies": {
-    "Ionicons": "ionicons#~2.0.1",
     "angular": "~1.4.8",
     "angular-route": "~1.4.6",
     "angular-slimscroll": "~1.1.5",
@@ -34,8 +33,7 @@
     "angular-ui-grid":"~3.2.9"
   },
   "main":[
-    "./src/app/bkm.comm/directives/search/bkm.comm.directive.search.js",
-    "./src/app/bkm.comm/directives/search/ngLocale.module.js"
+    "./src/directives/search/search.js"
   ],
   "devDependencies": {
     "Chart.js": "~1.0.2",
@@ -66,45 +64,6 @@
     "angular": "~1.4.8"
   },
   "overrides": {
-    "amcharts": {
-      "main": [
-        "./dist/amcharts/amcharts.js",
-        "./dist/amcharts/plugins/responsive/responsive.min.js",
-        "./dist/amcharts/serial.js",
-        "./dist/amcharts/funnel.js",
-        "./dist/amcharts/pie.js",
-        "./dist/amcharts/gantt.js"
-      ]
-    },
-    "amcharts-stock": {
-      "main": "./dist/amcharts/amstock.js"
-    },
-    "ammap": {
-      "main": [
-        "./dist/ammap/ammap.js",
-        "./dist/ammap/maps/js/worldLow.js"
-      ]
-    },
-    "bootstrap": {
-      "main": [
-        "dist/css/bootstrap.css",
-        "js/dropdown.js",
-        "./dist/fonts/**.*"
-      ]
-    },
-    "slimScroll": {
-      "main": "./jquery.slimscroll.js"
-    },
-    "font-awesome": {
-      "main": [
-        "css/font-awesome.css",
-        "fonts/FontAwesome.otf",
-        "fonts/fontawesome-webfont.eot",
-        "fonts/fontawesome-webfont.svg",
-        "fonts/fontawesome-webfont.ttf",
-        "fonts/fontawesome-webfont.woff",
-        "fonts/fontawesome-webfont.woff2"
-      ]
-    }
+  
   }
 }
