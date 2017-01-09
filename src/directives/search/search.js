@@ -13,10 +13,10 @@
     var placeHolderTemp = '<div class="col-md-3 placeholder"> <div class="form-control"></div> </div>'
 
     angular.module('bkm.library.angular.web', [])
-        .controller('searchDerectiveCtrl', searchDerectiveCtrl)
+        .controller('searchDirectiveCtrl', searchDirectiveCtrl)
         .directive('bkmSearch', bkmSearch);
 
-    function searchDerectiveCtrl() {
+    function searchDirectiveCtrl() {
         var ctrl = this;
     }
 
@@ -27,8 +27,8 @@
      * 列表页面的搜索指令
      * @restrict E
      * @scope
-     * @param {Object} optoins = 指令所需的配置对象
-     * optoins.items 该数组接收需要显示的搜索项
+     * @param {Object} options = 指令所需的配置对象
+     * options.items 该数组接收需要显示的搜索项
      * 搜索项有六种类型：
      * text：文本输入框
      * {
@@ -95,7 +95,7 @@
      * {
      *      type: 'placeHolder'
      * }
-     * optoins.buttons 该数组接收需要显示的按钮
+     * options.buttons 该数组接收需要显示的按钮
      * 按钮的类型有两种：button、downloadButton
      * button：普通按钮
      * {
@@ -120,15 +120,15 @@
     function bkmSearch($compile) {
         return {
             restrict: 'E',
-            scope: {optoins: '='},
-            controller: 'searchDerectiveCtrl',
+            scope: {options: '='},
+            controller: 'searchDirectiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn btns"></div>',
             link: function (scope, el) {
 
                 var search = scope.dCtrl.search = {};
-                var opt = scope.dCtrl.opt = angular.extend({}, scope.optoins);
+                var opt = scope.dCtrl.opt = angular.extend({}, scope.options);
                 var i, t;
 
                 var previous = el.find('.row');
