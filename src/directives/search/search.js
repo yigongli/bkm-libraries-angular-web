@@ -124,7 +124,7 @@
             controller: 'searchDirectiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn btns"></div>',
+            template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
             link: function (scope, el) {
 
                 var search = scope.dCtrl.search = {};
