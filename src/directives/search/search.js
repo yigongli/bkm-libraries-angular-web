@@ -11,6 +11,7 @@
     var buttonTemp = '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>';
     var downloadButtonTemp = '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>';
     var placeHolderTemp = '<div class="col-md-3 placeholder"> <div class="form-control"></div> </div>'
+    var bkmButtonTemp = '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>';
 
     angular.module('bkm.library.angular.web', [])
         .controller('searchDirectiveCtrl', searchDirectiveCtrl)
@@ -102,6 +103,15 @@
      *      type: 'button',
      *      text: '显示在按钮上的文本',
      *      className: '指定按钮的 class 名称',
+     *      //按钮的点击事件
+     *      //参数 search 为用户在页面输入的查询项对象
+     *      click: function (search) {}
+     * }
+     * bkmButton：BKM封装按钮
+     * {
+     *      type: 'bkmButton',
+     *      text: '显示在按钮上的文本',
+     *      category: '指定按钮的类型',
      *      //按钮的点击事件
      *      //参数 search 为用户在页面输入的查询项对象
      *      click: function (search) {}
@@ -246,6 +256,15 @@
                             icon: t.icon,
                             click: 'dCtrl.opt.' + btnClickFnName + '($event)'
                         }, downloadButtonTemp))(scope));
+                    } else if (t.type == 'bkmButton') {
+                        opt[btnClickFnName] = function () {
+                            t.click(search);
+                        };
+                        btnPrevious.append($compile(formatTemplate({
+                            text: t.text,
+                            category: t.category,
+                            click: 'dCtrl.opt.' + btnClickFnName + '()'
+                        }, bkmButtonTemp))(scope));
                     }
                 });
 
