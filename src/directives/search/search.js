@@ -4,20 +4,36 @@
 (function () {
     'use strict';
 
-    var textTemp = '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div>';
-    var dropDownTemp = '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<select class="form-control selectpicker" selectpicker ng-model="{model}"><option value="">-- 所有 --</option><option value="{{{key}}}" ng-repeat="{repeat}" ng-bind="{val}"></option></select></div>';
-    var dateTemp = '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{placeholder}" readOnly="true" ng-model="{model}" uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div>';
-    var beginDateAndEndDateTemp = '<div class="col-md-6"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>';
-    var buttonTemp = '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>';
-    var downloadButtonTemp = '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>';
-    var placeHolderTemp = '<div class="col-md-3 placeholder"> <div class="form-control"></div> </div>'
-    var bkmButtonTemp = '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>';
+    var searchComponents = {
+         textTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div>' ,
+         dropDownTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<select class="form-control selectpicker" selectpicker ng-model="{model}"><option value="">-- 所有 --</option><option value="{{{key}}}" ng-repeat="{repeat}" ng-bind="{val}"></option></select></div>' ,
+         dateTemp:'<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{placeholder}" readOnly="true" ng-model="{model}" uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div>',
+         beginDateAndEndDateTemp: '<div class="col-md-6"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>' ,
+         buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>' ,
+         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>' ,
+         placeHolderTemp: '<div class="col-md-3 placeholder"> <div class="form-control"></div> </div>' ,
+         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>', 
+    };
+
+    var formComponents = {
+        textTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><input class="form-control" type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div></div>',
+        dropDownTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><select class="form-control selectpicker" selectpicker ng-model="{model}"><option value="">-- 所有 --</option><option value="{{{key}}}" ng-repeat="{repeat}" ng-bind="{val}"></option></select></div></div>',
+        dateTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><input class="form-control" type="text" placeholder="{placeholder}" readOnly="true" ng-model="{model}" uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
+        buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
+        downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
+        placeHolderTemp: '<div class="col-md-6 placeholder"> <div class="form-control"></div> </div>',
+        bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
+    };
 
     angular.module('bkm.library.angular.web', [])
-        .controller('searchDirectiveCtrl', searchDirectiveCtrl)
-        .directive('bkmSearch', bkmSearch);
-
-    function searchDirectiveCtrl() {
+        .controller('directiveCtrl', directiveCtrl)
+        .directive('bkmSearch', bkmSearch)
+        .directive('bkmModalForm', bkmModalForm)
+        .directive('bkmModalBodyComponents', bkmModalBodyComponents)
+        .directive('bkmModalHeader', bkmModalHeader)
+        .directive('bkmModalFooter', bkmModalFooter);
+        
+    function directiveCtrl() {
         var ctrl = this;
     }
 
@@ -128,159 +144,255 @@
      * }
      */
     function bkmSearch($compile) {
+
+        //set the CSS selector
+        var selectors = {
+            items: '.row',
+            buttons: '.btns'
+        };
+
         return {
             restrict: 'E',
             scope: {options: '='},
-            controller: 'searchDirectiveCtrl',
+            controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
-            link: function (scope, el) {
-
-                var search = scope.dCtrl.search = {};
-                var opt = scope.dCtrl.opt = angular.extend({}, scope.options);
-                var i, t;
-
-                var previous = el.find('.row');
-                var btnPrevious = el.find('.btns');
-
-                angular.forEach(opt.items, function (t, i) {
-                    t = opt.items[i];
-                    if (!!t.defaultVal) {
-                        search[t.model] = t.defaultVal;
-                    }
-                    if (t.type == 'text' || t.type == 'number') {
-                        previous.append($compile(formatTemplate({
-                            label: t.label,
-                            type: t.type,
-                            placeholder: t.placeholder,
-                            model: 'dCtrl.search.' + t.model
-                        }, textTemp))(scope));
-                    } else if (t.type == 'dropDown') {
-                        var c_modelName = t.model;
-                        previous.append($compile(formatTemplate({
-                            label: t.label,
-                            type: t.type,
-                            placeholder: t.placeholder,
-                            model: 'dCtrl.search.' + c_modelName,
-                            repeat: 'i in dCtrl.opt.items[' + i + '].dataSource',
-                            val: 'i.' + t.valName,
-                            key: 'i.' + t.keyName
-                        }, dropDownTemp))(scope));
-                        if (!!t.parent) {
-                            var modelName = t.parent.model;
-                            scope.$watch('dCtrl.search.' + modelName, function (n, o) {
-                                if (n === o)return;
-                                search[c_modelName] = '';
-                                opt.items[i].dataSource = [];
-                                if (!!!n)return;
-                                t.parent.onChange(n).then(function (data) {
-                                    opt.items[i].dataSource = data;
-                                }, null);
-                            });
-                        }
-                    } else if (t.type == 'date') {
-                        var modelName = t.model;
-                        var isOpen = 'openDate' + modelName;
-                        opt[isOpen] = false;
-                        opt[isOpen + 'Click'] = function () {
-                            opt[isOpen] = true;
-                        };
-                        previous.append($compile(formatTemplate({
-                            label: t.label,
-                            placeholder: t.placeholder,
-                            model: 'dCtrl.search.' + modelName,
-                            openDate: 'dCtrl.opt.' + isOpen,
-                            click: 'dCtrl.opt.' + isOpen + 'Click()'
-                        }, dateTemp))(scope));
-                    } else if (t.type == 'beginDateAndEndDate') {
-                        if (!!t.beginDate.defaultVal) {
-                            search[t.beginDate.model] = t.beginDate.defaultVal;
-                        }
-                        if (!!t.endDate.defaultVal) {
-                            search[t.endDate.model] = t.endDate.defaultVal;
-                        }
-                        var beginModelName = t.beginDate.model;
-                        var isBeginOpen = 'beginOpenDate' + beginModelName;
-                        opt[isBeginOpen] = false;
-                        opt[isBeginOpen + 'Click'] = function () {
-                            opt[isBeginOpen] = true;
-                        };
-
-                        var endModelName = t.endDate.model;
-                        var isEndOpen = 'endOpenDate' + endModelName;
-                        opt[isEndOpen] = false;
-                        opt[isEndOpen + 'Click'] = function () {
-                            opt[isEndOpen] = true;
-                        };
-                        previous.append($compile(formatTemplate({
-                            beginDateLabel: t.beginDate.label,
-                            beginDatePlaceholder: t.beginDate.placeholder,
-                            beginDateModel: 'dCtrl.search.' + beginModelName,
-                            beginDateOpenDate: 'dCtrl.opt.' + isBeginOpen,
-                            beginDateClick: 'dCtrl.opt.' + isBeginOpen + 'Click()',
-
-                            endDateLabel: t.endDate.label,
-                            endDatePlaceholder: t.endDate.placeholder,
-                            endDateModel: 'dCtrl.search.' + endModelName,
-                            endDateOpenDate: 'dCtrl.opt.' + isEndOpen,
-                            endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click()'
-                        }, beginDateAndEndDateTemp))(scope));
-                    } else if (t.type == 'placeHolder') {
-                        previous.append(formatTemplate({}, placeHolderTemp));
-                    }
-                });
-
-                angular.forEach(opt.buttons, function (t, i) {
-                    var btnClickFnName = 'buttonClick' + i;
-                    if (t.type == 'button') {
-                        opt[btnClickFnName] = function () {
-                            t.click(search);
-                        };
-                        btnPrevious.append($compile(formatTemplate({
-                            text: t.text,
-                            className: t.className,
-                            icon: t.icon,
-                            click: 'dCtrl.opt.' + btnClickFnName + '()'
-                        }, buttonTemp))(scope));
-                    } else if (t.type == 'downloadButton') {
-                        opt[btnClickFnName] = function (event) {
-                            var url = t.click(search);
-                            if (!!url) {
-                                event.currentTarget.parentElement.href = url;
-                            }
-                        };
-                        btnPrevious.append($compile(formatTemplate({
-                            text: t.text,
-                            className: t.className,
-                            icon: t.icon,
-                            click: 'dCtrl.opt.' + btnClickFnName + '($event)'
-                        }, downloadButtonTemp))(scope));
-                    } else if (t.type == 'bkmButton') {
-                        opt[btnClickFnName] = function () {
-                            t.click(search);
-                        };
-                        btnPrevious.append($compile(formatTemplate({
-                            text: t.text,
-                            category: t.category,
-                            click: 'dCtrl.opt.' + btnClickFnName + '()'
-                        }, bkmButtonTemp))(scope));
-                    }
-                });
-
-                function formatTemplate(dta, tmpl) {
-                    var format = {
-                        name: function (x) {
-                            return x;
-                        }
-                    };
-                    return tmpl.replace(/{(\w+)}/g, function (m1, m2) {
-                        if (!m2) return "";
-                        return (format && format[m2]) ? format[m2](dta[m2]) : dta[m2];
-                    });
+            link:function (scope,el) {
+                linkFunc(scope, el, $compile, searchComponents, selectors, scope.options);
                 }
+        };
+    }
+
+    function bkmModalForm($compile) {
+
+        var selectors = {
+            items: '.row',
+            buttons: '.modal-footer'
+        };
+
+        return {
+            restrict: 'E',
+            scope: {
+                title: '=',
+                options: '=',
+                cols:'='
+            },
+            controller: 'directiveCtrl',
+            controllerAs: 'dCtrl',
+            replace: true,
+            template: '<div class="modal-content" id="draggableModal"><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{title}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><div class="row"></div></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            link: function (scope, el) {
+                linkFunc(scope, el, $compile, formComponents, selectors, scope.options);
             }
         };
+    }
+
+    function bkmModalBodyComponents($compile) {
+
+        var selectors = {
+            items: '',
+            buttons: ''
+        };
+
+        return {
+            restrict: 'E',
+            scope: {
+                options: '=',
+                cols: '='
+            },
+            controller: 'directiveCtrl',
+            controllerAs: 'dCtrl',
+            replace: true,
+            template: '<div class="row"></div>',
+            link: function (scope, el) {
+                linkFunc(scope, el, $compile, formComponents, selectors, scope.options);
+            }
+        };
+    }
+
+    function bkmModalHeader($compile) {
+
+        return {
+            restrict: 'E',
+            scope: {
+                title: '='
+            },
+            controller: 'directiveCtrl',
+            controllerAs: 'dCtrl',
+            replace: true,
+            template: '<div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{title}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div>'
+        };
+    }
+
+    function bkmModalFooter($compile) {
+
+        var selectors = {
+            items: '',
+            buttons: '.modal-footer'
+        };
+
+        return {
+            restrict: 'E',
+            scope: { options: '=' },
+            controller: 'directiveCtrl',
+            controllerAs: 'dCtrl',
+            replace: true,
+            template: '<div class="modal-footer"><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            link: function (scope, el) {
+                linkFunc(scope, el.parent(), $compile, formComponents, selectors, scope.options);
+            }
+        };
+    }
+
+    function linkFunc(scope, el, $compile, uiComponents, selectors, options, cols) {
+
+        if (!!cols) {
+            //todo: config colums layout with cols parameters
+        }
+
+        var search = scope.dCtrl.search = {};
+        var opt = scope.dCtrl.opt = angular.extend({}, options);
+        var i, t;
+
+        var previous = selectors.items == '' ? el : el.find(selectors.items);
+        var btnPrevious = selectors.buttons == '' ? el : el.find(selectors.buttons);
+
+        angular.forEach(opt.items, function (t, i) {
+            t = opt.items[i];
+            if (!!t.defaultVal) {
+                search[t.model] = t.defaultVal;
+            }
+            if (t.type == 'text' || t.type == 'number') {
+                previous.append($compile(formatTemplate({
+                    label: t.label,
+                    type: t.type,
+                    placeholder: t.placeholder,
+                    model: t.model
+                }, uiComponents.textTemp))(scope));
+            } else if (t.type == 'dropDown') {
+                var c_modelName = t.model;
+                previous.append($compile(formatTemplate({
+                    label: t.label,
+                    type: t.type,
+                    placeholder: t.placeholder,
+                    model: c_modelName,
+                    repeat: 'i in dCtrl.opt.items[' + i + '].dataSource',
+                    val: 'i.' + t.valName,
+                    key: 'i.' + t.keyName
+                }, uiComponents.dropDownTemp))(scope));
+                if (!!t.parent) {
+                    var modelName = t.parent.model;
+                    scope.$watch(modelName, function (n, o) {
+                        if (n === o)return;
+                        search[c_modelName] = '';
+                        opt.items[i].dataSource = [];
+                        if (!!!n)return;
+                        t.parent.onChange(n).then(function (data) {
+                            opt.items[i].dataSource = data;
+                        }, null);
+                    });
+                }
+            } else if (t.type == 'date') {
+                var modelName = t.model;
+                var isOpen = 'openDate' + modelName;
+                opt[isOpen] = false;
+                opt[isOpen + 'Click'] = function () {
+                    opt[isOpen] = true;
+                };
+                previous.append($compile(formatTemplate({
+                    label: t.label,
+                    placeholder: t.placeholder,
+                    model: modelName,
+                    openDate: 'dCtrl.opt.' + isOpen,
+                    click: 'dCtrl.opt.' + isOpen + 'Click()'
+                }, dateTemp))(scope));
+            } else if (t.type == 'beginDateAndEndDate') {
+                if (!!t.beginDate.defaultVal) {
+                    search[t.beginDate.model] = t.beginDate.defaultVal;
+                }
+                if (!!t.endDate.defaultVal) {
+                    search[t.endDate.model] = t.endDate.defaultVal;
+                }
+                var beginModelName = t.beginDate.model;
+                var isBeginOpen = 'beginOpenDate' + beginModelName;
+                opt[isBeginOpen] = false;
+                opt[isBeginOpen + 'Click'] = function () {
+                    opt[isBeginOpen] = true;
+                };
+
+                var endModelName = t.endDate.model;
+                var isEndOpen = 'endOpenDate' + endModelName;
+                opt[isEndOpen] = false;
+                opt[isEndOpen + 'Click'] = function () {
+                    opt[isEndOpen] = true;
+                };
+                previous.append($compile(formatTemplate({
+                    beginDateLabel: t.beginDate.label,
+                    beginDatePlaceholder: t.beginDate.placeholder,
+                    beginDateModel: beginModelName,
+                    beginDateOpenDate: 'dCtrl.opt.' + isBeginOpen,
+                    beginDateClick: 'dCtrl.opt.' + isBeginOpen + 'Click()',
+
+                    endDateLabel: t.endDate.label,
+                    endDatePlaceholder: t.endDate.placeholder,
+                    endDateModel: endModelName,
+                    endDateOpenDate: 'dCtrl.opt.' + isEndOpen,
+                    endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click()'
+                }, uiComponents.beginDateAndEndDateTemp))(scope));
+            } else if (t.type == 'placeHolder') {
+                previous.append(formatTemplate({}, placeHolderTemp));
+            }
+        });
+
+        angular.forEach(opt.buttons, function (t, i) {
+            var btnClickFnName = 'buttonClick' + i;
+            if (t.type == 'button') {
+                opt[btnClickFnName] = function () {
+                    t.click(search);
+                };
+                btnPrevious.append($compile(formatTemplate({
+                    text: t.text,
+                    className: t.className,
+                    icon: t.icon,
+                    click: 'dCtrl.opt.' + btnClickFnName + '()'
+                }, uiComponents.buttonTemp))(scope));
+            } else if (t.type == 'downloadButton') {
+                opt[btnClickFnName] = function (event) {
+                    var url = t.click(search);
+                    if (!!url) {
+                        event.currentTarget.parentElement.href = url;
+                    }
+                };
+                btnPrevious.append($compile(formatTemplate({
+                    text: t.text,
+                    className: t.className,
+                    icon: t.icon,
+                    click: 'dCtrl.opt.' + btnClickFnName + '($event)'
+                }, uiComponents.downloadButtonTemp))(scope));
+            } else if (t.type == 'bkmButton') {
+                opt[btnClickFnName] = function () {
+                    t.click(search);
+                };
+                btnPrevious.append($compile(formatTemplate({
+                    text: t.text,
+                    category: t.category,
+                    click: 'dCtrl.opt.' + btnClickFnName + '()'
+                }, uiComponents.bkmButtonTemp))(scope));
+            }
+        });
+
+        function formatTemplate(dta, tmpl) {
+            var format = {
+                name: function (x) {
+                    return x;
+                }
+            };
+            return tmpl.replace(/{(\w+)}/g, function (m1, m2) {
+                if (!m2) return "";
+                return (format && format[m2]) ? format[m2](dta[m2]) : dta[m2];
+            });
+        }
     }
 
 })();
