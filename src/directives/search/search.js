@@ -5,34 +5,34 @@
     'use strict';
 
     var searchComponents = {
-         textTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div>' ,
-         dropDownTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<select class="form-control selectpicker" selectpicker ng-model="{model}"><option value="">-- 所有 --</option><option value="{{{key}}}" ng-repeat="{repeat}" ng-bind="{val}"></option></select></div>' ,
-         dateTemp:'<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{placeholder}" readOnly="true" ng-model="{model}" uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div>',
-         beginDateAndEndDateTemp: '<div class="col-md-6"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>' ,
-         buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>' ,
-         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>' ,
-         placeHolderTemp: '<div class="col-md-3 placeholder"> <div class="form-control"></div> </div>' ,
-         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>', 
+        textTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div>',
+        dropDownTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<select class="form-control selectpicker" selectpicker ng-model="{model}"><option value="">-- 所有 --</option><option value="{{{key}}}" ng-repeat="{repeat}" ng-bind="{val}"></option></select></div>',
+        dateTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{placeholder}" readOnly="true" ng-model="{model}" uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div>',
+        beginDateAndEndDateTemp: '<div class="col-md-6"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
+        buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
+        downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
+        placeHolderTemp: '<div class="col-md-3 placeholder"> <div class="form-control"></div> </div>',
+        bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
     };
 
     var formComponents = {
-        textTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><input class="form-control" type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div></div>',
+        textTemp: '<div class="col-md-6"><div class="form-group"><label>{label}{formRequired}</label><input class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}" "/></div></div>',
         dropDownTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><select class="form-control selectpicker" selectpicker ng-model="{model}"><option value="">-- 所有 --</option><option value="{{{key}}}" ng-repeat="{repeat}" ng-bind="{val}"></option></select></div></div>',
-        dateTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><input class="form-control" type="text" placeholder="{placeholder}" readOnly="true" ng-model="{model}" uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
+        dateTemp: '<div class="col-md-6"><div class="bkm-date-picker"><div class="form-group"><label>{label}</label><input class="form-control" type="date" {validateAttr} placeholder="{placeholder}" readOnly="true" ng-model="{model}" uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="col-md-6 placeholder"> <div class="form-control"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
     };
 
-    angular.module('bkm.library.angular.web', [])
+    angular.module('bkm.library.angular.web', ['bkm.library.angular.comm'])
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', bkmSearch)
         .directive('bkmModalForm', bkmModalForm)
         .directive('bkmModalBodyComponents', bkmModalBodyComponents)
         .directive('bkmModalHeader', bkmModalHeader)
         .directive('bkmModalFooter', bkmModalFooter);
-        
+
     function directiveCtrl() {
         var ctrl = this;
     }
@@ -153,14 +153,14 @@
 
         return {
             restrict: 'E',
-            scope: {options: '='},
+            scope: { options: '=' },
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
-            link:function (scope,el) {
+            link: function (scope, el) {
                 linkFunc(scope, el, $compile, searchComponents, selectors, scope.options);
-                }
+            }
         };
     }
 
@@ -176,7 +176,7 @@
             scope: {
                 title: '=',
                 options: '=',
-                cols:'='
+                cols: '='
             },
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
@@ -188,7 +188,7 @@
         };
     }
 
-    function bkmModalBodyComponents($compile) {
+    function bkmModalBodyComponents($compile, bkmFmValSvc) {
 
         var selectors = {
             items: '',
@@ -204,7 +204,7 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="row"></div>',
+            template: '<form class="row" name="ctrl.myForm"></form>',
             link: function (scope, el) {
                 linkFunc(scope, el, $compile, formComponents, selectors, scope.options);
             }
@@ -263,12 +263,17 @@
             if (!!t.defaultVal) {
                 search[t.model] = t.defaultVal;
             }
+            var requiredPrompt = "";
+            if(!!t.option){
+                requiredPrompt= ' (可选) ';
+            }
             if (t.type == 'text' || t.type == 'number') {
                 previous.append($compile(formatTemplate({
                     label: t.label,
                     type: t.type,
                     placeholder: t.placeholder,
-                    model: t.model
+                    model: t.model,
+                    formRequired: requiredPrompt
                 }, uiComponents.textTemp))(scope));
             } else if (t.type == 'dropDown') {
                 var c_modelName = t.model;
@@ -279,15 +284,16 @@
                     model: c_modelName,
                     repeat: 'i in dCtrl.opt.items[' + i + '].dataSource',
                     val: 'i.' + t.valName,
-                    key: 'i.' + t.keyName
+                    key: 'i.' + t.keyName,
+                    formRequired: requiredPrompt
                 }, uiComponents.dropDownTemp))(scope));
                 if (!!t.parent) {
                     var modelName = t.parent.model;
                     scope.$watch(modelName, function (n, o) {
-                        if (n === o)return;
+                        if (n === o) return;
                         search[c_modelName] = '';
                         opt.items[i].dataSource = [];
-                        if (!!!n)return;
+                        if (!!!n) return;
                         t.parent.onChange(n).then(function (data) {
                             opt.items[i].dataSource = data;
                         }, null);
@@ -295,7 +301,7 @@
                 }
             } else if (t.type == 'date') {
                 var modelName = t.model;
-                var isOpen = 'openDate' + modelName;
+                var isOpen = 'openDate' + modelName.replace('.', '_');
                 opt[isOpen] = false;
                 opt[isOpen + 'Click'] = function () {
                     opt[isOpen] = true;
@@ -305,8 +311,10 @@
                     placeholder: t.placeholder,
                     model: modelName,
                     openDate: 'dCtrl.opt.' + isOpen,
-                    click: 'dCtrl.opt.' + isOpen + 'Click()'
-                }, dateTemp))(scope));
+                    click: 'dCtrl.opt.' + isOpen + 'Click()',
+                    formRequired: requiredPrompt,
+                    validateAttr: t.validateAttr.join(' ')
+                }, uiComponents.dateTemp))(scope));
             } else if (t.type == 'beginDateAndEndDate') {
                 if (!!t.beginDate.defaultVal) {
                     search[t.beginDate.model] = t.beginDate.defaultVal;
@@ -315,14 +323,14 @@
                     search[t.endDate.model] = t.endDate.defaultVal;
                 }
                 var beginModelName = t.beginDate.model;
-                var isBeginOpen = 'beginOpenDate' + beginModelName;
+                var isBeginOpen = 'beginOpenDate' + beginModelName.replace('.', '_');
                 opt[isBeginOpen] = false;
                 opt[isBeginOpen + 'Click'] = function () {
                     opt[isBeginOpen] = true;
                 };
 
                 var endModelName = t.endDate.model;
-                var isEndOpen = 'endOpenDate' + endModelName;
+                var isEndOpen = 'endOpenDate' + endModelName.replace('.', '_');
                 opt[isEndOpen] = false;
                 opt[isEndOpen + 'Click'] = function () {
                     opt[isEndOpen] = true;
@@ -338,10 +346,11 @@
                     endDatePlaceholder: t.endDate.placeholder,
                     endDateModel: endModelName,
                     endDateOpenDate: 'dCtrl.opt.' + isEndOpen,
-                    endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click()'
+                    endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click()',
+                    formRequired: requiredPrompt
                 }, uiComponents.beginDateAndEndDateTemp))(scope));
             } else if (t.type == 'placeHolder') {
-                previous.append(formatTemplate({}, placeHolderTemp));
+                previous.append(formatTemplate({}, uiComponents.placeHolderTemp));
             }
         });
 
