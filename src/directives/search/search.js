@@ -160,7 +160,8 @@
             replace: true,
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
             link: function (scope, el) {
-                linkFunc(scope, el, $compile, searchComponents, selectors, scope.options);
+                linkFunc(scope, el, searchComponents, selectors, scope.options);
+                $compile(el)(scope);
             }
         };
     }
@@ -184,7 +185,8 @@
             replace: true,
             template: '<div class="modal-content" id="draggableModal"><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{title}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><div class="row"></div></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
             link: function (scope, el) {
-                linkFunc(scope, el, $compile, formComponents, selectors, scope.options);
+                linkFunc(scope, el, formComponents, selectors, scope.options);
+                $compile(el)(scope);
             }
         };
     }
@@ -210,12 +212,13 @@
                 scope.options.onSubmit = function (onSubmitFn) {
                     bkmFmValSvc.isValid(scope.dCtrl.myForm).then(onSubmitFn, null);
                 };
-                linkFunc(scope, el, $compile, formComponents, selectors, scope.options, null, bkmFmValSvc);
+                linkFunc(scope, el, formComponents, selectors, scope.options, null);
+                $compile(el)(scope);
             }
         };
     }
 
-    function bkmModalHeader($compile) {
+    function bkmModalHeader() {
 
         return {
             restrict: 'E',
@@ -244,12 +247,13 @@
             replace: true,
             template: '<div class="modal-footer"><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
             link: function (scope, el) {
-                linkFunc(scope, el.parent(), $compile, formComponents, selectors, scope.options);
+                linkFunc(scope, el.parent(), formComponents, selectors, scope.options);
+                $compile(el.parent())(scope);
             }
         };
     }
 
-    function linkFunc(scope, el, $compile, uiComponents, selectors, options, cols, bkmFmValService) {
+    function linkFunc(scope, el, uiComponents, selectors, options, cols) {
         if (!!cols) {
             //todo: config colums layout with cols parameters
         }
@@ -275,23 +279,23 @@
                 requiredPrompt = ' (可选) ';
             }
             if (t.type == 'text' || t.type == 'number') {
-                previous.append($compile(formatTemplate({
+                previous.append(formatTemplate({
                     label: t.label,
                     type: t.type,
                     placeholder: t.placeholder,
                     model: 'options.model.' + t.model,
                     formRequired: requiredPrompt
-                }, uiComponents.textTemp))(scope));
+                }, uiComponents.textTemp));
             } else if (t.type == 'dropDown') {
                 var c_modelName = 'options.model.' + t.model;
-                previous.append($compile(formatTemplate({
+                previous.append(formatTemplate({
                     label: t.label,
                     type: t.type,
                     placeholder: t.placeholder,
                     model: c_modelName,
                     repeat: 'i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource',
                     formRequired: requiredPrompt
-                }, uiComponents.dropDownTemp))(scope));
+                }, uiComponents.dropDownTemp));
                 if (!!t.parent) {
                     var modelName = 'options.model.' + t.parent.model;
                     scope.$watch(modelName, function (n, o) {
@@ -311,7 +315,7 @@
                 opt[isOpen + 'Click'] = function () {
                     opt[isOpen] = true;
                 };
-                previous.append($compile(formatTemplate({
+                previous.append(formatTemplate({
                     label: t.label,
                     placeholder: t.placeholder,
                     model: 'options.model.' + modelName,
@@ -319,7 +323,7 @@
                     click: 'dCtrl.opt.' + isOpen + 'Click()',
                     formRequired: requiredPrompt,
                     validateAttr: t.validateAttr.join(' ')
-                }, uiComponents.dateTemp))(scope));
+                }, uiComponents.dateTemp));
             } else if (t.type == 'beginDateAndEndDate') {
                 if (!!t.beginDate.defaultVal) {
                     search[t.beginDate.model] = t.beginDate.defaultVal;
@@ -340,7 +344,7 @@
                 opt[isEndOpen + 'Click'] = function () {
                     opt[isEndOpen] = true;
                 };
-                previous.append($compile(formatTemplate({
+                previous.append(formatTemplate({
                     beginDateLabel: t.beginDate.label,
                     beginDatePlaceholder: t.beginDate.placeholder,
                     beginDateModel: 'options.model.' + beginModelName,
@@ -353,7 +357,7 @@
                     endDateOpenDate: 'dCtrl.opt.' + isEndOpen,
                     endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click()',
                     formRequired: requiredPrompt
-                }, uiComponents.beginDateAndEndDateTemp))(scope));
+                }, uiComponents.beginDateAndEndDateTemp));
             } else if (t.type == 'placeHolder') {
                 previous.append(formatTemplate({}, uiComponents.placeHolderTemp));
             }
@@ -365,12 +369,12 @@
                 opt[btnClickFnName] = function () {
                     t.click(search);
                 };
-                btnPrevious.append($compile(formatTemplate({
+                btnPrevious.append(formatTemplate({
                     text: t.text,
                     className: t.className,
                     icon: t.icon,
                     click: 'dCtrl.opt.' + btnClickFnName + '()'
-                }, uiComponents.buttonTemp))(scope));
+                }, uiComponents.buttonTemp));
             } else if (t.type == 'downloadButton') {
                 opt[btnClickFnName] = function (event) {
                     var url = t.click(search);
@@ -378,22 +382,22 @@
                         event.currentTarget.parentElement.href = url;
                     }
                 };
-                btnPrevious.append($compile(formatTemplate({
+                btnPrevious.append(formatTemplate({
                     text: t.text,
                     className: t.className,
                     icon: t.icon,
                     model: '',
                     click: 'dCtrl.opt.' + btnClickFnName + '($event)'
-                }, uiComponents.downloadButtonTemp))(scope));
+                }, uiComponents.downloadButtonTemp));
             } else if (t.type == 'bkmButton') {
                 opt[btnClickFnName] = function () {
                     t.click(search);
                 };
-                btnPrevious.append($compile(formatTemplate({
+                btnPrevious.append(formatTemplate({
                     text: t.text,
                     category: t.category,
                     click: 'dCtrl.opt.' + btnClickFnName + '()'
-                }, uiComponents.bkmButtonTemp))(scope));
+                }, uiComponents.bkmButtonTemp));
             }
         });
 
