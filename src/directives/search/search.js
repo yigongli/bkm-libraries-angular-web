@@ -16,8 +16,8 @@
     };
 
     var formComponents = {
-        textTemp: '<div class="col-md-6"><div class="form-group"><label>{label}{formRequired}</label><input class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}" "/></div></div>',
-        dropDownTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><select class="form-control selectpicker" selectpicker ng-model="{model}"><option value="">-- 所有 --</option><option value="{{{key}}}" ng-repeat="{repeat}" ng-bind="{val}"></option></select></div></div>',
+        textTemp: '<div class="col-md-6"><div class="form-group"><label>{label}{formRequired}</label><input class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div></div>',
+        dropDownTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><select class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 请选择 --</option></select></div></div>',
         dateTemp: '<div class="col-md-6"><div class="bkm-date-picker"><div class="form-group"><label>{label}</label><input bkm-input class="form-control" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
@@ -197,7 +197,7 @@
         };
 
         return {
-            restrict: 'E',
+            restrict: 'AE',
             scope: {
                 options: '=',
                 cols: '='
@@ -279,23 +279,21 @@
                     label: t.label,
                     type: t.type,
                     placeholder: t.placeholder,
-                    model: t.model,
+                    model: 'options.model.' + t.model,
                     formRequired: requiredPrompt
                 }, uiComponents.textTemp))(scope));
             } else if (t.type == 'dropDown') {
-                var c_modelName = t.model;
+                var c_modelName = 'options.model.' + t.model;
                 previous.append($compile(formatTemplate({
                     label: t.label,
                     type: t.type,
                     placeholder: t.placeholder,
                     model: c_modelName,
-                    repeat: 'i in dCtrl.opt.items[' + i + '].dataSource',
-                    val: 'i.' + t.valName,
-                    key: 'i.' + t.keyName,
+                    repeat: 'i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource',
                     formRequired: requiredPrompt
                 }, uiComponents.dropDownTemp))(scope));
                 if (!!t.parent) {
-                    var modelName = t.parent.model;
+                    var modelName = 'options.model.' + t.parent.model;
                     scope.$watch(modelName, function (n, o) {
                         if (n === o) return;
                         search[c_modelName] = '';
@@ -316,7 +314,7 @@
                 previous.append($compile(formatTemplate({
                     label: t.label,
                     placeholder: t.placeholder,
-                    model: modelName,
+                    model: 'options.model.' + modelName,
                     openDate: 'dCtrl.opt.' + isOpen,
                     click: 'dCtrl.opt.' + isOpen + 'Click()',
                     formRequired: requiredPrompt,
@@ -345,13 +343,13 @@
                 previous.append($compile(formatTemplate({
                     beginDateLabel: t.beginDate.label,
                     beginDatePlaceholder: t.beginDate.placeholder,
-                    beginDateModel: beginModelName,
+                    beginDateModel: 'options.model.' + beginModelName,
                     beginDateOpenDate: 'dCtrl.opt.' + isBeginOpen,
                     beginDateClick: 'dCtrl.opt.' + isBeginOpen + 'Click()',
 
                     endDateLabel: t.endDate.label,
                     endDatePlaceholder: t.endDate.placeholder,
-                    endDateModel: endModelName,
+                    endDateModel: 'options.model.' + endModelName,
                     endDateOpenDate: 'dCtrl.opt.' + isEndOpen,
                     endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click()',
                     formRequired: requiredPrompt
@@ -384,6 +382,7 @@
                     text: t.text,
                     className: t.className,
                     icon: t.icon,
+                    model: '',
                     click: 'dCtrl.opt.' + btnClickFnName + '($event)'
                 }, uiComponents.downloadButtonTemp))(scope));
             } else if (t.type == 'bkmButton') {
