@@ -36,7 +36,6 @@
 
     function directiveCtrl() {
         var ctrl = this;
-        this.earliestLoadTime = '';
     }
 
     /**
@@ -224,13 +223,8 @@
 
         return {
             restrict: 'E',
-            scope: {
-                title: '='
-            },
-            controller: 'directiveCtrl',
-            controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{title}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div>'
+            template: '<div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div>',
         };
     }
 
