@@ -6,9 +6,9 @@
 
 
     var formComponents = {
-        textTemp: '<div class="col-md-6"><div class="form-group"><label>{label}{formRequired}</label><input class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div></div>',
-        dropDownTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><select class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ></select></div></div>',
-        dateTemp: '<div class="col-md-6"><div class="bkm-date-picker"><div class="form-group"><label>{label}</label><input bkm-input class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
+        textTemp: '<div class="col-md-6"><div class="form-group" {validError}><label>{label}{formRequired}</label><input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div></div>',
+        dropDownTemp: '<div class="col-md-6"><div class="form-group" {validError}><label>{label}</label><select bkm-input name="{formName}" class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ></select></div></div>',
+        dateTemp: '<div class="col-md-6"><div class="bkm-date-picker"><div class="form-group" {validError}><label>{label}</label><input bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="col-md-6 placeholder"> <div class="form-control"></div> </div>',
@@ -211,6 +211,7 @@
             template: '<form novalidate class="row" name="dCtrl.myForm"></form>',
             link: function (scope, el) {
                 scope.options.onSubmit = function (onSubmitFn) {
+                    scope.dCtrl.myForm.$setSubmitted(true);
                     bkmFmValSvc.isValid(scope.dCtrl.myForm).then(onSubmitFn, null);
                 };
                 linkFunc(scope, el, formComponents, selectors, scope.options, null);
@@ -275,7 +276,9 @@
             if (!!t.defaultVal) {
                 search[t.model] = t.defaultVal;
             }
-            var requiredPrompt = "";
+
+            var requiredPrompt = "",
+                validError = 'ng-class="{\'has-error\':!dCtrl.myForm.' + t.model + '.$valid && (dCtrl.myForm.' + t.model + '.$dirt || dCtrl.myForm.$submitted)}"';
             if (!!t.option) {
                 requiredPrompt = ' (可选) ';
             }
@@ -285,7 +288,9 @@
                     type: t.type,
                     placeholder: t.placeholder,
                     model: 'options.model.' + t.model,
-                    formRequired: requiredPrompt
+                    formRequired: requiredPrompt,
+                    formName: t.model,
+                    validError: validError
                 }, uiComponents.textTemp));
             } else if (t.type == 'dropDown') {
                 var c_modelName = 'options.model.' + t.model;
@@ -295,7 +300,9 @@
                     placeholder: t.placeholder,
                     model: c_modelName,
                     repeat: 'i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource',
-                    formRequired: requiredPrompt
+                    formRequired: requiredPrompt,
+                    formName: t.model,
+                    validError: validError
                 }, uiComponents.dropDownTemp));
                 if (!!t.parent) {
                     var modelName = 'options.model.' + t.parent.model;
@@ -323,7 +330,10 @@
                     openDate: 'dCtrl.opt.' + isOpen,
                     click: 'dCtrl.opt.' + isOpen + 'Click()',
                     formRequired: requiredPrompt,
-                    validateAttr: t.validateAttr.join(' ')
+                    validateAttr: t.validateAttr.join(' '),
+                    formName: modelName,
+                    validError: validError
+                    //validError: 'ng-class="{\'has-error\':!dCtrl.myForm.' + modelName + '.$valid && (dCtrl.myForm.' + modelName + '.$dirt || dCtrl.myForm.$submitted)}"'
                 }, uiComponents.dateTemp));
             } else if (t.type == 'beginDateAndEndDate') {
                 if (!!t.beginDate.defaultVal) {
