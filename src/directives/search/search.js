@@ -18,14 +18,14 @@
     var formComponents = {
         textTemp: '<div class="col-md-6"><div class="form-group"><label>{label}{formRequired}</label><input class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}" "/></div></div>',
         dropDownTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><select class="form-control selectpicker" selectpicker ng-model="{model}"><option value="">-- 所有 --</option><option value="{{{key}}}" ng-repeat="{repeat}" ng-bind="{val}"></option></select></div></div>',
-        dateTemp: '<div class="col-md-6"><div class="bkm-date-picker"><div class="form-group"><label>{label}</label><input class="form-control" type="date" {validateAttr} placeholder="{placeholder}" readOnly="true" ng-model="{model}" uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
+        dateTemp: '<div class="col-md-6"><div class="bkm-date-picker"><div class="form-group"><label>{label}</label><input bkm-input class="form-control" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="col-md-6 placeholder"> <div class="form-control"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
     };
 
-    angular.module('bkm.library.angular.web', ['bkm.library.angular.comm'])
+    angular.module('bkm.library.angular.web', [])
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', bkmSearch)
         .directive('bkmModalForm', bkmModalForm)
@@ -35,6 +35,7 @@
 
     function directiveCtrl() {
         var ctrl = this;
+        this.earliestLoadTime = '';
     }
 
     /**
@@ -204,9 +205,12 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<form class="row" name="ctrl.myForm"></form>',
+            template: '<form novalidate class="row" name="dCtrl.myForm"></form>',
             link: function (scope, el) {
-                linkFunc(scope, el, $compile, formComponents, selectors, scope.options);
+                scope.options.onSubmit = function (onSubmitFn) {
+                    bkmFmValSvc.isValid(scope.dCtrl.myForm).then(onSubmitFn, null);
+                };
+                linkFunc(scope, el, $compile, formComponents, selectors, scope.options, null, bkmFmValSvc);
             }
         };
     }
@@ -245,8 +249,7 @@
         };
     }
 
-    function linkFunc(scope, el, $compile, uiComponents, selectors, options, cols) {
-
+    function linkFunc(scope, el, $compile, uiComponents, selectors, options, cols, bkmFmValService) {
         if (!!cols) {
             //todo: config colums layout with cols parameters
         }
@@ -260,12 +263,16 @@
 
         angular.forEach(opt.items, function (t, i) {
             t = opt.items[i];
+
+            t.keyName = !!t.keyName ? t.keyName : 'key';
+            t.valName = !!t.valName ? t.valName : 'name';
+
             if (!!t.defaultVal) {
                 search[t.model] = t.defaultVal;
             }
             var requiredPrompt = "";
-            if(!!t.option){
-                requiredPrompt= ' (可选) ';
+            if (!!t.option) {
+                requiredPrompt = ' (可选) ';
             }
             if (t.type == 'text' || t.type == 'number') {
                 previous.append($compile(formatTemplate({
@@ -301,7 +308,7 @@
                 }
             } else if (t.type == 'date') {
                 var modelName = t.model;
-                var isOpen = 'openDate' + modelName.replace('.', '_');
+                var isOpen = 'openDate' + modelName.replace(/\./g, '_');
                 opt[isOpen] = false;
                 opt[isOpen + 'Click'] = function () {
                     opt[isOpen] = true;
@@ -323,14 +330,14 @@
                     search[t.endDate.model] = t.endDate.defaultVal;
                 }
                 var beginModelName = t.beginDate.model;
-                var isBeginOpen = 'beginOpenDate' + beginModelName.replace('.', '_');
+                var isBeginOpen = 'beginOpenDate' + beginModelName.replace(/\./g, '_');
                 opt[isBeginOpen] = false;
                 opt[isBeginOpen + 'Click'] = function () {
                     opt[isBeginOpen] = true;
                 };
 
                 var endModelName = t.endDate.model;
-                var isEndOpen = 'endOpenDate' + endModelName.replace('.', '_');
+                var isEndOpen = 'endOpenDate' + endModelName.replace(/\./g, '_');
                 opt[isEndOpen] = false;
                 opt[isEndOpen + 'Click'] = function () {
                     opt[isEndOpen] = true;
