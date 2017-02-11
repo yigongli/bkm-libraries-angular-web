@@ -4,6 +4,17 @@
 (function () {
     'use strict';
 
+
+    var formComponents = {
+        textTemp: '<div class="col-md-6"><div class="form-group"><label>{label}{formRequired}</label><input class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div></div>',
+        dropDownTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><select class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ></select></div></div>',
+        dateTemp: '<div class="col-md-6"><div class="bkm-date-picker"><div class="form-group"><label>{label}</label><input bkm-input class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
+        buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
+        downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
+        placeHolderTemp: '<div class="col-md-6 placeholder"> <div class="form-control"></div> </div>',
+        bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
+    };
+
     var searchComponents = {
         textTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div>',
         dropDownTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<select class="form-control selectpicker" selectpicker ng-model="{model}"><option value="">-- 所有 --</option><option value="{{{key}}}" ng-repeat="{repeat}" ng-bind="{val}"></option></select></div>',
@@ -12,16 +23,6 @@
         buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="col-md-3 placeholder"> <div class="form-control"></div> </div>',
-        bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
-    };
-
-    var formComponents = {
-        textTemp: '<div class="col-md-6"><div class="form-group"><label>{label}{formRequired}</label><input class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div></div>',
-        dropDownTemp: '<div class="col-md-6"><div class="form-group"><label>{label}</label><select class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 请选择 --</option></select></div></div>',
-        dateTemp: '<div class="col-md-6"><div class="bkm-date-picker"><div class="form-group"><label>{label}</label><input bkm-input class="form-control" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
-        buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
-        downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
-        placeHolderTemp: '<div class="col-md-6 placeholder"> <div class="form-control"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
     };
 
