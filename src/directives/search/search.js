@@ -6,24 +6,14 @@
 
 
     var formComponents = {
-        textTemp: '<div class="col-md-6"><div class="form-group" {validError}><label>{label}{formRequired}</label><input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div></div>',
-        dropDownTemp: '<div class="col-md-6"><div class="form-group" {validError}><label>{label}</label><select bkm-input name="{formName}" class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ></select></div></div>',
-        dateTemp: '<div class="col-md-6"><div class="bkm-date-picker"><div class="form-group" {validError}><label>{label}</label><input bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
+        textTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div></div>',
+        dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}</label>&nbsp;&nbsp;<select bkm-input name="{formName}" class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
+        dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
-        placeHolderTemp: '<div class="col-md-6 placeholder"> <div class="form-control"></div> </div>',
+        placeHolderTemp: '<div class="{cols} placeholder"> <div class="form-control"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
-    };
-
-    var searchComponents = {
-        textTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div>',
-        dropDownTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<select class="form-control selectpicker" selectpicker ng-model="{model}"><option value="">-- 所有 --</option><option value="{{{key}}}" ng-repeat="{repeat}" ng-bind="{val}"></option></select></div>',
-        dateTemp: '<div class="col-md-3"><label>{label}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{placeholder}" readOnly="true" ng-model="{model}" uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div>',
-        beginDateAndEndDateTemp: '<div class="col-md-6"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
-        buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
-        downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
-        placeHolderTemp: '<div class="col-md-3 placeholder"> <div class="form-control"></div> </div>',
-        bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
+        beginDateAndEndDateTemp: '<div class="col-md-6"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>'
     };
 
     angular.module('bkm.library.angular.web', [])
@@ -146,32 +136,36 @@
      */
     function bkmSearch($compile) {
 
-        //set the CSS selector
-        var selectors = {
-            items: '.row',
-            buttons: '.btns'
-        };
-
         return {
             restrict: 'E',
-            scope: { options: '=' },
+            scope: {
+                options: '=',
+                cols: '='
+            },
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
             link: function (scope, el) {
-                linkFunc(scope, el, searchComponents, selectors, scope.options);
+                scope.cols = !!scope.cols ? scope.cols : 4;
+                linkFunc(
+                    scope,
+                    el,
+                    formComponents,
+                    {
+                        items: '.row',
+                        buttons: '.btns'
+                    },
+                    scope.options,
+                    scope.cols,
+                    ''
+                    );
                 $compile(el)(scope);
             }
         };
     }
 
     function bkmModalForm($compile) {
-
-        var selectors = {
-            items: '.row',
-            buttons: '.modal-footer'
-        };
 
         return {
             restrict: 'E',
@@ -183,20 +177,26 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" id="draggableModal"><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{title}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><div class="row"></div></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{title}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><div class="row"></div></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
             link: function (scope, el) {
-                linkFunc(scope, el, formComponents, selectors, scope.options);
+                linkFunc(
+                    scope,
+                    el,
+                    formComponents,
+                     {
+                         items: '.row',
+                         buttons: '.modal-footer'
+                     },
+                    scope.options,
+                    scope.cols,
+                    'form-group'
+                    );
                 $compile(el)(scope);
             }
         };
     }
 
     function bkmModalBodyComponents($compile, bkmFmValSvc) {
-
-        var selectors = {
-            items: '',
-            buttons: ''
-        };
 
         return {
             restrict: 'AE',
@@ -213,7 +213,18 @@
                     scope.dCtrl.myForm.$setSubmitted(true);
                     bkmFmValSvc.isValid(scope.dCtrl.myForm).then(onSubmitFn, null);
                 };
-                linkFunc(scope, el, formComponents, selectors, scope.options, null);
+                linkFunc(
+                    scope,
+                    el,
+                    formComponents,
+                     {
+                         items: '',
+                         buttons: ''
+                     },
+                    scope.options,
+                    scope.cols,
+                    'form-group'
+                    );
                 $compile(el)(scope);
             }
         };
@@ -223,17 +234,13 @@
 
         return {
             restrict: 'E',
+            scope:{},
             replace: true,
             template: '<div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div>',
         };
     }
 
     function bkmModalFooter($compile) {
-
-        var selectors = {
-            items: '',
-            buttons: '.modal-footer'
-        };
 
         return {
             restrict: 'E',
@@ -243,17 +250,26 @@
             replace: true,
             template: '<div class="modal-footer"><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
             link: function (scope, el) {
-                linkFunc(scope, el.parent(), formComponents, selectors, scope.options);
-                $compile(el.parent())(scope);
+                linkFunc(
+                    scope,
+                    el,
+                    formComponents,
+                    {
+                        items: '',
+                        buttons: ''
+                    },
+                    scope.options
+                    );
+                $compile(el)(scope);
             }
         };
     }
 
-    function linkFunc(scope, el, uiComponents, selectors, options, cols) {
-        if (!!cols) {
-            //todo: config colums layout with cols parameters
-        }
+    function linkFunc(scope, el, uiComponents, selectors, options, cols, formStyle) {
 
+        //设置窗体默认列布局
+        cols = !!cols && typeof(cols)=='number' && cols<5 ? 'col-md-' + 12/cols : 'col-md-6';
+        
         var search = scope.dCtrl.search = {};
         var opt = scope.dCtrl.opt = angular.extend({}, options);
         var i, t;
@@ -264,27 +280,31 @@
         angular.forEach(opt.items, function (t, i) {
             t = opt.items[i];
 
+            //设置下拉列表默认的key,name标识
             t.keyName = !!t.keyName ? t.keyName : 'key';
             t.valName = !!t.valName ? t.valName : 'name';
+            //设置元素默认列布局
+            t.cols = !!t.cols && typeof (t.cols) == 'number' && t.cols < 5 ? 'col-md-' + 12 / t.cols : cols;
 
             if (!!t.defaultVal) {
                 search[t.model] = t.defaultVal;
             }
 
-            var requiredPrompt = "",
+            //设置可选提示符
+            var optionPrompt = !!t.option ? ' (可选) ': "",
                 validError = 'ng-class="{\'has-error\':!dCtrl.myForm.' + t.model + '.$valid && (dCtrl.myForm.' + t.model + '.$dirt || dCtrl.myForm.$submitted)}"';
-            if (!!t.option) {
-                requiredPrompt = ' (可选) ';
-            }
+
             if (t.type == 'text' || t.type == 'number') {
                 previous.append(formatTemplate({
                     label: t.label,
                     type: t.type,
                     placeholder: t.placeholder,
                     model: 'options.model.' + t.model,
-                    formRequired: requiredPrompt,
+                    formRequired: optionPrompt,
                     formName: t.model,
-                    validError: validError
+                    validError: validError,
+                    cols: t.cols,
+                    formStyle:formStyle
                 }, uiComponents.textTemp));
             } else if (t.type == 'dropDown') {
                 var c_modelName = 'options.model.' + t.model;
@@ -293,10 +313,11 @@
                     type: t.type,
                     placeholder: t.placeholder,
                     model: c_modelName,
-                    repeat: 'i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource',
-                    formRequired: requiredPrompt,
+                    repeat: 'i.' + t.valName + ' for i in options.items[' + i + '].dataSource',
+                    formRequired: optionPrompt,
                     formName: t.model,
-                    validError: validError
+                    validError: validError,
+                    cols: t.cols, formStyle: formStyle
                 }, uiComponents.dropDownTemp));
                 if (!!t.parent) {
                     var modelName = 'options.model.' + t.parent.model;
@@ -323,11 +344,11 @@
                     model: 'options.model.' + modelName,
                     openDate: 'dCtrl.opt.' + isOpen,
                     click: 'dCtrl.opt.' + isOpen + 'Click()',
-                    formRequired: requiredPrompt,
+                    formRequired: optionPrompt,
                     validateAttr: t.validateAttr.join(' '),
                     formName: modelName,
-                    validError: validError
-                    //validError: 'ng-class="{\'has-error\':!dCtrl.myForm.' + modelName + '.$valid && (dCtrl.myForm.' + modelName + '.$dirt || dCtrl.myForm.$submitted)}"'
+                    validError: validError,
+                    cols: t.cols, formStyle: formStyle
                 }, uiComponents.dateTemp));
             } else if (t.type == 'beginDateAndEndDate') {
                 if (!!t.beginDate.defaultVal) {
@@ -361,14 +382,19 @@
                     endDateModel: 'options.model.' + endModelName,
                     endDateOpenDate: 'dCtrl.opt.' + isEndOpen,
                     endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click()',
-                    formRequired: requiredPrompt
+                    formRequired: optionPrompt
                 }, uiComponents.beginDateAndEndDateTemp));
             } else if (t.type == 'placeHolder') {
-                previous.append(formatTemplate({}, uiComponents.placeHolderTemp));
+                previous.append(formatTemplate({
+                    cols: t.cols
+                }, uiComponents.placeHolderTemp));
             }
         });
 
         angular.forEach(opt.buttons, function (t, i) {
+
+            t.type = !!t.type ? t.type : 'bkmButton';
+
             var btnClickFnName = 'buttonClick' + i;
             if (t.type == 'button') {
                 opt[btnClickFnName] = function () {
