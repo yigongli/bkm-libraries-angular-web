@@ -140,7 +140,7 @@
             restrict: 'E',
             scope: {
                 options: '=',
-                cols: '='
+                cols: '=?cols'
             },
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
@@ -172,7 +172,7 @@
             scope: {
                 title: '=',
                 options: '=',
-                cols: '='
+                cols: '=?cols'
             },
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
@@ -202,7 +202,7 @@
             restrict: 'AE',
             scope: {
                 options: '=',
-                cols: '='
+                cols: '=?cols'
             },
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
