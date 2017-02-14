@@ -6,9 +6,9 @@
 
 
     var formComponents = {
-        textTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" ng-model="{model}"/></div></div>',
-        dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}</label>&nbsp;&nbsp;<select bkm-input name="{formName}" class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
-        dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
+        textTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}"/></div></div>',
+        dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
+        dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="form-control"></div> </div>',
@@ -17,15 +17,21 @@
     };
 
     angular.module('bkm.library.angular.web', [])
-        .controller('directiveCtrl', directiveCtrl)
+        .controller('directiveCtrl', ['bkmFmValSvc',directiveCtrl])
         .directive('bkmSearch', bkmSearch)
         .directive('bkmModalForm', bkmModalForm)
         .directive('bkmModalBodyComponents', bkmModalBodyComponents)
         .directive('bkmModalHeader', bkmModalHeader)
         .directive('bkmModalFooter', bkmModalFooter);
 
-    function directiveCtrl() {
+    function directiveCtrl(bkmFmValSvc) {
         var ctrl = this;
+
+        //定义表单验证的回调函数
+        ctrl.onSubmit=  function (onSubmitFn) {
+            ctrl.myForm.$setSubmitted(true);
+            bkmFmValSvc.isValid(ctrl.myForm).then(onSubmitFn, null);
+        };
     }
 
     /**
@@ -172,13 +178,35 @@
             scope: {
                 title: '=',
                 options: '=',
-                cols: '=?cols'
+                footers: '=?',
+                cols: '=?cols'                
             },
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{title}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><div class="row"></div></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="dCtrl.myForm"><div class="row"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
             link: function (scope, el) {
+
+                //设置表单提交时的验证回掉函数
+                scope.options.onSubmit = scope.dCtrl.onSubmit;
+
+                //设置默认的提交和关闭操作按钮
+                if (!scope.footers) {
+                    angular.extend(scope.options, {
+                        buttons: [
+                            {
+                                text: '关闭',
+                                category: 'cancel',
+                                click: scope.options.model.cancelFn
+                            }, {
+                                text: '提交',
+                                category: 'submit',
+                                click: scope.options.model.submitFn
+                            }]
+                    });
+                }
+
+                
                 linkFunc(
                     scope,
                     el,
@@ -196,7 +224,17 @@
         };
     }
 
-    function bkmModalBodyComponents($compile, bkmFmValSvc) {
+    function bkmModalHeader() {
+
+        return {
+            restrict: 'E',
+            scope: {},
+            replace: true,
+            template: '<div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div>',
+        };
+    }
+
+    function bkmModalBodyComponents($compile) {
 
         return {
             restrict: 'AE',
@@ -207,19 +245,35 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<form novalidate class="row" name="dCtrl.myForm"></form>',
+            template: '<form novalidate  name="dCtrl.myForm"><div class="row"></div><div class="text-right search-btn button-panel btns"></div></form>',
             link: function (scope, el) {
-                scope.options.onSubmit = function (onSubmitFn) {
-                    scope.dCtrl.myForm.$setSubmitted(true);
-                    bkmFmValSvc.isValid(scope.dCtrl.myForm).then(onSubmitFn, null);
-                };
+
+                //设置表单提交时的验证回掉函数
+                scope.options.onSubmit = scope.dCtrl.onSubmit;
+
+                //设置默认的提交和关闭操作按钮
+                if (!scope.footers) {
+                    angular.extend(scope.options, {
+                        buttons: [
+                            {
+                                text: '关闭',
+                                category: 'cancel',
+                                click: scope.options.model.cancelFn
+                            }, {
+                                text: '提交',
+                                category: 'submit',
+                                click: scope.options.model.submitFn
+                            }]
+                    });
+                }
+
                 linkFunc(
                     scope,
                     el,
                     formComponents,
                      {
-                         items: '',
-                         buttons: ''
+                         items: '.row',
+                         buttons: '.button-panel'
                      },
                     scope.options,
                     scope.cols,
@@ -230,15 +284,7 @@
         };
     }
 
-    function bkmModalHeader() {
-
-        return {
-            restrict: 'E',
-            scope:{},
-            replace: true,
-            template: '<div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div>',
-        };
-    }
+  
 
     function bkmModalFooter($compile) {
 
@@ -268,8 +314,8 @@
     function linkFunc(scope, el, uiComponents, selectors, options, cols, formStyle) {
 
         //设置窗体默认列布局
-        cols = !!cols && typeof(cols)=='number' && cols<5 ? 'col-md-' + 12/cols : 'col-md-6';
-        
+        cols = !!cols && typeof (cols) == 'number' && cols < 5 ? 'col-md-' + 12 / cols : 'col-md-6';
+
         var search = scope.dCtrl.search = {};
         var opt = scope.dCtrl.opt = angular.extend({}, options);
         var i, t;
@@ -280,14 +326,20 @@
         angular.forEach(opt.items, function (t, i) {
             t = opt.items[i];
 
+            search[t.model] = !!t.defaultVal ? t.defaultVal : null;
+
             //设置下拉列表默认的key,name标识
             t.keyName = !!t.keyName ? t.keyName : 'key';
             t.valName = !!t.valName ? t.valName : 'name';
             //设置元素默认列布局
             t.cols = !!t.cols && typeof (t.cols) == 'number' && t.cols < 5 ? 'col-md-' + 12 / t.cols : cols;
 
-            if (!!t.defaultVal) {
-                search[t.model] = t.defaultVal;
+            //设置默认的验证要求
+            t.validateAttr = t.validateAttr || [];
+            if (!t.option) {       
+                if (t.validateAttr.toString().indexOf('required') == -1) {
+                    t.validateAttr.push('required', 'required-error="必填信息"');
+                }
             }
 
             //设置可选提示符
@@ -301,6 +353,7 @@
                     placeholder: t.placeholder,
                     model: 'options.model.' + t.model,
                     formRequired: optionPrompt,
+                    validateAttr: t.validateAttr.join(' '),
                     formName: t.model,
                     validError: validError,
                     cols: t.cols,
@@ -315,6 +368,7 @@
                     model: c_modelName,
                     repeat: 'i.' + t.valName + ' for i in options.items[' + i + '].dataSource',
                     formRequired: optionPrompt,
+                    validateAttr: t.validateAttr.join(' '),
                     formName: t.model,
                     validError: validError,
                     cols: t.cols, formStyle: formStyle
