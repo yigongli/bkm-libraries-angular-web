@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('bkm.library.angular.web', [])
+    angular.module('bkm.library.angular.web')
         .constant('treeSetting', {
             data: {
                 key: {
@@ -32,8 +32,6 @@
                 autoParam: ["id"],
                 contentType: "application/json",
                 type: 'post'
-
-
             }
 
 
@@ -54,7 +52,6 @@
 
                     var parentNodeChecked = null;
                     var distinctLevel = parseInt($scope.distinctLevel);
-
 
                     $scope.setting.getRawNodesChecked = function () {
                         return zTreeObj.getCheckedNodes(true);
@@ -173,14 +170,15 @@
 
                     angular.extend(treeSetting, $scope.setting);
 
-                    $scope.setNodes()(function (nodes) {
-                        if (nodes) {
-                            zTreeObj = $.fn.zTree.init(iElm, treeSetting, nodes);
+                    //$scope.setNodes()(function (nodes) {
+                    //    if (nodes) {
+                    //        zTreeObj = $.fn.zTree.init(iElm, treeSetting, nodes);
+                    //    }
+                    //});
 
-                        }
-                    });
-
-
+                    $scope.setting.initNodes = function (nodes) {
+                        zTreeObj = $.fn.zTree.init(iElm, treeSetting, nodes);
+                    };
 
                 }
             };
@@ -274,13 +272,13 @@
         return {
             restrict: 'EA',
             controller: 'bkmInputTreeCtrl',
-            controllerAs:'ctrl',
+            controllerAs: 'ctrl',
             scope: {
                 treeData: []
             },
             template: '<div class="bkm-tree"><input id="citySel" type="text" readonly value="" style="width:120px;" /><a id="menuBtn" href="#" ng-click="ctrl.showMenu(); return false;">Ñ¡Ôñ</a><bkm-tree></bkm-tree></div>',
             link: function (scope, elem, attr) {
-               
+
             }
         };
     }
