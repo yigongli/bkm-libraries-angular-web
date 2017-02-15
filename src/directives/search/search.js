@@ -174,6 +174,7 @@
  * 
  * @param {Object} options = 指令所需的配置对象
  * options.items 该数组接收需要显示的搜索项
+ * options.includeUrl 该参数提供一个个性化模板地址，插入到Form表单中
  * 
  * @param {int} cols = 可选参数，设置表单元素的布局列数，默认为两列
  * 
