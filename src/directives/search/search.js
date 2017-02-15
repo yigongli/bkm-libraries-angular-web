@@ -171,12 +171,24 @@
         };
     }
 
-    function bkmModalForm($compile) {
+    /**
+ * @ngdoc directive
+ * @name demo.directive:bkmSearch
+ * @description
+ * 列表页面的搜索指令
+ * 使用方法：
+ * 1. 页面控制器中设置模态框标题：scope.modalTitle="我的标题"
+ * 
+ * 
+ * @param {Object} options = 指令所需的配置对象
+ * options.items 该数组接收需要显示的搜索项
+ * 
+ */
+    function bkmModalForm($compile,$filter) {
 
         return {
             restrict: 'E',
             scope: {
-                title: '=',
                 options: '=',
                 footers: '=?',
                 cols: '=?cols'                
@@ -184,7 +196,7 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="dCtrl.myForm"><div class="row"></div><div class="row"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="dCtrl.myForm"><div class="row"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
             link: function (scope, el) {
 
                 //设置表单提交时的验证回掉函数
@@ -206,8 +218,10 @@
 
                 //footer template
                 //设置默认的提交和关闭操作按钮
-                if (!scope.footers) {
-                    angular.extend(scope.options, {
+                scope.footers = scope.footers || [];
+                scope.footers.buttons = scope.footers.buttons || [];
+                if ($filter('filter')(scope.footers.buttons, { category: 'submit' }).length == 0) {
+                    angular.extend(scope.footers, {
                         buttons: [
                             {
                                 text: '关闭',
@@ -233,7 +247,6 @@
                     'form-group'
                     );
 
-
                 $compile(el)(scope);
             }
         };
@@ -249,13 +262,12 @@
         };
     }
 
-    function bkmModalBodyComponents($compile,$filter) {
+    function bkmModalBodyComponents($compile) {
 
         return {
             restrict: 'AE',
             scope: {
-                options: '=',
-                footers: '=?',
+                options: '=',                
                 cols: '=?cols'
             },
             controller: 'directiveCtrl',
@@ -286,7 +298,7 @@
 
   
 
-    function bkmModalFooter($compile) {
+    function bkmModalFooter($compile,$filter) {
 
         return {
             restrict: 'E',
