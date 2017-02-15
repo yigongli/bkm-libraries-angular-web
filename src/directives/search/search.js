@@ -11,7 +11,7 @@
         dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
-        placeHolderTemp: '<div class="{cols} placeholder"> <div class="form-control"></div> </div>',
+        placeHolderTemp: '<div class="{cols} placeholder"> <div class="form-control" style="border:0px"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
         beginDateAndEndDateTemp: '<div class="col-md-6"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>'
     };
@@ -184,12 +184,27 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="dCtrl.myForm"><div class="row"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="dCtrl.myForm"><div class="row"></div><div class="row"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
             link: function (scope, el) {
 
                 //设置表单提交时的验证回掉函数
                 scope.options.onSubmit = scope.dCtrl.onSubmit;
 
+                //body template
+                linkFunc(
+                    scope,
+                    el,
+                    formComponents,
+                     {
+                         items: '.row',
+                         buttons: ''
+                     },
+                    scope.options,
+                    scope.cols,
+                    'form-group'
+                    );
+
+                //footer template
                 //设置默认的提交和关闭操作按钮
                 if (!scope.footers) {
                     angular.extend(scope.options, {
@@ -205,20 +220,20 @@
                             }]
                     });
                 }
-
-                
                 linkFunc(
                     scope,
                     el,
                     formComponents,
                      {
-                         items: '.row',
+                         items: '',
                          buttons: '.modal-footer'
                      },
-                    scope.options,
+                    scope.footers,
                     scope.cols,
                     'form-group'
                     );
+
+
                 $compile(el)(scope);
             }
         };
@@ -234,12 +249,13 @@
         };
     }
 
-    function bkmModalBodyComponents($compile) {
+    function bkmModalBodyComponents($compile,$filter) {
 
         return {
             restrict: 'AE',
             scope: {
                 options: '=',
+                footers: '=?',
                 cols: '=?cols'
             },
             controller: 'directiveCtrl',
@@ -250,22 +266,6 @@
 
                 //设置表单提交时的验证回掉函数
                 scope.options.onSubmit = scope.dCtrl.onSubmit;
-
-                //设置默认的提交和关闭操作按钮
-                if (!scope.footers) {
-                    angular.extend(scope.options, {
-                        buttons: [
-                            {
-                                text: '关闭',
-                                category: 'cancel',
-                                click: scope.options.model.cancelFn
-                            }, {
-                                text: '提交',
-                                category: 'submit',
-                                click: scope.options.model.submitFn
-                            }]
-                    });
-                }
 
                 linkFunc(
                     scope,
@@ -296,6 +296,25 @@
             replace: true,
             template: '<div class="modal-footer"><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
             link: function (scope, el) {
+
+                //设置默认的提交和关闭操作按钮
+                scope.options = scope.options || [];
+                scope.options.buttons = scope.options.buttons || [];
+                if ($filter('filter')(scope.options.buttons, { category: 'submit' }).length==0) {
+                    angular.extend(scope.options, {
+                        buttons: [
+                            {
+                                text: '关闭',
+                                category: 'cancel',
+                                click: scope.options.model.cancelFn
+                            }, {
+                                text: '提交',
+                                category: 'submit',
+                                click: scope.options.model.submitFn
+                            }]
+                    });
+                }
+
                 linkFunc(
                     scope,
                     el,
