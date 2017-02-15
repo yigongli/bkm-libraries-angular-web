@@ -6,33 +6,25 @@
 
 
     var formComponents = {
-        textTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}"/></div></div>',
-        dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
-        dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
-        buttonTemp: '<button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
-        downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
+        textTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter"  /></div></div>',
+        dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
+        dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
+        buttonTemp: '<button uib-popover="{tooltip}" popover-trigger="mouseenter" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
+        downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="mouseenter" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="form-control" style="border:0px"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
         beginDateAndEndDateTemp: '<div class="col-md-6"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>'
     };
 
+
     angular.module('bkm.library.angular.web', [])
-        .controller('directiveCtrl', ['bkmFmValSvc',directiveCtrl])
+        .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', bkmSearch)
-        .directive('bkmModalForm', bkmModalForm)
-        .directive('bkmModalBodyComponents', bkmModalBodyComponents)
-        .directive('bkmModalHeader', bkmModalHeader)
-        .directive('bkmModalFooter', bkmModalFooter);
+        .directive('bkmModalForm', ['$compile', '$filter', 'bkmFmValSvc', bkmModalForm]);
 
-    function directiveCtrl(bkmFmValSvc) {
+    function directiveCtrl() {
         var ctrl = this;
-
-        //定义表单验证的回调函数
-        ctrl.onSubmit=  function (onSubmitFn) {
-            ctrl.myForm.$setSubmitted(true);
-            bkmFmValSvc.isValid(ctrl.myForm).then(onSubmitFn, null);
-        };
-    }
+    };
 
     /**
      * @ngdoc directive
@@ -173,18 +165,20 @@
 
     /**
  * @ngdoc directive
- * @name demo.directive:bkmSearch
+ * @name demo.directive:bkmModalForm
  * @description
  * 列表页面的搜索指令
  * 使用方法：
  * 1. 页面控制器中设置模态框标题：scope.modalTitle="我的标题"
- * 
+ * 2. 
  * 
  * @param {Object} options = 指令所需的配置对象
  * options.items 该数组接收需要显示的搜索项
  * 
+ * @param {int} cols = 可选参数，设置表单元素的布局列数，默认为两列
+ * 
  */
-    function bkmModalForm($compile,$filter) {
+    function bkmModalForm($compile, $filter, bkmFmValSvc) {
 
         return {
             restrict: 'E',
@@ -196,147 +190,47 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="dCtrl.myForm"><div class="row"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="dCtrl.myForm"><div class="row"></div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
             link: function (scope, el) {
 
-                //设置表单提交时的验证回掉函数
-                scope.options.onSubmit = scope.dCtrl.onSubmit;
+                //定义表单验证的回调函数
+                scope.options.onSubmit = function (onSubmitFn) {
+                    scope.dCtrl.myForm.$setSubmitted(true);
+                    bkmFmValSvc.isValid(scope.dCtrl.myForm).then(onSubmitFn, null);
+                };
 
-                //body template
-                linkFunc(
-                    scope,
-                    el,
-                    formComponents,
-                     {
-                         items: '.row',
-                         buttons: ''
-                     },
-                    scope.options,
-                    scope.cols,
-                    'form-group'
-                    );
-
-                //footer template
+                //format footer template
                 //设置默认的提交和关闭操作按钮
-                scope.footers = scope.footers || [];
-                scope.footers.buttons = scope.footers.buttons || [];
-                if ($filter('filter')(scope.footers.buttons, { category: 'submit' }).length == 0) {
-                    angular.extend(scope.footers, {
-                        buttons: [
-                            {
-                                text: '关闭',
-                                category: 'cancel',
-                                click: scope.options.model.cancelFn
-                            }, {
-                                text: '提交',
-                                category: 'submit',
-                                click: scope.options.model.submitFn
-                            }]
-                    });
-                }
-                linkFunc(
-                    scope,
-                    el,
-                    formComponents,
-                     {
-                         items: '',
-                         buttons: '.modal-footer'
-                     },
-                    scope.footers,
-                    scope.cols,
-                    'form-group'
-                    );
-
-                $compile(el)(scope);
-            }
-        };
-    }
-
-    function bkmModalHeader() {
-
-        return {
-            restrict: 'E',
-            scope: {},
-            replace: true,
-            template: '<div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div>',
-        };
-    }
-
-    function bkmModalBodyComponents($compile) {
-
-        return {
-            restrict: 'AE',
-            scope: {
-                options: '=',                
-                cols: '=?cols'
-            },
-            controller: 'directiveCtrl',
-            controllerAs: 'dCtrl',
-            replace: true,
-            template: '<form novalidate  name="dCtrl.myForm"><div class="row"></div><div class="text-right search-btn button-panel btns"></div></form>',
-            link: function (scope, el) {
-
-                //设置表单提交时的验证回掉函数
-                scope.options.onSubmit = scope.dCtrl.onSubmit;
-
-                linkFunc(
-                    scope,
-                    el,
-                    formComponents,
-                     {
-                         items: '.row',
-                         buttons: '.button-panel'
-                     },
-                    scope.options,
-                    scope.cols,
-                    'form-group'
-                    );
-                $compile(el)(scope);
-            }
-        };
-    }
-
-  
-
-    function bkmModalFooter($compile,$filter) {
-
-        return {
-            restrict: 'E',
-            scope: { options: '=' },
-            controller: 'directiveCtrl',
-            controllerAs: 'dCtrl',
-            replace: true,
-            template: '<div class="modal-footer"><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
-            link: function (scope, el) {
-
-                //设置默认的提交和关闭操作按钮
-                scope.options = scope.options || [];
                 scope.options.buttons = scope.options.buttons || [];
-                if ($filter('filter')(scope.options.buttons, { category: 'submit' }).length==0) {
+                if ($filter('filter')(scope.options.buttons, { category: 'submit' }).length == 0) {
                     angular.extend(scope.options, {
                         buttons: [
                             {
                                 text: '关闭',
                                 category: 'cancel',
-                                click: scope.options.model.cancelFn
+                                click: scope.$parent.$dismiss 
                             }, {
                                 text: '提交',
                                 category: 'submit',
                                 click: scope.options.model.submitFn
                             }]
                     });
-                }
+                };
 
+                //format body template
                 linkFunc(
                     scope,
                     el,
                     formComponents,
-                    {
-                        items: '',
-                        buttons: ''
-                    },
-                    scope.options
+                     {
+                         items: '.row',
+                         buttons: '.modal-footer'
+                     },
+                    scope.options,
+                    scope.cols,
+                    'form-group'
                     );
+
                 $compile(el)(scope);
             }
         };
@@ -377,6 +271,9 @@
             var optionPrompt = !!t.option ? ' (可选) ': "",
                 validError = 'ng-class="{\'has-error\':!dCtrl.myForm.' + t.model + '.$valid && (dCtrl.myForm.' + t.model + '.$dirt || dCtrl.myForm.$submitted)}"';
 
+            //无tooltip时，默认清空提示
+            t.tooltip = t.tooltip || '';
+
             if (t.type == 'text' || t.type == 'number') {
                 previous.append(formatTemplate({
                     label: t.label,
@@ -388,7 +285,8 @@
                     formName: t.model,
                     validError: validError,
                     cols: t.cols,
-                    formStyle:formStyle
+                    formStyle: formStyle,
+                    tooltip: t.tooltip
                 }, uiComponents.textTemp));
             } else if (t.type == 'dropDown') {
                 var c_modelName = 'options.model.' + t.model;
@@ -402,7 +300,8 @@
                     validateAttr: t.validateAttr.join(' '),
                     formName: t.model,
                     validError: validError,
-                    cols: t.cols, formStyle: formStyle
+                    cols: t.cols, formStyle: formStyle,
+                    tooltip: t.tooltip
                 }, uiComponents.dropDownTemp));
                 if (!!t.parent) {
                     var modelName = 'options.model.' + t.parent.model;
@@ -433,7 +332,8 @@
                     validateAttr: t.validateAttr.join(' '),
                     formName: modelName,
                     validError: validError,
-                    cols: t.cols, formStyle: formStyle
+                    cols: t.cols, formStyle: formStyle,
+                    tooltip: t.tooltip
                 }, uiComponents.dateTemp));
             } else if (t.type == 'beginDateAndEndDate') {
                 if (!!t.beginDate.defaultVal) {
@@ -480,6 +380,9 @@
 
             t.type = !!t.type ? t.type : 'bkmButton';
 
+            //无tooltip时，默认清空提示
+            t.tooltip = t.tooltip || '';
+
             var btnClickFnName = 'buttonClick' + i;
             if (t.type == 'button') {
                 opt[btnClickFnName] = function () {
@@ -489,6 +392,7 @@
                     text: t.text,
                     className: t.className,
                     icon: t.icon,
+                    tooltip: t.tooltip,
                     click: 'dCtrl.opt.' + btnClickFnName + '()'
                 }, uiComponents.buttonTemp));
             } else if (t.type == 'downloadButton') {
@@ -502,6 +406,7 @@
                     text: t.text,
                     className: t.className,
                     icon: t.icon,
+                    tooltip: t.tooltip,
                     model: '',
                     click: 'dCtrl.opt.' + btnClickFnName + '($event)'
                 }, uiComponents.downloadButtonTemp));
@@ -528,6 +433,7 @@
                 return (format && format[m2]) ? format[m2](dta[m2]) : dta[m2];
             });
         }
+
     }
 
 })();
