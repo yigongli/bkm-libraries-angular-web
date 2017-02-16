@@ -16,15 +16,46 @@
         beginDateAndEndDateTemp: '<div class="col-md-6"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>'
     };
 
-
     angular.module('bkm.library.angular.web', [])
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', bkmSearch)
+        .directive('bkmElements', bkmElements)
         .directive('bkmModalForm', ['$compile', '$filter', 'bkmFmValSvc', bkmModalForm]);
 
     function directiveCtrl() {
         var ctrl = this;
     };
+
+    function bkmElements($compile) {
+        return {
+            restrict: 'E',
+            scope: {
+                options: '='
+            },
+            //scope:false,
+            controller: 'directiveCtrl',
+            controllerAs: 'dCtrl',
+            replace: true,
+            template: '<div></div>',
+            link: function (scope, el, attrs) {
+                console.log(scope.dCtrl[attrs.options]);
+                scope.cols = !!scope.cols ? scope.cols : 4;
+                linkFunc(
+                    scope,
+                    el,
+                    formComponents,
+                    {
+                        items: '',
+                        buttons: ''
+                    },
+                    scope.$parent.$parent.options.includeOption,
+                    scope.cols,
+                    ''
+                    );
+                $compile(el)(scope);
+            }
+        };
+    }
 
     /**
      * @ngdoc directive
@@ -144,7 +175,7 @@
             controllerAs: 'dCtrl',
             replace: true,
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
-            link: function (scope, el) {
+            link: function (scope, el, attrs) {
                 scope.cols = !!scope.cols ? scope.cols : 4;
                 linkFunc(
                     scope,
@@ -186,14 +217,17 @@
             scope: {
                 options: '=',
                 footers: '=?',
-                cols: '=?cols'                
+                cols: '=?cols'
             },
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
             template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="dCtrl.myForm"><div class="row"></div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            //compile: function (elem, attrs) {
+            //  console.log(  elem.find('bkm-element'));
+            //},
             link: function (scope, el) {
-
+                console.log(scope);
                 //定义表单验证的回调函数
                 scope.options.onSubmit = function (onSubmitFn) {
                     scope.dCtrl.myForm.$setSubmitted(true);
@@ -209,7 +243,7 @@
                             {
                                 text: '关闭',
                                 category: 'cancel',
-                                click: scope.$parent.$dismiss 
+                                click: scope.$parent.$dismiss
                             }, {
                                 text: '提交',
                                 category: 'submit',
@@ -262,20 +296,23 @@
 
             //设置默认的验证要求
             t.validateAttr = t.validateAttr || [];
-            if (!t.option) {       
+            if (!t.option) {
                 if (t.validateAttr.toString().indexOf('required') == -1) {
                     t.validateAttr.push('required', 'required-error="必填信息"');
                 }
             }
 
             //设置可选提示符
-            var optionPrompt = !!t.option ? ' (可选) ': "",
+            var optionPrompt = !!t.option ? ' (可选) ' : "",
                 validError = 'ng-class="{\'has-error\':!dCtrl.myForm.' + t.model + '.$valid && (dCtrl.myForm.' + t.model + '.$dirt || dCtrl.myForm.$submitted)}"';
 
             //无tooltip时，默认清空提示
             t.tooltip = t.tooltip || '';
 
             if (t.type == 'text' || t.type == 'number') {
+                //设置默认的PlaceHolder提示语
+                t.placeholder = t.placeholder || '';
+
                 previous.append(formatTemplate({
                     label: t.label,
                     type: t.type,
