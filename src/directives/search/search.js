@@ -30,29 +30,34 @@
         return {
             restrict: 'E',
             scope: {
-                options: '='
+                includeOption: '=?',
+                cols: '=?'
             },
-            //scope:false,
+            require: '?^bkmModalForm',
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
             template: '<div></div>',
-            link: function (scope, el, attrs) {
-                console.log(scope.dCtrl[attrs.options]);
-                scope.cols = !!scope.cols ? scope.cols : 4;
+            link: function (scope, el, attrs, ctrl) {
+
+                var formCtrlOpt = ctrl.opt.includeOption || [];
+                var includeOption = !!scope.includeOption ? scope.includeOption : formCtrlOpt;
                 linkFunc(
-                    scope,
-                    el,
-                    formComponents,
-                    {
-                        items: '',
-                        buttons: ''
-                    },
-                    scope.$parent.$parent.options.includeOption,
-                    scope.cols,
-                    ''
-                    );
+                scope,
+                el,
+                formComponents,
+                {
+                    items: '',
+                    buttons: ''
+                },
+                includeOption,
+                scope.cols,
+                'form-group'
+                );
                 $compile(el)(scope);
+
+                //设置表单对象
+                scope.myForm = !!ctrl.myForm ? ctrl.myForm : {};
             }
         };
     }
@@ -176,7 +181,8 @@
             replace: true,
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
             link: function (scope, el, attrs) {
-                scope.cols = !!scope.cols ? scope.cols : 4;
+                //定义默认的布局列数
+                var cols = !!scope.cols ? scope.cols : 4;
                 linkFunc(
                     scope,
                     el,
@@ -186,7 +192,7 @@
                         buttons: '.btns'
                     },
                     scope.options,
-                    scope.cols,
+                    cols,
                     ''
                     );
                 $compile(el)(scope);
@@ -222,16 +228,14 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="dCtrl.myForm"><div class="row"></div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
-            //compile: function (elem, attrs) {
-            //  console.log(  elem.find('bkm-element'));
-            //},
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row"></div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+
             link: function (scope, el) {
-                console.log(scope);
+
                 //定义表单验证的回调函数
                 scope.options.onSubmit = function (onSubmitFn) {
-                    scope.dCtrl.myForm.$setSubmitted(true);
-                    bkmFmValSvc.isValid(scope.dCtrl.myForm).then(onSubmitFn, null);
+                    scope.myForm.$setSubmitted(true);
+                    bkmFmValSvc.isValid(scope.myForm).then(onSubmitFn, null);
                 };
 
                 //format footer template
@@ -265,8 +269,10 @@
                     scope.cols,
                     'form-group'
                     );
-
                 $compile(el)(scope);
+
+                //将指令的myForm对象通过Controller传递给其他使用myForm的指令
+                scope.dCtrl.myForm = !!scope.myForm ? scope.myForm : {};
             }
         };
     }
@@ -278,6 +284,9 @@
 
         var search = scope.dCtrl.search = {};
         var opt = scope.dCtrl.opt = angular.extend({}, options);
+
+
+
         var i, t;
 
         var previous = selectors.items == '' ? el : el.find(selectors.items);
@@ -304,14 +313,15 @@
 
             //设置可选提示符
             var optionPrompt = !!t.option ? ' (可选) ' : "",
-                validError = 'ng-class="{\'has-error\':!dCtrl.myForm.' + t.model + '.$valid && (dCtrl.myForm.' + t.model + '.$dirt || dCtrl.myForm.$submitted)}"';
+            validError = 'ng-class="{\'has-error\':!myForm.' + t.model + '.$valid && (myForm.' + t.model + '.$dirt || myForm.$submitted)}"';
 
             //无tooltip时，默认清空提示
             t.tooltip = t.tooltip || '';
 
             if (t.type == 'text' || t.type == 'number') {
                 //设置默认的PlaceHolder提示语
-                t.placeholder = t.placeholder || '';
+                if (t.type == 'number')
+                    t.placeholder = t.placeholder || '请填写数字，精确小数点两位';
 
                 previous.append(formatTemplate({
                     label: t.label,
@@ -333,7 +343,7 @@
                     type: t.type,
                     placeholder: t.placeholder,
                     model: c_modelName,
-                    repeat: 'i.' + t.valName + ' for i in options.items[' + i + '].dataSource',
+                    repeat: 'i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource',
                     formRequired: optionPrompt,
                     validateAttr: t.validateAttr.join(' '),
                     formName: t.model,
