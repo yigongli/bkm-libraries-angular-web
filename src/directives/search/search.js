@@ -7,13 +7,14 @@
 
     var formComponents = {
         textTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter"  /></div></div>',
+        textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter"  /></div></div>',
         dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
         dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         buttonTemp: '<button uib-popover="{tooltip}" popover-trigger="mouseenter" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="mouseenter" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="form-control" style="border:0px"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
-        beginDateAndEndDateTemp: '<div class="col-md-6"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>'
+        beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>'
     };
 
     angular.module('bkm.library.angular.web', [])
@@ -280,12 +281,10 @@
     function linkFunc(scope, el, uiComponents, selectors, options, cols, formStyle) {
 
         //设置窗体默认列布局
-        cols = !!cols && typeof (cols) == 'number' && cols < 5 ? 'col-md-' + 12 / cols : 'col-md-6';
-
-        var search = scope.dCtrl.search = {};
+        var parentCols = !!cols && typeof (cols) == 'number' && cols < 5 ? 'col-md-' + 12 / cols : 'col-md-6';
+        
+        //将指令参数配置到Controller上在指令间共享
         var opt = scope.dCtrl.opt = angular.extend({}, options);
-
-
 
         var i, t;
 
@@ -293,69 +292,56 @@
         var btnPrevious = selectors.buttons == '' ? el : el.find(selectors.buttons);
 
         angular.forEach(opt.items, function (t, i) {
-            t = opt.items[i];
 
-            search[t.model] = !!t.defaultVal ? t.defaultVal : null;
+            t = opt.items[i];
 
             //设置下拉列表默认的key,name标识
             t.keyName = !!t.keyName ? t.keyName : 'key';
             t.valName = !!t.valName ? t.valName : 'name';
             //设置元素默认列布局
-            t.cols = !!t.cols && typeof (t.cols) == 'number' && t.cols < 5 ? 'col-md-' + 12 / t.cols : cols;
-
+            var elemCols = !!t.cols && typeof (t.cols) == 'number' && t.cols < 5 ? 'col-md-' + 12 / t.cols : parentCols;
             //设置默认的验证要求
             t.validateAttr = t.validateAttr || [];
-            if (!t.option) {
-                if (t.validateAttr.toString().indexOf('required') == -1) {
-                    t.validateAttr.push('required', 'required-error="必填信息"');
-                }
+            if (!t.option && t.validateAttr.toString().indexOf('required') == -1) {
+                t.validateAttr.push('required', 'required-error="该项为必填信息"');
             }
-
-            //设置可选提示符
+            //设置默认可选提示符
             var optionPrompt = !!t.option ? ' (可选) ' : "",
             validError = 'ng-class="{\'has-error\':!myForm.' + t.model + '.$valid && (myForm.' + t.model + '.$dirt || myForm.$submitted)}"';
-
-            //无tooltip时，默认清空提示
+            //未设置tooltip时，默认清空提示
             t.tooltip = t.tooltip || '';
+            //设置数字输入默认的PlaceHolder提示语
+            if (t.type == 'number')
+                t.placeholder = t.placeholder || '请填写数字，小数点保留两位';
+
+            //设置初始化元素选项
+            var elemOptions ={
+                label: t.label,
+                type: t.type,
+                placeholder: t.placeholder,
+                model: 'options.model.' + t.model,
+                formRequired: optionPrompt,
+                validateAttr: t.validateAttr.join(' '),
+                formName: t.model,
+                validError: validError,
+                cols: elemCols,
+                formStyle: formStyle,
+                tooltip: t.tooltip
+            };
 
             if (t.type == 'text' || t.type == 'number') {
-                //设置默认的PlaceHolder提示语
-                if (t.type == 'number')
-                    t.placeholder = t.placeholder || '请填写数字，精确小数点两位';
-
-                previous.append(formatTemplate({
-                    label: t.label,
-                    type: t.type,
-                    placeholder: t.placeholder,
-                    model: 'options.model.' + t.model,
-                    formRequired: optionPrompt,
-                    validateAttr: t.validateAttr.join(' '),
-                    formName: t.model,
-                    validError: validError,
-                    cols: t.cols,
-                    formStyle: formStyle,
-                    tooltip: t.tooltip
-                }, uiComponents.textTemp));
+                previous.append(formatTemplate(elemOptions, uiComponents.textTemp));
+            } else if(t.type=='textarea'){
+                previous.append(formatTemplate(elemOptions, uiComponents.textareaTemp));
             } else if (t.type == 'dropDown') {
-                var c_modelName = 'options.model.' + t.model;
-                previous.append(formatTemplate({
-                    label: t.label,
-                    type: t.type,
-                    placeholder: t.placeholder,
-                    model: c_modelName,
-                    repeat: 'i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource',
-                    formRequired: optionPrompt,
-                    validateAttr: t.validateAttr.join(' '),
-                    formName: t.model,
-                    validError: validError,
-                    cols: t.cols, formStyle: formStyle,
-                    tooltip: t.tooltip
-                }, uiComponents.dropDownTemp));
+                angular.extend(elemOptions, {
+                    repeat: 'i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource'
+                });
+                previous.append(formatTemplate(elemOptions, uiComponents.dropDownTemp));
                 if (!!t.parent) {
                     var modelName = 'options.model.' + t.parent.model;
                     scope.$watch(modelName, function (n, o) {
                         if (n === o) return;
-                        search[c_modelName] = '';
                         opt.items[i].dataSource = [];
                         if (!!!n) return;
                         t.parent.onChange(n).then(function (data) {
@@ -364,32 +350,17 @@
                     });
                 }
             } else if (t.type == 'date') {
-                var modelName = t.model;
-                var isOpen = 'openDate' + modelName.replace(/\./g, '_');
+                var isOpen = 'openDate' + t.model.replace(/\./g, '_');
                 opt[isOpen] = false;
                 opt[isOpen + 'Click'] = function () {
                     opt[isOpen] = true;
                 };
-                previous.append(formatTemplate({
-                    label: t.label,
-                    placeholder: t.placeholder,
-                    model: 'options.model.' + modelName,
+                angular.extend(elemOptions, {
                     openDate: 'dCtrl.opt.' + isOpen,
-                    click: 'dCtrl.opt.' + isOpen + 'Click()',
-                    formRequired: optionPrompt,
-                    validateAttr: t.validateAttr.join(' '),
-                    formName: modelName,
-                    validError: validError,
-                    cols: t.cols, formStyle: formStyle,
-                    tooltip: t.tooltip
-                }, uiComponents.dateTemp));
+                    click: 'dCtrl.opt.' + isOpen + 'Click()'
+                });
+                previous.append(formatTemplate(elemOptions, uiComponents.dateTemp));
             } else if (t.type == 'beginDateAndEndDate') {
-                if (!!t.beginDate.defaultVal) {
-                    search[t.beginDate.model] = t.beginDate.defaultVal;
-                }
-                if (!!t.endDate.defaultVal) {
-                    search[t.endDate.model] = t.endDate.defaultVal;
-                }
                 var beginModelName = t.beginDate.model;
                 var isBeginOpen = 'beginOpenDate' + beginModelName.replace(/\./g, '_');
                 opt[isBeginOpen] = false;
@@ -404,6 +375,7 @@
                     opt[isEndOpen] = true;
                 };
                 previous.append(formatTemplate({
+                    cols: 'col-md-' + Number(elemCols.substr(elemCols.length-1,1))*2,
                     beginDateLabel: t.beginDate.label,
                     beginDatePlaceholder: t.beginDate.placeholder,
                     beginDateModel: 'options.model.' + beginModelName,
@@ -418,55 +390,47 @@
                     formRequired: optionPrompt
                 }, uiComponents.beginDateAndEndDateTemp));
             } else if (t.type == 'placeHolder') {
-                previous.append(formatTemplate({
-                    cols: t.cols
-                }, uiComponents.placeHolderTemp));
+                previous.append(formatTemplate(elemOptions, uiComponents.placeHolderTemp));
             }
         });
 
         angular.forEach(opt.buttons, function (t, i) {
 
+            //未提供type时，默认使用bkmButton
             t.type = !!t.type ? t.type : 'bkmButton';
-
-            //无tooltip时，默认清空提示
+            //未设置tooltip时，默认清空提示信息
             t.tooltip = t.tooltip || '';
 
+            //设置初始化button选项
             var btnClickFnName = 'buttonClick' + i;
+            var btnOptions = {
+                text: t.text,
+                className: t.className,
+                icon: t.icon,
+                tooltip: t.tooltip,
+                click: 'dCtrl.opt.' + btnClickFnName + '()'
+            };
+            opt[btnClickFnName] = function () {
+                t.click();
+            };
+            
             if (t.type == 'button') {
-                opt[btnClickFnName] = function () {
-                    t.click(search);
-                };
-                btnPrevious.append(formatTemplate({
-                    text: t.text,
-                    className: t.className,
-                    icon: t.icon,
-                    tooltip: t.tooltip,
-                    click: 'dCtrl.opt.' + btnClickFnName + '()'
-                }, uiComponents.buttonTemp));
+                btnPrevious.append(formatTemplate(btnOptions, uiComponents.buttonTemp));
             } else if (t.type == 'downloadButton') {
                 opt[btnClickFnName] = function (event) {
-                    var url = t.click(search);
+                    var url = t.click();
                     if (!!url) {
                         event.currentTarget.parentElement.href = url;
                     }
                 };
-                btnPrevious.append(formatTemplate({
-                    text: t.text,
-                    className: t.className,
-                    icon: t.icon,
-                    tooltip: t.tooltip,
-                    model: '',
-                    click: 'dCtrl.opt.' + btnClickFnName + '($event)'
-                }, uiComponents.downloadButtonTemp));
+                angular.extend(btnOptions, {
+                    click: 'dCtrl.opt.' + btnClickFnName + '($event)',
+                    model: ''
+                });
+                btnPrevious.append(formatTemplate(btnOptions, uiComponents.downloadButtonTemp));
             } else if (t.type == 'bkmButton') {
-                opt[btnClickFnName] = function () {
-                    t.click(search);
-                };
-                btnPrevious.append(formatTemplate({
-                    text: t.text,
-                    category: t.category,
-                    click: 'dCtrl.opt.' + btnClickFnName + '()'
-                }, uiComponents.bkmButtonTemp));
+                angular.extend(btnOptions,{ category: t.category });
+                btnPrevious.append(formatTemplate(btnOptions, uiComponents.bkmButtonTemp));
             }
         });
 
