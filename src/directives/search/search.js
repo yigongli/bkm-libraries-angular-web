@@ -21,6 +21,7 @@
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', bkmSearch)
         .directive('bkmElements', bkmElements)
+        .directive('bkmMsgModal', bkmMsgModal)
         .directive('bkmModalForm', ['$compile', '$filter', 'bkmFmValSvc', bkmModalForm]);
 
     function directiveCtrl() {
@@ -201,6 +202,94 @@
         };
     }
 
+  
+    function bkmMsgModal($compile) {
+
+        return {
+            restrict: 'E',
+            scope: {
+                category: '@?',
+                message: '@',
+                cancel:'@?'
+            },
+            controller: 'directiveCtrl',
+            controllerAs: 'dCtrl',
+            replace: true,
+            template: '<div class="modal-content"><div class="modal-header {{dCtrl.modalParas.bgType}}"><i class="{{dCtrl.modalParas.iconClass}} modal-icon"></i><span>{{dCtrl.modalParas.titleType}}</span></div><div class="modal-body text-center">{{dCtrl.modalParas.message}}</div><div class="modal-footer"></div></div>',
+
+            link: function (scope, el) {
+
+                var msgCollection = {
+                    info: {
+                        bgType: 'bg-info',
+                        iconClass: 'ion-information-circled',
+                        titleType: '提示',
+                        message: scope.message,
+                        btnClass: 'btn btn-info'
+                    },
+                    success: {
+                        bgType: 'bg-success',
+                        iconClass: 'ion-checkmark',
+                        titleType: '成功',
+                        message: scope.message,
+                        btnClass: 'btn btn-success'
+                    },
+                    warning: {
+                        bgType: 'bg-warning',
+                        iconClass: 'ion-android-warning',
+                        titleType: '警告',
+                        message: scope.message,
+                        btnClass: 'btn btn-warning'
+                    },
+                    danger: {
+                        bgType: 'bg-danger',
+                        iconClass: 'ion-flame',
+                        titleType: '重要',
+                        btnClass: 'btn btn-danger'
+                    }
+                };
+                scope.dCtrl.modalParas = msgCollection[scope.category] || {};
+                
+                //设置默认的提交和关闭操作按钮
+                scope.options = scope.options || {};
+                scope.options.buttons = scope.options.buttons || [];
+
+                if (!!scope.cancel) {
+                    scope.options.buttons.push({
+                        type: 'button',
+                        text: '取消',
+                        className: scope.dCtrl.modalParas.btnClass,
+                        category: 'cancel',
+                        click: scope.$parent.$dismiss
+                    });
+                }
+
+                scope.options.buttons.push({
+                    type: 'button',
+                    className: scope.dCtrl.modalParas.btnClass,
+                    text: '确认',
+                    category: 'ok',
+                    click: scope.$parent.$close
+                });
+
+                //format body template
+                linkFunc(
+                    scope,
+                    el,
+                    formComponents,
+                     {
+                         items: '',
+                         buttons: '.modal-footer'
+                     },
+                    scope.options,
+                    scope.cols,
+                    ''
+                    );
+                $compile(el)(scope);
+            }
+        };
+    }
+
     /**
  * @ngdoc directive
  * @name demo.directive:bkmModalForm
@@ -223,7 +312,6 @@
             restrict: 'E',
             scope: {
                 options: '=',
-                footers: '=?',
                 cols: '=?cols'
             },
             controller: 'directiveCtrl',
@@ -242,20 +330,12 @@
                 //format footer template
                 //设置默认的提交和关闭操作按钮
                 scope.options.buttons = scope.options.buttons || [];
-                if ($filter('filter')(scope.options.buttons, { category: 'submit' }).length == 0) {
-                    angular.extend(scope.options, {
-                        buttons: [
-                            {
-                                text: '关闭',
-                                category: 'cancel',
-                                click: scope.$parent.$dismiss
-                            }, {
-                                text: '提交',
-                                category: 'submit',
-                                click: scope.options.model.submitFn
-                            }]
-                    });
-                };
+                //设置默认的关闭按钮
+                scope.options.buttons.push({
+                    text: '关闭',
+                    category: 'cancel',
+                    click: scope.$parent.$dismiss
+                });
 
                 //format body template
                 linkFunc(
