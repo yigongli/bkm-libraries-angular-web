@@ -208,8 +208,8 @@
         return {
             restrict: 'E',
             scope: {
+                message: '=',
                 category: '@?',
-                message: '@',
                 cancel:'@?'
             },
             controller: 'directiveCtrl',
@@ -320,7 +320,7 @@
             template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row"></div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
 
             link: function (scope, el) {
-
+                
                 //定义表单验证的回调函数
                 scope.options.onSubmit = function (onSubmitFn) {
                     scope.myForm.$setSubmitted(true);
