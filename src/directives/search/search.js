@@ -4,7 +4,6 @@
 (function () {
     'use strict';
 
-
     var formComponents = {
         textTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter"  /></div></div>',
         textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter"  /></div></div>',
@@ -41,9 +40,8 @@
             replace: true,
             template: '<div></div>',
             link: function (scope, el, attrs, ctrl) {
-
                 var formCtrlOpt = ctrl.opt.includeOption || [];
-                var includeOption = !!scope.includeOption ? scope.includeOption : formCtrlOpt;
+                scope.options = !!scope.includeOption ? scope.includeOption : formCtrlOpt;
                 linkFunc(
                 scope,
                 el,
@@ -52,12 +50,11 @@
                     items: '',
                     buttons: ''
                 },
-                includeOption,
+                scope.options,
                 scope.cols,
                 'form-group'
                 );
                 $compile(el)(scope);
-
                 //设置表单对象
                 scope.myForm = !!ctrl.myForm ? ctrl.myForm : {};
             }
@@ -254,13 +251,21 @@
                 scope.options = scope.options || {};
                 scope.options.buttons = scope.options.buttons || [];
 
+                scope.cancelMsg = function () {
+                    scope.$parent.$dismiss('cancel');
+                };
+
+                scope.okMsg = function () {
+                    scope.$parent.$close('ok');
+                };
+
                 if (!!scope.cancel) {
                     scope.options.buttons.push({
                         type: 'button',
                         text: '取消',
                         className: scope.dCtrl.modalParas.btnClass,
                         category: 'cancel',
-                        click: scope.$parent.$dismiss
+                        click: scope.cancelMsg
                     });
                 }
 
@@ -269,7 +274,7 @@
                     className: scope.dCtrl.modalParas.btnClass,
                     text: '确认',
                     category: 'ok',
-                    click: scope.$parent.$close
+                    click: scope.okMsg
                 });
 
                 //format body template
