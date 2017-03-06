@@ -181,7 +181,7 @@
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
             link: function (scope, el, attrs) {
                 //定义默认的布局列数
-                var cols = !!scope.cols ? scope.cols : 4;
+                var cols = !!scope.cols ? scope.cols : 3;
                 linkFunc(
                     scope,
                     el,
@@ -333,7 +333,7 @@
                 };
 
                 //format footer template
-                //设置默认的提交和关闭操作按钮
+                //设置默认的关闭操作按钮
                 scope.options.buttons = scope.options.buttons || [];
                 //设置默认的关闭按钮
                 scope.options.buttons.push({
@@ -366,7 +366,7 @@
     function linkFunc(scope, el, uiComponents, selectors, options, cols, formStyle) {
 
         //设置窗体默认列布局
-        var parentCols = !!cols && typeof (cols) == 'number' && cols < 5 ? 'col-md-' + 12 / cols : 'col-md-6';
+        var parentCols = !!cols && typeof (cols) == 'number' ? 'col-md-' + cols%13 : 'col-md-4';
         
         //将指令参数配置到Controller上在指令间共享
         var opt = scope.dCtrl.opt = angular.extend({}, options);
@@ -384,7 +384,7 @@
             t.keyName = !!t.keyName ? t.keyName : 'key';
             t.valName = !!t.valName ? t.valName : 'name';
             //设置元素默认列布局
-            var elemCols = !!t.cols && typeof (t.cols) == 'number' && t.cols < 5 ? 'col-md-' + 12 / t.cols : parentCols;
+            var elemCols = !!t.cols && typeof (t.cols) == 'number'  ? 'col-md-' + t.cols%13 : parentCols;
             //设置默认的验证要求
             t.validateAttr = t.validateAttr || [];
             if (!t.option && t.validateAttr.toString().indexOf('required') == -1) {
@@ -398,7 +398,8 @@
             //设置数字输入默认的PlaceHolder提示语
             if (t.type == 'number')
                 t.placeholder = t.placeholder || '请填写数字，小数点保留两位';
-
+            if (t.type == 'text')
+                t.placeholder = t.placeholder || '请输入'+t.label;
             //设置初始化元素选项
             var elemOptions ={
                 label: t.label,
