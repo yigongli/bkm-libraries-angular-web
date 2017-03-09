@@ -13,7 +13,8 @@
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="mouseenter" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="form-control" style="border:0px"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
-        beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>'
+        beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
+        accordTemp: '<uib-accordion><uib-accordion-group panel-class="bootstrap-panel accordion-panel panel-default"><uib-accordion-heading>{title}<i class="fa pull-right fa-angle-double-down" aria-hidden="true"></i></uib-accordion-heading><bkm-elements is-accordions=true accordion-id="{accordId}" ></bkm-elements></uib-accordion-group></uib-accordion>'
     };
 
     angular.module('bkm.library.angular.web', [])
@@ -27,12 +28,14 @@
         var ctrl = this;
     };
 
-    function bkmElements($compile) {
+    function bkmElements($compile,$filter) {
         return {
             restrict: 'E',
             scope: {
                 includeOption: '=?',
-                cols: '=?'
+                cols: '=?',
+                isAccordions: '@?',
+                accordionId:'@?'
             },
             require: '?^bkmModalForm',
             controller: 'directiveCtrl',
@@ -40,19 +43,24 @@
             replace: true,
             template: '<div></div>',
             link: function (scope, el, attrs, ctrl) {
+
                 var formCtrlOpt = ctrl.opt.includeOption || [];
+                if (scope.isAccordions) {
+                    var result = $filter('filter')(ctrl.opt.accordions, { accordId: scope.accordionId });
+                    formCtrlOpt = result.length ==0 ? formCtrlOpt: result[0].accordOption;
+                }
                 scope.options = !!scope.includeOption ? scope.includeOption : formCtrlOpt;
                 linkFunc(
-                scope,
-                el,
-                formComponents,
-                {
-                    items: '',
-                    buttons: ''
-                },
-                scope.options,
-                scope.cols,
-                'form-group'
+                    scope,
+                    el,
+                    formComponents,
+                    {
+                        items: '',
+                        buttons: ''
+                    },
+                    scope.options,
+                    scope.cols,
+                    'form-group'
                 );
                 $compile(el)(scope);
                 //设置表单对象
@@ -311,7 +319,7 @@
  * @param {int} cols = 可选参数，设置表单元素的布局列数，默认为两列
  * 
  */
-    function bkmModalForm($compile, $filter, bkmFmValSvc) {
+    function bkmModalForm($compile,bkmFmValSvc) {
 
         return {
             restrict: 'E',
@@ -322,7 +330,7 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row"></div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row"></div><div id="uibAccordions"> </div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
 
             link: function (scope, el) {
                 
@@ -349,7 +357,8 @@
                     formComponents,
                      {
                          items: '.row',
-                         buttons: '.modal-footer'
+                         buttons: '.modal-footer',
+                         accordions: '#uibAccordions'
                      },
                     scope.options,
                     scope.cols,
@@ -375,6 +384,7 @@
 
         var previous = selectors.items == '' ? el : el.find(selectors.items);
         var btnPrevious = selectors.buttons == '' ? el : el.find(selectors.buttons);
+        var accordElem = !!selectors.accordions ? el.find(selectors.accordions) : null;
 
         angular.forEach(opt.items, function (t, i) {
 
@@ -518,6 +528,14 @@
                 angular.extend(btnOptions,{ category: t.category });
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.bkmButtonTemp));
             }
+        });
+
+        angular.forEach(opt.accordions, function (t, i) {
+            var accordOptions = {
+                title: t.title,
+                accordId:t.accordId
+            };
+            accordElem.append(formatTemplate(accordOptions, uiComponents.accordTemp));
         });
 
         function formatTemplate(dta, tmpl) {
