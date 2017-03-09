@@ -407,7 +407,7 @@
                 placeholder: t.placeholder,
                 model: 'options.model.' + t.model,
                 formRequired: optionPrompt,
-                validateAttr: t.validateAttr.join(' '),
+                validateAttr: t.validateAttr.join(' ') + (!!opt.isReadonlyForm?' disabled':''),
                 formName: t.model,
                 validError: validError,
                 cols: elemCols,
