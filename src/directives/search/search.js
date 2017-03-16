@@ -14,7 +14,7 @@
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="form-control" style="border:0px"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
         beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
-        accordTemp: '<uib-accordion><uib-accordion-group panel-class="bootstrap-panel accordion-panel panel-default"><uib-accordion-heading>{title}<i class="fa pull-right fa-angle-double-down" aria-hidden="true"></i></uib-accordion-heading><bkm-elements is-accordions=true accordion-id="{accordId}" ></bkm-elements></uib-accordion-group></uib-accordion>'
+        accordTemp: '<v-accordion class="vAccordion--default"><v-pane expanded=false><v-pane-header>{title}</v-pane-header><v-pane-content class="row"><bkm-elements is-accordions=true accordion-id="{accordId}" ></bkm-elements></v-pane-content></v-pane></v-accordion>'
     };
 
     angular.module('bkm.library.angular.web', [])
@@ -22,20 +22,20 @@
         .directive('bkmSearch', bkmSearch)
         .directive('bkmElements', bkmElements)
         .directive('bkmMsgModal', bkmMsgModal)
-        .directive('bkmModalForm', ['$compile','bkmFmValSvc', bkmModalForm]);
+        .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm]);
 
     function directiveCtrl() {
         var ctrl = this;
     };
 
-    function bkmElements($compile,$filter) {
+    function bkmElements($compile, $filter) {
         return {
             restrict: 'E',
             scope: {
                 includeOption: '=?',
                 cols: '=?',
                 isAccordions: '@?',
-                accordionId:'@?'
+                accordionId: '@?'
             },
             require: '?^bkmModalForm',
             controller: 'directiveCtrl',
@@ -47,7 +47,7 @@
                 var formCtrlOpt = ctrl.opt.includeOption || [];
                 if (scope.isAccordions) {
                     var result = $filter('filter')(ctrl.opt.accordions, { accordId: scope.accordionId });
-                    formCtrlOpt = result.length ==0 ? formCtrlOpt: result[0].accordOption;
+                    formCtrlOpt = result.length == 0 ? formCtrlOpt : result[0].accordOption;
                 }
                 scope.options = !!scope.includeOption ? scope.includeOption : formCtrlOpt;
                 linkFunc(
@@ -207,7 +207,7 @@
         };
     }
 
-  
+
     function bkmMsgModal($compile) {
 
         return {
@@ -215,7 +215,7 @@
             scope: {
                 message: '=',
                 category: '@?',
-                cancel:'@?'
+                cancel: '@?'
             },
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
@@ -254,7 +254,7 @@
                     }
                 };
                 scope.dCtrl.modalParas = msgCollection[scope.category] || {};
-                
+
                 //设置默认的提交和关闭操作按钮
                 scope.options = scope.options || {};
                 scope.options.buttons = scope.options.buttons || [];
@@ -319,7 +319,7 @@
  * @param {int} cols = 可选参数，设置表单元素的布局列数，默认为两列
  * 
  */
-    function bkmModalForm($compile,bkmFmValSvc) {
+    function bkmModalForm($compile, bkmFmValSvc) {
 
         return {
             restrict: 'E',
@@ -333,7 +333,7 @@
             template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row"></div><div id="uibAccordions"><div ng-include="options.includeUrl"></div></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
 
             link: function (scope, el) {
-                
+
                 //定义表单验证的回调函数
                 scope.options.onSubmit = function (onSubmitFn) {
                     scope.myForm.$setSubmitted(true);
@@ -366,6 +366,13 @@
                     );
                 $compile(el)(scope);
 
+                //判断是否移除掉附件列表的翻页控件
+                if (!!scope.options.attaches && !!scope.options.attaches.isRemovePaging) {
+                    setTimeout(function () {
+                        el.find('v-pane-content .ui-grid-pager-panel').remove();
+                    }, 0);
+                }
+
                 //将指令的myForm对象通过Controller传递给其他使用myForm的指令
                 scope.dCtrl.myForm = !!scope.myForm ? scope.myForm : {};
             }
@@ -375,8 +382,8 @@
     function linkFunc(scope, el, uiComponents, selectors, options, cols, formStyle) {
 
         //设置窗体默认列布局
-        var parentCols = !!cols && typeof (cols) == 'number' ? 'col-md-' + cols%13 : 'col-md-4';
-        
+        var parentCols = !!cols && typeof (cols) == 'number' ? 'col-md-' + cols % 13 : 'col-md-4';
+
         //将指令参数配置到Controller上在指令间共享
         var opt = scope.dCtrl.opt = angular.extend({}, options);
 
@@ -394,7 +401,7 @@
             t.keyName = !!t.keyName ? t.keyName : 'key';
             t.valName = !!t.valName ? t.valName : 'name';
             //设置元素默认列布局
-            var elemCols = !!t.cols && typeof (t.cols) == 'number'  ? 'col-md-' + t.cols%13 : parentCols;
+            var elemCols = !!t.cols && typeof (t.cols) == 'number' ? 'col-md-' + t.cols % 13 : parentCols;
             //设置默认的验证要求
             t.validateAttr = t.validateAttr || [];
             if (!t.option && t.validateAttr.toString().indexOf('required') == -1) {
@@ -409,15 +416,15 @@
             if (t.type == 'number')
                 t.placeholder = t.placeholder || '请填写数字，小数点保留两位';
             if (t.type == 'text')
-                t.placeholder = t.placeholder || '请输入'+t.label;
+                t.placeholder = t.placeholder || '请输入' + t.label;
             //设置初始化元素选项
-            var elemOptions ={
+            var elemOptions = {
                 label: t.label,
                 type: t.type,
                 placeholder: t.placeholder,
                 model: 'options.model.' + t.model,
                 formRequired: optionPrompt,
-                validateAttr: t.validateAttr.join(' ') + (!!opt.isReadonlyForm?' disabled':''),
+                validateAttr: t.validateAttr.join(' ') + (!!opt.isReadonlyForm ? ' disabled' : ''),
                 formName: t.model,
                 validError: validError,
                 cols: elemCols,
@@ -427,7 +434,7 @@
 
             if (t.type == 'text' || t.type == 'number') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textTemp));
-            } else if(t.type=='textarea'){
+            } else if (t.type == 'textarea') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textareaTemp));
             } else if (t.type == 'dropDown') {
                 angular.extend(elemOptions, {
@@ -471,7 +478,7 @@
                     opt[isEndOpen] = true;
                 };
                 previous.append(formatTemplate({
-                    cols: 'col-md-' + Number(elemCols.substr(elemCols.length-1,1))*2,
+                    cols: 'col-md-' + Number(elemCols.substr(elemCols.length - 1, 1)) * 2,
                     beginDateLabel: t.beginDate.label,
                     beginDatePlaceholder: t.beginDate.placeholder,
                     beginDateModel: 'options.model.' + beginModelName,
@@ -509,7 +516,7 @@
             opt[btnClickFnName] = function () {
                 t.click();
             };
-            
+
             if (t.type == 'button') {
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.buttonTemp));
             } else if (t.type == 'downloadButton') {
@@ -525,7 +532,7 @@
                 });
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.downloadButtonTemp));
             } else if (t.type == 'bkmButton') {
-                angular.extend(btnOptions,{ category: t.category });
+                angular.extend(btnOptions, { category: t.category });
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.bkmButtonTemp));
             }
         });
@@ -533,7 +540,7 @@
         angular.forEach(opt.accordions, function (t, i) {
             var accordOptions = {
                 title: t.title,
-                accordId:t.accordId
+                accordId: t.accordId
             };
             accordElem.append(formatTemplate(accordOptions, uiComponents.accordTemp));
         });
