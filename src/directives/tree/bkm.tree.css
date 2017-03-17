@@ -1,0 +1,48 @@
+.ztree li ul.line {
+    height: inherit;
+    background-color: inherit;
+    opacity: 1;
+}
+
+div.tree-address {
+    position: relative;
+}
+
+div.tree-address span.icon:before {
+    vertical-align: middle;
+}
+
+div.tree-address span.icon:after {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+div.tree-address span.icon {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    height: 100%;
+    display: block;
+}
+
+div.tree-address .ztree-box .ztree-btn-clean {
+    padding: 5px 10px;
+    border-bottom: 1px solid #d2d2d2;
+}
+
+div.tree-address .ztree-box {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    z-index: 10;
+    background-color: #FFF;
+    border: 1px solid #d2d2d2;
+}
+
+div.tree-address .ztree-box .ztree {
+    max-height: 300px;
+    min-width: 300px;
+    overflow-y: scroll;
+}
