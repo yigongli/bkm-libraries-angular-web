@@ -2,7 +2,9 @@
   "name": "bkm-angular-web",
   "version": "0.0.1",
   "homepage": "https://git.oschina.net/yigongli/BKM.Library.Angular.Web",
-  "authors": ["bkm"],
+  "authors": [
+    "bkm"
+  ],
   "description": "bkm library angular web directive",
   "license": "MIT",
   "ignore": [
@@ -27,14 +29,14 @@
     "angular-bootstrap": "~1.3.3",
     "angular-animate": "~1.4.8",
     "angular-smart-table": "~2.1.3",
-
     "angular-xeditable": "~0.1.9",
     "bootstrap-tagsinput": "~0.5.0",
-    "angular-ui-grid":"~3.2.9"
+    "angular-ui-grid": "~3.2.9"
   },
-  "main":[
-     "./src/directives/search/search.js",
-     "./src/directives/tree/bkm-tree.directive.js"
+  "main": [
+    "./src/directives/search/search.js",
+    "./src/directives/tree/bkm-tree.directive.js",
+    "./src/directives/tree/bkm.tree.css"
   ],
   "devDependencies": {
     "Chart.js": "~1.0.2",
@@ -65,6 +67,5 @@
     "angular": "~1.4.8"
   },
   "overrides": {
-
   }
 }
