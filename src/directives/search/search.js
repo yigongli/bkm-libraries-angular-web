@@ -14,7 +14,8 @@
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="form-control" style="border:0px"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
         beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
-        accordTemp: '<v-accordion class="vAccordion--default"><v-pane expanded=false><v-pane-header>{title}</v-pane-header><v-pane-content class="row"><bkm-elements is-accordions=true accordion-id="{accordId}" ></bkm-elements></v-pane-content></v-pane></v-accordion>'
+        accordTemp: '<v-accordion class="vAccordion--default"><v-pane expanded=false><v-pane-header>{title}</v-pane-header><v-pane-content class="row"><bkm-elements is-accordions=true accordion-id="{accordId}" ></bkm-elements></v-pane-content></v-pane></v-accordion>',
+        addressTemp: '<div class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" /></div></div>'
     };
 
     angular.module('bkm.library.angular.web', [])
@@ -434,7 +435,7 @@
                 formStyle: formStyle,
                 tooltip: t.tooltip,
                 click: 'dCtrl.opt.' + clickFnName + '()',
-                spanCss: t.spanCss,
+                spanCss: t.spanCss||'fa fa-search',
                 isShowSpan: !!t.click
             };
 
@@ -506,6 +507,12 @@
                 }, uiComponents.beginDateAndEndDateTemp));
             } else if (t.type == 'placeHolder') {
                 previous.append(formatTemplate(elemOptions, uiComponents.placeHolderTemp));
+            } else if (t.type == 'address') {
+                angular.extend(elemOptions, {
+                    level: t.level||2,
+                    isFullName: t.isFullName||false
+                });
+                previous.append(formatTemplate(elemOptions, uiComponents.addressTemp));
             }
         });
 
