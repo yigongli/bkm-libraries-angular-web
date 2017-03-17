@@ -31,6 +31,7 @@
         .directive('bkmTree', bkmTree)
         .directive('bkmInputTreeAddress', inputTree)
         .controller('bkmInputTreeAddressCtrl', [
+            '$timeout',
             'abp.services.app.region',
             bkmInputTreeAddressCtrl
         ]);
@@ -94,7 +95,7 @@
         };
     }
 
-    function bkmInputTreeAddressCtrl(regionAipService) {
+    function bkmInputTreeAddressCtrl($timeout, regionAipService) {
         var ctrl = this;
         ctrl.show = false;
         ctrl.ngModel = null;
@@ -183,6 +184,9 @@
         function onClick(e, treeId, treeNode) {
             setValue([], [], treeNode);
             ctrl.setting.selectParenNode(treeNode);
+            $timeout(function () {
+                ctrl.show = false;
+            }, 0);
         }
 
         ctrl.showMenu = function () {
