@@ -272,7 +272,11 @@
                 //scope.dCtrl.setting.setNodes(scope.options.treeData);
                 scope.dCtrl.ngModel.$parsers.push(function (value) {
                     //从 view -> model 的转换
-                    ngModel.$viewValue = value.text.join(' ');
+                    if (!!value && angular.isArray(value.text)) {
+                        ngModel.$viewValue = value.text.join(' ');
+                    } else {
+                        ngModel.$viewValue = value;
+                    }
                     return value.val;
                 });
 
@@ -303,25 +307,25 @@
  bkm-input-tree-address：指令名称
  -----------------------------------------------------------------------
  choose-level="number"： 设置指令可选择的层级，如果没有设置，则所有层级都可选择
-                         例如：如果设置为 2，则可选择的层级是第 2 层，其他层级则不可选择
+ 例如：如果设置为 2，则可选择的层级是第 2 层，其他层级则不可选择
  -----------------------------------------------------------------------
  show-full-name="false"：设置省市区显示的名称是【简称】还是【全称】；false:【简称】,true:【全称】
  -----------------------------------------------------------------------
  指令的使用如下：
-<input class="form-control" bkm-input-tree-address choose-level="2" show-full-name="false" ng-model="ctrl.tree"  />
-获取选择的省市区对象示例：
-<button ng-click="ctrl.getTreeResult();">test</button>
+ <input class="form-control" bkm-input-tree-address choose-level="2" show-full-name="false" ng-model="ctrl.tree"  />
+ 获取选择的省市区对象示例：
+ <button ng-click="ctrl.getTreeResult();">test</button>
 
-//初始化 ng-model,数据结果如下：
-ctrl.tree = {
-    province: {},
-    city: {},
-    district: {}
-};
+ //初始化 ng-model,数据结果如下：
+ ctrl.tree = {
+ province: {},
+ city: {},
+ district: {}
+ };
 
-//当选择省市区后，就可以直接获取到 ng-model 对象
-ctrl.getTreeResult = function () {
-    console.log(ctrl.tree);
-}
+ //当选择省市区后，就可以直接获取到 ng-model 对象
+ ctrl.getTreeResult = function () {
+ console.log(ctrl.tree);
+ }
 
-*/
+ */
