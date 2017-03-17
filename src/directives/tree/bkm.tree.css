@@ -6,6 +6,7 @@
 
 div.tree-address {
     position: relative;
+    display: inline-block;
 }
 
 div.tree-address span.icon:before {
