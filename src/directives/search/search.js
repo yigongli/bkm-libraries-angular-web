@@ -5,8 +5,8 @@
     'use strict';
 
     var formComponents = {
-        textTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter"  /></div></div>',
-        textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter"  /></div></div>',
+        textTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" /><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
+        textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" ng-click="{click}" /></div></div>',
         dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
         dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         buttonTemp: '<button uib-popover="{tooltip}" popover-trigger="mouseenter" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
@@ -408,15 +408,18 @@
                 t.validateAttr.push('required', 'required-error="该项为必填信息"');
             }
             //设置默认可选提示符
-            var optionPrompt = !!t.option ? ' (可选) ' : "",
+            var optionPrompt = (!!t.option || formStyle == '') ? '' : " * ",
             validError = 'ng-class="{\'has-error\':!myForm.' + t.model + '.$valid && (myForm.' + t.model + '.$dirt || myForm.$submitted)}"';
             //未设置tooltip时，默认清空提示
             t.tooltip = t.tooltip || '';
             //设置数字输入默认的PlaceHolder提示语
-            if (t.type == 'number')
-                t.placeholder = t.placeholder || '请填写数字，小数点保留两位';
-            if (t.type == 'text')
-                t.placeholder = t.placeholder || '请输入' + t.label;
+            t.placeholder = t.placeholder || '';
+            if (t.type == 'number' && !opt.isReadonlyForm)
+                t.placeholder = '请填写数字，小数点保留两位';
+            if (t.type == 'text' && !opt.isReadonlyForm )
+                t.placeholder = '请输入' + t.label;
+            //设置鼠标点击事件函数名称
+            var clickFnName = 'click' + i;
             //设置初始化元素选项
             var elemOptions = {
                 label: t.label,
@@ -424,14 +427,23 @@
                 placeholder: t.placeholder,
                 model: 'options.model.' + t.model,
                 formRequired: optionPrompt,
-                validateAttr: t.validateAttr.join(' ') + (!!opt.isReadonlyForm ? ' disabled' : ''),
+                validateAttr: t.validateAttr.join(' ') + ((!!opt.isReadonlyForm || !!t.isRead)  ? ' disabled' : ''),
                 formName: t.model,
                 validError: validError,
                 cols: elemCols,
                 formStyle: formStyle,
-                tooltip: t.tooltip
+                tooltip: t.tooltip,
+                click: 'dCtrl.opt.' + clickFnName + '()',
+                spanCss: t.spanCss,
+                isShowSpan: !!t.click
             };
 
+            if (!!t.click) {
+                opt[clickFnName] = function () {
+                    t.click();
+                };
+            }
+            
             if (t.type == 'text' || t.type == 'number') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textTemp));
             } else if (t.type == 'textarea') {
