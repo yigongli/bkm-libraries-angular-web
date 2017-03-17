@@ -273,7 +273,7 @@
                 scope.dCtrl.ngModel.$parsers.push(function (value) {
                     //从 view -> model 的转换
                     if (!!value && angular.isArray(value.text)) {
-                        ngModel.$viewValue = value.text.join(' ');
+                        ngModel.$viewValue = value.text.join('');
                     } else {
                         ngModel.$viewValue = value;
                     }
@@ -293,7 +293,7 @@
                         if (!!value.district) {
                             text.push(value.district.name);
                         }
-                        return text.join(' ');
+                        return text.join('');
                     }
                     return value;
                 });
