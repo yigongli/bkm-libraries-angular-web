@@ -1,6 +1,5 @@
 (function () {
     'use strict';
-
     angular.module('bkm.library.angular.web')
         .constant('treeSetting', {
             data: {
@@ -19,177 +18,92 @@
                 showIcon: true,
                 showLine: true,
                 nameIsHTML: false,
-                fontCss: {
-
-                }
+                fontCss: {}
 
             },
             check: {
-                enable: true
+                enable: false,
             },
             async: {
-                enable: true,
-                autoParam: ["id"],
-                contentType: "application/json",
-                type: 'post'
+                enable: true
             }
-
-
         })
-        .directive('bkmTree', function (treeSetting, $http) {
+        .directive('bkmTree', bkmTree)
+        .directive('bkmInputTreeAddress', inputTree)
+        .controller('bkmInputTreeAddressCtrl', [
+            'abp.services.app.region',
+            bkmInputTreeAddressCtrl
+        ]);
 
-            var zTreeObj;
+    function bkmTree(treeSetting) {
+        return {
+            restrict: 'A',
+            scope: {
+                setting: '=bkmTree'
+            },
+            link: function ($scope, iElm, iAttrs, controller) {
+                $scope.setting.treeInstance = null;
 
-            return {
-                restrict: 'A',
-                scope: {
-                    setting: '=bkmTree',
-                    setNodes: '&',
-                    distinctLevel: '@?'
-                },
-
-                link: function ($scope, iElm, iAttrs, controller) {
-
-                    var parentNodeChecked = null;
-                    var distinctLevel = parseInt($scope.distinctLevel);
-
-                    $scope.setting.getRawNodesChecked = function () {
-                        return zTreeObj.getCheckedNodes(true);
-                    };
-
-                    $scope.setting.clearChecked = function () {
-
-                        zTreeObj.checkAllNodes(false);
-
-                    }
-
-                    $scope.setting.justCheckWithinSameParent = function (treeId, treeNode) {
-
-                        if (treeNode.checked) {
-                            if ($scope.setting.getRawNodesChecked().length == 0) {
-                                parentNodeChecked = null;
-                            }
-                            return true;
-                        }
-
-                        if (treeNode.level > distinctLevel) {
-
-                            if (!parentNodeChecked) {
-                                parentNodeChecked = treeNode.getParentNode();
-
-                                return true;
-
-                            }
-
-                            if (parentNodeChecked != treeNode.getParentNode()) {
-                                $scope.setting.clearChecked();
-                                parentNodeChecked = treeNode.getParentNode();
-                            }
-
-
-
-                            return true;
-
-                        } else if (treeNode.level == distinctLevel) {
-                            if (parentNodeChecked) {
-                                $scope.setting.clearChecked();
-
-                            }
-                            parentNodeChecked = treeNode.getParentNode();
-                            return true;
-
-
-                        }
-
-                        return false;
-
-                    }
-
-                    $scope.setting.getNodesChecked = function (includingParent) {
-                        var nodes = [];
-
-                        zTreeObj.getCheckedNodes(true).forEach(function (node, index) {
-                            if (includingParent == undefined || includingParent == false) {
-                                if (!node.isParent) {
-                                    nodes.push({
-                                        id: node.id,
-                                        name: node.name,
-                                        level: node.level
-                                    });
-                                }
-
-                            } else {
-                                nodes.push({
-                                    id: node.id,
-                                    name: node.name,
-                                    level: node.level
-                                });
-                            }
-
-                        });
-
-                        return nodes;
-                    };
-
-
-
-                    $scope.setting.getNamesOfNodesChecked = function (includingParent) {
-                        var names = [];
-                        zTreeObj.getCheckedNodes(true).forEach(function (node, index) {
-                            if (includingParent == undefined || includingParent == false) {
-                                if (!node.isParent) {
-                                    names.push(node.name);
-                                }
-
-                            } else {
-                                names.push(node.name);
-                            }
-
-                        });
-
-                        return names;
-                    };
-
-                    $scope.setting.getIdsOfNodesChecked = function (includingParent) {
-                        var ids = [];
-                        zTreeObj.getCheckedNodes(true).forEach(function (node, index) {
-                            if (includingParent == undefined || includingParent == false) {
-                                if (!node.isParent) {
-                                    ids.push(node.id);
-                                }
-
-                            } else {
-                                ids.push(node.id);
-                            }
-
-                        });
-
-                        return ids;
-                    }
-
-
-                    angular.extend(treeSetting, $scope.setting);
-
-                    //$scope.setNodes()(function (nodes) {
-                    //    if (nodes) {
-                    //        zTreeObj = $.fn.zTree.init(iElm, treeSetting, nodes);
-                    //    }
-                    //});
-
-                    $scope.setting.initNodes = function (nodes) {
-                        zTreeObj = $.fn.zTree.init(iElm, treeSetting, nodes);
-                    };
-
+                //清除选中节点的选中状态
+                $scope.setting.cleanSelectedNodes = function () {
+                    if (!!!$scope.setting.treeInstance)return;
+                    var nodes = $scope.setting.treeInstance.getSelectedNodes();
+                    angular.forEach(nodes, function (v, i) {
+                        $scope.setting.treeInstance.cancelSelectedNode(v);
+                    });
                 }
-            };
-        })
-    .directive('bkmInputTree', inputTree).
-    controller('bkmInputTreeCtrl', bkmInputTreeCtrl);
 
-    function bkmInputTreeCtrl() {
+                //当子节点被选中时，将所有父节点设置为选中状态
+                $scope.setting.selectParenNode = function (treeNode) {
+                    if (!!!$scope.setting.treeInstance)return;
+                    $scope.setting.treeInstance.selectNode(treeNode, true);
+                    var p = treeNode.getParentNode();
+                    if (p) {
+                        $scope.setting.selectParenNode(p);
+                    }
+                };
+
+                //展开节点下的所有了节点
+                function expandNode(node) {
+                    if (!!!$scope.setting.treeInstance || !!!node)return;
+                    $scope.setting.treeInstance.expandNode(node, true);
+                    var c = node.children;
+                    angular.forEach(c, function (v, i) {
+                        expandNode(v);
+                    });
+                }
+
+                $scope.setting.setNodes = function (nodes) {
+                    $scope.setting.treeInstance = $.fn.zTree.init(iElm, $scope.setting, nodes);
+                };
+
+                //深度合并
+                angular.forEach(treeSetting, function (v, i) {
+                    var t = angular.extend({}, v);
+                    if (!!!$scope.setting[i]) {
+                        $scope.setting[i] = t;
+                    } else {
+                        angular.extend($scope.setting[i], t);
+                    }
+                });
+
+                if ($scope.setting.nodes && $scope.setting.nodes.length) {
+                    $scope.setting.treeInstance = $.fn.zTree.init(iElm, $scope.setting, $scope.setting.nodes);
+                }
+            }
+        };
+    }
+
+    function bkmInputTreeAddressCtrl(regionAipService) {
         var ctrl = this;
-
-        var setting = {
+        ctrl.show = false;
+        ctrl.ngModel = null;
+        ctrl.opt = {};
+        ctrl.setting = {
+            check: {
+                chkStyle: "radio",
+                radioType: "all"
+            },
             view: {
                 dblClickExpand: false
             },
@@ -198,88 +112,216 @@
                     enable: true
                 }
             },
+            async: {
+                autoParam: ["id=parentId"],
+                contentType: "application/json; charset=utf-8",
+                dataFilter: asyncDataFilter,
+                dataType: "JSON",
+                otherParam: {
+                    "sorting": 'code',
+                    "skipCount": 0,
+                    "maxResultCount": 999
+                },
+                type: "post",
+                url: "web/api/services/app/region/GetAll"
+            },
             callback: {
+                //【节点】点击事件
                 beforeClick: beforeClick,
-                onClick: onClick
+                //【节点】点击事件
+                onClick: onClick,
+                beforeExpand: beforeExpand,
+                onAsyncSuccess: onAsyncSuccess,
+                beforeAsync: beforeAsync
             }
         };
 
-        var zNodes = [
-            { id: 1, pId: 0, name: "����" },
-            { id: 2, pId: 0, name: "���" },
-            { id: 3, pId: 0, name: "�Ϻ�" },
-            { id: 6, pId: 0, name: "����" },
-            { id: 4, pId: 0, name: "�ӱ�ʡ", open: true },
-            { id: 41, pId: 4, name: "ʯ��ׯ" },
-            { id: 42, pId: 4, name: "����" },
-            { id: 43, pId: 4, name: "����" },
-            { id: 44, pId: 4, name: "�е�" },
-            { id: 5, pId: 0, name: "�㶫ʡ", open: true },
-            { id: 51, pId: 5, name: "����" },
-            { id: 52, pId: 5, name: "����" },
-            { id: 53, pId: 5, name: "��ݸ" },
-            { id: 54, pId: 5, name: "��ɽ" },
-            { id: 6, pId: 0, name: "����ʡ", open: true },
-            { id: 61, pId: 6, name: "����" },
-            { id: 62, pId: 6, name: "����" },
-            { id: 63, pId: 6, name: "Ȫ��" },
-            { id: 64, pId: 6, name: "����" }
-        ];
+        function beforeAsync(treeId, treeNode) {
+            return !!!treeNode.zAsync;
+        }
 
+        function beforeExpand(treeId, treeNode) {
+            if (!treeNode.zAsync) {
+                ajaxGetNodes(treeNode, "refresh");
+                return true;
+            } else {
+                ctrl.setting.treeInstance.expandNode(treeNode, true, false, null);
+                return false;
+            }
+        }
+
+        function onAsyncSuccess(event, treeId, treeNode, msg) {
+            if (!msg || msg.length == 0) {
+                return;
+            }
+
+            treeNode.icon = "";
+            ctrl.setting.treeInstance.updateNode(treeNode);
+            ctrl.setting.treeInstance.selectNode(treeNode.children[0]);
+        }
+
+        function ajaxGetNodes(treeNode, reloadType) {
+            if (reloadType == "refresh") {
+                ctrl.setting.treeInstance.updateNode(treeNode);
+            }
+            ctrl.setting.treeInstance.reAsyncChildNodes(treeNode, reloadType, true);
+        }
+
+        function asyncDataFilter(treeId, parentNode, data) {
+            return convertData(data.result.items, parentNode.level + 1 < 2);
+        }
+
+        //【节点】点击事件
         function beforeClick(treeId, treeNode) {
-            var check = (treeNode && !treeNode.isParent);
-            if (!check) alert("ֻ��ѡ�����...");
-            return check;
-        }
-
-        function onClick(e, treeId, treeNode) {
-            var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-            nodes = zTree.getSelectedNodes(),
-            v = "";
-            nodes.sort(function compare(a, b) { return a.id - b.id; });
-            for (var i = 0, l = nodes.length; i < l; i++) {
-                v += nodes[i].name + ",";
+            if (!!ctrl.opt.chooseLevel && ctrl.opt.chooseLevel >= 0) {
+                return treeNode && treeNode.level == ctrl.opt.chooseLevel;
             }
-            if (v.length > 0) v = v.substring(0, v.length - 1);
-            var cityObj = $("#citySel");
-            cityObj.attr("value", v);
+            return true;
         }
 
-        this.showMenu = function () {
-            var cityObj = $("#citySel");
-            var cityOffset = $("#citySel").offset();
-            $("#menuContent").css({ left: cityOffset.left + "px", top: cityOffset.top + cityObj.outerHeight() + "px" }).slideDown("fast");
+        //【节点】点击事件
+        function onClick(e, treeId, treeNode) {
+            setValue([], [], treeNode);
+            ctrl.setting.selectParenNode(treeNode);
+        }
 
-            $("body").bind("mousedown", onBodyDown);
+        ctrl.showMenu = function () {
+            ctrl.setting.cleanSelectedNodes();
+            ctrl.setting.treeInstance.expandAll(false);
+            setTimeout(function () {
+                angular.element('.ztree').scrollTop(0);
+            }, 0);
+            ctrl.show = true;
         };
 
-        function hideMenu() {
-            $("#menuContent").fadeOut("fast");
-            $("body").unbind("mousedown", onBodyDown);
-        }
-        function onBodyDown(event) {
-            if (!(event.target.id == "menuBtn" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length > 0)) {
-                hideMenu();
+        ctrl.clearInput = function () {
+            if (!!ctrl.ngModel) {
+                ctrl.ngModel.$setViewValue("");
+                ctrl.ngModel.$modelValue = "";
+                ctrl.ngModel.$render();
             }
         }
 
-        $(document).ready(function () {
-            $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-        });
+        function setValue(nodeNames, modelValues, node) {
+            nodeNames.unshift(node.name);
+            modelValues.unshift(node.data);
+            var p = node.getParentNode();
+            if (p) {
+                setValue(nodeNames, modelValues, p);
+            } else {
+                ctrl.ngModel.$setViewValue({
+                    text: nodeNames,
+                    val: {
+                        province: modelValues[0],
+                        city: modelValues[1],
+                        district: modelValues[2]
+                    }
+                });
+                ctrl.ngModel.$render();
+            }
+        }
+
+        //初始化省市区数据
+        (function (parentId, level, parentNode) {
+            regionAipService.getAll({
+                "parentId": parentId,
+                "sorting": "code",
+                "skipCount": 0,
+                "maxResultCount": 999
+            }).then(function (result) {
+                var data = convertData(result.data.items, level < 2);
+                ctrl.setting.setNodes(data);
+            }, null);
+        })("", 0);
+
+        function convertData(data, isParent) {
+            angular.forEach(data, function (v, i) {
+                v.data = angular.extend({}, v);
+                v.pId = v.parentId;
+                v.isParent = isParent;
+                if (ctrl.showFullName) {
+                    v.name = v.fullName;
+                }
+            });
+            return data;
+        }
     }
 
-    function inputTree() {
+    function inputTree($compile) {
+        var template = '<div class="tree-address">' +
+            '<div temp></div>' +
+            '<span class="icon glyphicon glyphicon-calendar" ng-click="dCtrl.showMenu()"></span>' +
+            '<div class="ztree-box" ng-show="dCtrl.show" ng-mouseleave="dCtrl.show=false">' +
+            '<div class="ztree-btn-clean"><button ng-click="dCtrl.clearInput();">清空输入</button></div>' +
+            '<ul bkm-tree="dCtrl.setting" class="ztree"></ul>' +
+            '</div>' +
+            '</div>';
         return {
             restrict: 'EA',
-            controller: 'bkmInputTreeCtrl',
-            controllerAs: 'ctrl',
-            scope: {
-                treeData: []
-            },
-            template: '<div class="bkm-tree"><input id="citySel" type="text" readonly value="" style="width:120px;" /><a id="menuBtn" href="#" ng-click="ctrl.showMenu(); return false;">ѡ��</a><bkm-tree></bkm-tree></div>',
-            link: function (scope, elem, attr) {
+            require: "ngModel",
+            controller: 'bkmInputTreeAddressCtrl',
+            controllerAs: 'dCtrl',
+            scope: {},
+            link: function (scope, elem, attr, ngModel) {
+                angular.extend(scope.dCtrl.opt, {chooseLevel: attr.chooseLevel, showFullName: attr.showFullName});
+                scope.dCtrl.ngModel = ngModel;
+                scope.dCtrl.showFullName = attr.showFullName.toLowerCase() === 'true';
+                var temp = $compile(angular.element(template))(scope);
+                elem.after(temp);
+                elem.appendTo(temp.find('div[temp]'));
+                //scope.dCtrl.setting.setNodes(scope.options.treeData);
+                scope.dCtrl.ngModel.$parsers.push(function (value) {
+                    //从 view -> model 的转换
+                    ngModel.$viewValue = value.text.join(' ');
+                    return value.val;
+                });
 
+                scope.dCtrl.ngModel.$formatters.push(function (value) {
+                    //从 model -> view 的转换
+                    if (!!value) {
+                        var text = [];
+                        if (!!value.province) {
+                            text.push(value.province.name);
+                        }
+                        if (!!value.city) {
+                            text.push(value.city.name);
+                        }
+                        if (!!value.district) {
+                            text.push(value.district.name);
+                        }
+                        return text.join(' ');
+                    }
+                    return value;
+                });
             }
         };
     }
 })();
+
+/*
+
+ bkm-input-tree-address：指令名称
+ -----------------------------------------------------------------------
+ choose-level="number"： 设置指令可选择的层级，如果没有设置，则所有层级都可选择
+                         例如：如果设置为 2，则可选择的层级是第 2 层，其他层级则不可选择
+ -----------------------------------------------------------------------
+ show-full-name="false"：设置省市区显示的名称是【简称】还是【全称】；false:【简称】,true:【全称】
+ -----------------------------------------------------------------------
+ 指令的使用如下：
+<input class="form-control" bkm-input-tree-address choose-level="2" show-full-name="false" ng-model="ctrl.tree"  />
+获取选择的省市区对象示例：
+<button ng-click="ctrl.getTreeResult();">test</button>
+
+//初始化 ng-model,数据结果如下：
+ctrl.tree = {
+    province: {},
+    city: {},
+    district: {}
+};
+
+//当选择省市区后，就可以直接获取到 ng-model 对象
+ctrl.getTreeResult = function () {
+    console.log(ctrl.tree);
+}
+
+*/
