@@ -254,7 +254,7 @@
     function inputTree($compile) {
         var template = '<div class="tree-address">' +
             '<div temp></div>' +
-            '<span class="icon glyphicon glyphicon-calendar" ng-click="dCtrl.showMenu()"></span>' +
+            '<span class="icon glyphicon glyphicon-list" ng-click="dCtrl.showMenu()"></span>' +
             '<div class="ztree-box" ng-show="dCtrl.show" ng-mouseleave="dCtrl.show=false">' +
             '<div class="ztree-btn-clean"><button ng-click="dCtrl.clearInput();">清空输入</button></div>' +
             '<ul bkm-tree="dCtrl.setting" class="ztree"></ul>' +
@@ -277,7 +277,7 @@
                 scope.dCtrl.ngModel.$parsers.push(function (value) {
                     //从 view -> model 的转换
                     if (!!value && angular.isArray(value.text)) {
-                        ngModel.$viewValue = value.text.join('');
+                        ngModel.$viewValue = value.text.slice(1).join('');
                     } else {
                         ngModel.$viewValue = value;
                     }

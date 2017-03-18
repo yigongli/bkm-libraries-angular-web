@@ -6,6 +6,10 @@
 
 div.tree-address {
     position: relative;
+}
+
+.search-condition div.tree-address {
+    position: relative;
     display: inline-block;
 }
 

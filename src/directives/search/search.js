@@ -421,6 +421,11 @@
             t.placeholder = t.placeholder||('请输入' + t.label);
             //设置鼠标点击事件函数名称
             var clickFnName = 'click' + i;
+            if (!!t.click) {
+                opt[clickFnName] = function () {
+                    t.click();
+                };
+            }
             //设置初始化元素选项
             var elemOptions = {
                 label: t.label,
@@ -434,16 +439,11 @@
                 cols: elemCols,
                 formStyle: formStyle,
                 tooltip: t.tooltip,
-                click: 'dCtrl.opt.' + clickFnName + '()',
+                click: 'dCtrl.opt.' + clickFnName + '()', //input元素的附加span点击
                 spanCss: t.spanCss || 'glyphicon glyphicon-search',
-                isShowSpan: !!t.click
+                isShowSpan: !!t.click //默认不添加span元素
             };
 
-            if (!!t.click) {
-                opt[clickFnName] = function () {
-                    t.click();
-                };
-            }
             
             if (t.type == 'text' || t.type == 'number') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textTemp));
@@ -509,8 +509,8 @@
                 previous.append(formatTemplate(elemOptions, uiComponents.placeHolderTemp));
             } else if (t.type == 'address') {
                 angular.extend(elemOptions, {
-                    level: t.level||2,
-                    isFullName: t.isFullName||false
+                    level: t.level||2,//默认2级
+                    isFullName: t.isFullName||false //默认显示简称
                 });
                 previous.append(formatTemplate(elemOptions, uiComponents.addressTemp));
             }
