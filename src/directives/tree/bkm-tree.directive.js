@@ -260,8 +260,9 @@
             '<div class="ztree-box" ng-show="dCtrl.show"> ' +
             '<div class="ztree-box-container">' +
             '<div class="ztree-btn-clean">' +
-            '<a data-bkm-address class="col-md-6" href="javascript:void(0);" ng-click="dCtrl.clearInput($event);">清空输入</a>' +
-            '<a data-bkm-address class="col-md-6" href="javascript:void(0);" ng-click="$event.stopPropagation(); dCtrl.show=false">关闭</a>' +
+            '<a data-bkm-address href="javascript:void(0);" ng-click="dCtrl.clearInput($event);">清空输入</a>' +
+            '&nbsp;&nbsp;&nbsp;&nbsp;' +
+            '<a data-bkm-address href="javascript:void(0);" ng-click="$event.stopPropagation(); dCtrl.show=false">关闭</a>' +
             '</div>' +
             '<ul bkm-tree="dCtrl.setting" class="ztree"></ul>' +
             '</div>' +

@@ -35,6 +35,7 @@ div.tree-address span.icon {
 div.tree-address .ztree-box .ztree-btn-clean {
     padding: 5px 10px;
     border-bottom: 1px solid #d2d2d2;
+    text-align: right;
 }
 
 div.tree-address .ztree-box {
