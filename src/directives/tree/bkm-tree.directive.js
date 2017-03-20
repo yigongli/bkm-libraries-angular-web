@@ -189,7 +189,8 @@
             }, 0);
         }
 
-        ctrl.showMenu = function () {
+        ctrl.showMenu = function (e) {
+            e.stopPropagation();
             ctrl.setting.cleanSelectedNodes();
             ctrl.setting.treeInstance.expandAll(false);
             setTimeout(function () {
@@ -198,7 +199,8 @@
             ctrl.show = true;
         };
 
-        ctrl.clearInput = function () {
+        ctrl.clearInput = function (e) {
+            e.stopPropagation();
             if (!!ctrl.ngModel) {
                 ctrl.ngModel.$setViewValue("");
                 ctrl.ngModel.$modelValue = "";
@@ -251,13 +253,18 @@
         }
     }
 
-    function inputTree($compile) {
+    function inputTree($compile, $timeout) {
         var template = '<div class="tree-address">' +
             '<div temp></div>' +
-            '<span class="icon glyphicon glyphicon-list" ng-click="dCtrl.showMenu()"></span>' +
-            '<div class="ztree-box" ng-show="dCtrl.show" ng-mouseleave="dCtrl.show=false">' +
-            '<div class="ztree-btn-clean"><button ng-click="dCtrl.clearInput();">清空输入</button></div>' +
+            '<span data-bkm-address class="icon glyphicon glyphicon-list" ng-click="dCtrl.showMenu($event)"></span>' +
+            '<div class="ztree-box" ng-show="dCtrl.show"> ' +
+            '<div class="ztree-box-container">' +
+            '<div class="ztree-btn-clean">' +
+            '<a data-bkm-address class="col-md-6" href="javascript:void(0);" ng-click="dCtrl.clearInput($event);">清空输入</a>' +
+            '<a data-bkm-address class="col-md-6" href="javascript:void(0);" ng-click="$event.stopPropagation(); dCtrl.show=false">关闭</a>' +
+            '</div>' +
             '<ul bkm-tree="dCtrl.setting" class="ztree"></ul>' +
+            '</div>' +
             '</div>' +
             '</div>';
         return {
@@ -267,13 +274,17 @@
             controllerAs: 'dCtrl',
             scope: {},
             link: function (scope, elem, attr, ngModel) {
+                elem.attr("readonly", true);
                 angular.extend(scope.dCtrl.opt, {chooseLevel: attr.chooseLevel, showFullName: attr.showFullName});
                 scope.dCtrl.ngModel = ngModel;
                 scope.dCtrl.showFullName = attr.showFullName.toLowerCase() === 'true';
-                var temp = $compile(angular.element(template))(scope);
+                var el = angular.element(template);
+                //如果不为 ztree 设置id,则同一个页面有多个 atree 时，将会是同一个实例
+                el.find('.ztree').attr("id", newGuid());
+                var temp = $compile(el)(scope);
                 elem.after(temp);
                 elem.appendTo(temp.find('div[temp]'));
-                //scope.dCtrl.setting.setNodes(scope.options.treeData);
+
                 scope.dCtrl.ngModel.$parsers.push(function (value) {
                     //从 view -> model 的转换
                     if (!!value && angular.isArray(value.text)) {
@@ -301,6 +312,31 @@
                     }
                     return value;
                 });
+
+                angular.element(document).on('click', function (e) {
+                    if (e.target.hasAttribute("data-bkm-address")) {
+                        return;
+                    } else {
+                        $timeout(function () {
+                            scope.dCtrl.show = false;
+                        }, 0);
+                    }
+                });
+
+                el.find("ul.ztree").on("click", function (e) {
+                    e.stopPropagation();
+                });
+
+                function newGuid() {
+                    var guid = "";
+                    for (var i = 1; i <= 32; i++) {
+                        var n = Math.floor(Math.random() * 16.0).toString(16);
+                        guid += n;
+                        if ((i == 8) || (i == 12) || (i == 16) || (i == 20))
+                            guid += "-";
+                    }
+                    return guid;
+                }
             }
         };
     }
