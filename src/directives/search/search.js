@@ -21,6 +21,7 @@
     angular.module('bkm.library.angular.web', [])
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', bkmSearch)
+        .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict', 'logisCst', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
         .directive('bkmElements', bkmElements)
         .directive('bkmMsgModal', bkmMsgModal)
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm]);
@@ -191,6 +192,415 @@
             link: function (scope, el, attrs) {
                 //定义默认的布局列数
                 var cols = !!scope.cols ? scope.cols : 3;
+                linkFunc(
+                    scope,
+                    el,
+                    formComponents,
+                    {
+                        items: '.row',
+                        buttons: '.btns'
+                    },
+                    scope.options,
+                    cols,
+                    ''
+                    );
+                $compile(el)(scope);
+            }
+        };
+    }
+
+    function bkmGeneralCrud($compile, $uibModal, toastr, dict, logisCst,fileSvc, bkmUpload) {
+
+        return {
+            restrict: 'E',
+            scope: {
+                options: '=',
+                cols: '=?cols'
+            },
+            controller: 'directiveCtrl',
+            controllerAs: 'dCtrl',
+            replace: true,
+            template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
+            link: function (scope, el, attrs) {
+                //定义默认的布局列数
+                var cols = !!scope.cols ? scope.cols : 3;
+
+                var parentCtrl = scope.options.parentCtrl;
+
+                //显示详情
+                parentCtrl.display = function (row) {
+                    row.isEdit = false;
+                    modalForm(row);
+                }
+
+                //编辑
+                parentCtrl.edit = function (row) {
+                    row.isEdit = true;
+                    modalForm(row);
+                }
+                
+                //删除
+                parentCtrl.delete = function (row) {
+
+                    var ctrl = parentCtrl;
+                    var delSvc = ctrl.formSetting.resourceSvc.delete;
+                    var delParas = ctrl.formSetting.deleteParas || { id: row.entity.id };
+
+                	var modalInstance = $uibModal.open({
+                		backdrop: false,
+                		animation: true,
+                		controller: function () {
+                			var mCtrl = this;
+                			mCtrl.message = "您确认要删除该公司吗?";
+                		},
+                		controllerAs: 'mCtrl',
+                		template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="warning" ></bkm-msg-modal>'
+                	});
+
+                	modalInstance.result
+                		.then(function (result) {
+                		    return delSvc(delParas);
+                		})
+                		.then(function (result) {
+                			ctrl.searchData();
+                			toastr.success("公司已被成功的删除!");
+                		})
+                		.catch(function (reason) {
+                			if (typeof (reason) == 'string') return;
+                			toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                		});
+                }
+
+                //添加
+                parentCtrl.add=function()  {
+                    modalForm();
+                }
+
+                //新建表单
+                function modalForm(row) {
+
+                    $uibModal.open({
+                        backdrop: false,
+                        animation: true,
+                        template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
+                        controller: function ($scope,$state, $uibModal, toastr) {
+
+                            var ctrl = this;
+
+                            //获取选择的行记录
+                            var rtnRow = null;
+                            var isEdit = false;
+                            if (!!$scope.$resolve.items) {
+                                rtnRow = $scope.$resolve.items.entity;
+                                isEdit = !!$scope.$resolve.items.isEdit;
+                            };
+
+                            //初始化数据模型
+                            ctrl.formOption = {};
+                            var formModel = ctrl.formOption.model = {};
+                            var resourceSvc = parentCtrl.formSetting.resourceSvc;
+
+                            //初始化表单数据模型回调
+                            if (typeof parentCtrl.formSetting.initFormModelFn == 'function') {
+                                parentCtrl.formSetting.initFormModelFn(formModel, rtnRow);
+                            }
+
+                            //表单标题头提示
+                            var promptName = parentCtrl.formSetting.promptName||'';
+                            $scope.modalTitle = !rtnRow ? '新建'+promptName : promptName+"详情";
+
+                            //配置表单指令参数
+                            angular.extend(ctrl.formOption,
+                                {
+                                    isReadonlyForm: !!rtnRow && !isEdit,
+                                    buttons: !!rtnRow && !isEdit ? [] : [
+                                            {
+                                                text: '提交',
+                                                category: 'submit',
+                                                click: submitFn
+                                            }]
+                                },
+                                parentCtrl.newformOption
+                            );
+
+                            //查看详情或编辑时加载数据
+                            var attachesPara = { 'relatedId': !!rtnRow ? rtnRow.id : '' };//初始化附件查询参数对象
+                            if (!!rtnRow) {
+                                //获取信息
+                                resourceSvc.get({ id: rtnRow.id })
+                                    .then(function (result) {
+                                        var items = result.data || [];
+
+                                        //数据处理回调
+                                        if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
+                                            parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
+                                            if (attachesPara.relatedIds) {
+                                                angular.extend(ctrl.formOption.attaches.params, attachesPara);
+                                                ctrl.formOption.attaches.searchData();
+                                            }
+                                        }
+                                        //表单数据绑定
+                                        angular.extend(formModel, items);
+                                    })
+                                    .catch(function (reason) {
+                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                    });
+                            }
+
+                            //附件列表
+                            if (!!parentCtrl.formSetting.hasAttaches) {
+                                angular.extend(ctrl.formOption, { includeUrl: logisCst.ATTACHES_TPL_URL });
+                                attachesFn(ctrl, attachesPara, $scope,  isEdit, !rtnRow);
+                            }
+                            //提交表单
+                            function submitFn() {
+                                ctrl.formOption.onSubmit(function (validResult) {
+                                    if (validResult.isSuccess) {
+                                        //数据处理回调
+                                        if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
+                                            parentCtrl.formSetting.beforeSubmitFn(formModel);
+                                        }
+                                        
+                                        //设置附件列表的数据
+                                        if (!!parentCtrl.formSetting.hasAttaches) {
+                                            formModel.attachments = ctrl.formOption.attaches.gridOption.data;
+                                        }
+                                        //调用创建或更新服务
+                                        (isEdit ? resourceSvc.update(formModel) : resourceSvc.create(formModel))
+                                            .then(function (result) {
+                                                toastr.success('提交成功，请继续添加或点击关闭按钮返回！');
+                                                parentCtrl.searchData();
+                                            })
+                                            .catch(function (reason) {
+                                                toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                            });
+                                    }
+                                    else {
+                                        toastr.warning('您有未填写完整的数据，请按照错误提示补充完善，谢谢！');
+                                    }
+                                });
+                            };
+                        },
+                        controllerAs: 'ctrl',
+                        size: 'lg',
+                        resolve: {
+                            items: function () {
+                                return row;
+                            }
+                        }
+                    });
+                };
+
+                //审核操作
+                parentCtrl.approve = function () {
+
+                    var promptName = parentCtrl.formSetting.promptName;
+                    var approveSvc = parentCtrl.formSetting.resourceSvc;
+
+                    var self = parentCtrl;
+
+                    //获取所选择审核的记录
+                    var rtnRows = self.gridApi.selection.getSelectedRows();
+                    if (!!!rtnRows.length || rtnRows[0].status != 0) {
+                        toastr.info(bkm.util.format("请选择 {0} 状态为待审核的记录!", promptName));
+                        return;
+                    }
+
+                    //审核的对话框
+                    var uibModalInstance = $uibModal.open({
+                        backdrop: false,
+                        animation: true,
+                        template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
+                        controller: function ($uibModalInstance, $scope) {
+
+                            //初始化数据模型
+                            var ctrl = this;
+                            ctrl.formOption = {};
+                            var formModel = ctrl.formOption.model = parentCtrl.formSetting.approveParams || { relatedId: rtnRows[0].id };
+
+                            //表单数据模型绑定
+                            $scope.modalTitle = promptName + '审核';
+                            angular.extend(ctrl.formOption, {
+                                items: [
+                                     {
+                                         type: 'textarea',
+                                         model: 'reason',
+                                         label: '备注',
+                                         option: true,
+                                         cols: 12
+                                     },
+                                    {
+                                        type: 'dropDown',
+                                        model: 'typeObj',
+                                        label: '拒绝原因',
+                                        option: true,
+                                        cols: 12,
+                                        dataSource: dict.dictionary[dict.AuditType()]
+                                    }],
+                                buttons: [
+                                {
+                                    text: '同意',
+                                    category: 'approve',
+                                    click: approveFn
+                                },
+                                {
+                                    text: '拒绝',
+                                    category: 'reject',
+                                    click: rejectFn
+                                }]
+                            });
+
+                            //审核通过
+                            function approveFn() {
+                                formModel.isPass = true;
+                                approveSvc.approve(formModel)
+                                    .then(function (result) {
+                                        toastr.success("审核成功!");
+                                        $uibModalInstance.close();
+                                        self.searchData();
+                                    })
+                                    .catch(function (reason) {
+                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                    });
+                            };
+
+                            //审核不通过
+                            function rejectFn() {
+                                if (!formModel.typeObj) {
+                                    toastr.info("请选择拒绝原因的类型!");
+                                    return;
+                                }
+                                var modalInstance = $uibModal.open({
+                                    backdrop: false,
+                                    animation: true,
+                                    controller: function () {
+                                        var mCtrl = this;
+                                        mCtrl.message = "您确认要拒绝吗?";
+                                    },
+                                    controllerAs: 'mCtrl',
+                                    template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="warning" ></bkm-msg-modal>'
+                                });
+
+                                modalInstance.result
+                                    .then(function (result) {
+                                        angular.extend(formModel, {
+                                            isPass: false,
+                                            type: formModel.typeObj.key,
+                                            reason: formModel.reason,
+                                            typeObj: null
+                                        });
+                                        return approveSvc.approve(formModel);
+                                    })
+                                    .then(function (result) {
+                                        toastr.success(bkm.util.format("该{0}已被标记为审核不通过!", promptName));
+                                        $uibModalInstance.close();
+                                        self.searchData();
+                                    })
+                                    .catch(function (reason) {
+                                        if ((reason.toString().match('cancel') == null) && (reason.toString().match('escape') == null))
+                                            toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                    });
+                            }
+                        },
+                        controllerAs: 'ctrl',
+                        size: 'lg',
+                        resolve: {
+                            items: function () {
+                                return rtnRows;
+                            }
+                        }
+                    });
+
+                }
+                
+                //附件列表操作
+                function attachesFn(
+                    appliedCtrl,
+                    attchesPara,
+                    scope,
+                    isEdit, //附件列表是否处于编辑状态
+                    isNew //附件列表是否处于新建状态
+                    ) {
+
+                    //初始化附件数据模型
+                    var self = appliedCtrl;
+                    var attaches = self.formOption.attaches = {
+                        attachesPattern: "'.jpg,.png'",
+                        multiple: true,
+                        isShowUpload: !!isNew || !!isEdit,
+                        isRemovePaging: !!isNew || !!isEdit,
+                        isShowDelete: !!isNew || !!isEdit,
+                        prompt: "支持文件格式(jpg,png)，文件大小不超过200K"
+                    };
+
+                    //删除附件
+                    attaches.delAttch = function (row) {
+                        var modalInstance = $uibModal.open({
+                            backdrop: false,
+                            animation: true,
+                            controller: function () {
+                                var mCtrl = this;
+                                mCtrl.message = "您确认要删除该附件吗?";
+                            },
+                            controllerAs: 'mCtrl',
+                            template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="warning" ></bkm-msg-modal>'
+                        });
+
+                        modalInstance.result
+                            .then(function (result) {
+                                var index = bkm.util.indexOf(attaches.gridOption.data, 'id', row.entity.id);
+                                attaches.gridOption.data.splice(index, 1);
+                            })
+                            .catch(function (reason) {
+                                if ((reason.toString().match('cancel') == null) && (reason.toString().match('escape') == null))
+                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                            });
+
+                    };
+
+                    //继承基类查询对象
+                    baseSearchFn.apply(attaches, [scope, fileSvc.getAll, toastr, true]);
+
+                    //配置附件列表
+                    angular.extend(attaches.gridOption, { paginationPageSize: 5 });
+                    attaches.gridOption.columnDefs = [
+                        { field: "seq", displayName: "序号", width: 50 },
+                        {
+                            field: " ", displayName: '附件名称', cellTemplate: '<div class="operation attaches"> <a  href="{{row.entity.id|pathUrl}}">{{row.entity.name}}</a></div>'
+                        },
+                        { field: "contentType", displayName: "附件类型" },
+                        { field: "contentLength", displayName: "附件大小(KB)", cellFilter: "kbSize|number" },
+                        { field: "creatorName", displayName: "创建人" },
+                        { field: "creationTime", displayName: "创建时间", cellFilter: "date:'yyyy-MM-dd HH:mm'" },
+                        {
+                            field: "operation", displayName: '操作', cellTemplate: '<div class="operation"> <a  href="{{row.entity.id|pathUrl:true}}">下载&nbsp;&nbsp;</a><a ng-if="grid.appScope.isShowDelete"  ng-click="grid.appScope.delAttch(row);">删除</a></div>'
+                        }
+                    ];
+                    //配置查询参数
+                    if (!isNew)
+                        angular.extend(attaches.params,attchesPara);
+
+                    //上传附件服务调用
+                    attaches.uploadFiles = function (files) {
+                        if (files && files.length) {
+                            bkmUpload.upload(files, true)
+                                .then(function (response) {
+                                    for (var x in files) {
+                                        files[x].contentType = files[x].type;
+                                        files[x].contentLength = files[x].size;
+                                        files[x].id = response.data[x].id;
+                                    }
+                                    attaches.gridOption.data = attaches.gridOption.data.concat(files);
+                                })
+                                .catch(function (reason) {
+                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                });
+                        }
+                    };
+                }
+
+                
+
                 linkFunc(
                     scope,
                     el,
