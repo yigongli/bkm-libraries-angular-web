@@ -35,12 +35,18 @@ div.tree-address span.icon {
 div.tree-address .ztree-box .ztree-btn-clean {
     padding: 5px 10px;
     border-bottom: 1px solid #d2d2d2;
+    text-align: right;
 }
 
 div.tree-address .ztree-box {
+    position: relative;
+    height: 0;
+}
+
+div.tree-address .ztree-box .ztree-box-container {
     position: absolute;
     top: -1px;
-    right: -1px;
+    right: 0px;
     z-index: 10;
     background-color: #FFF;
     border: 1px solid #d2d2d2;
@@ -48,6 +54,6 @@ div.tree-address .ztree-box {
 
 div.tree-address .ztree-box .ztree {
     max-height: 300px;
-    min-width: 300px;
+    /*min-width: 200px;*/
     overflow-y: scroll;
 }
