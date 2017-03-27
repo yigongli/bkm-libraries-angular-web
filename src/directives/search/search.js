@@ -14,14 +14,14 @@
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
         beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
-        accordTemp: '<v-accordion class="vAccordion--default"><v-pane expanded=false><v-pane-header>{title}</v-pane-header><v-pane-content class="row"><bkm-elements is-accordions=true accordion-id="{accordId}" ></bkm-elements></v-pane-content></v-pane></v-accordion>',
+        accordTemp: '<v-accordion class="vAccordion--default"><v-pane expanded={isExpanded}><v-pane-header>{title}</v-pane-header><v-pane-content class="row"><bkm-elements is-accordions=true accordion-id="{accordId}" ></bkm-elements></v-pane-content></v-pane></v-accordion>',
         addressTemp: '<div class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" /></div></div>'
     };
 
     angular.module('bkm.library.angular.web', [])
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', bkmSearch)
-        .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict', 'logisCst', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
+        .directive('bkmGeneralCrud', ['$compile', '$filter', '$uibModal', 'toastr', 'bkmCommGetDict', 'logisCst', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
         .directive('bkmElements', bkmElements)
         .directive('bkmMsgModal', bkmMsgModal)
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm]);
@@ -209,7 +209,7 @@
         };
     }
 
-    function bkmGeneralCrud($compile, $uibModal, toastr, dict, logisCst,fileSvc, bkmUpload) {
+    function bkmGeneralCrud($compile, $filter, $uibModal, toastr, dict, logisCst, fileSvc, bkmUpload) {
 
         return {
             restrict: 'E',
@@ -223,7 +223,7 @@
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
             link: function (scope, el, attrs) {
                 //定义默认的布局列数
-                var cols = !!scope.cols ? scope.cols : 3;
+                var cols = scope.cols ? scope.cols : 3;
 
                 var parentCtrl = scope.options.parentCtrl;
 
@@ -238,7 +238,7 @@
                     row.isEdit = true;
                     modalForm(row);
                 }
-                
+
                 //删除
                 parentCtrl.delete = function (row) {
 
@@ -246,33 +246,33 @@
                     var delSvc = ctrl.formSetting.resourceSvc.delete;
                     var delParas = ctrl.formSetting.deleteParas || { id: row.entity.id };
 
-                	var modalInstance = $uibModal.open({
-                		backdrop: false,
-                		animation: true,
-                		controller: function () {
-                			var mCtrl = this;
-                			mCtrl.message = "您确认要删除吗?";
-                		},
-                		controllerAs: 'mCtrl',
-                		template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="warning" ></bkm-msg-modal>'
-                	});
+                    var modalInstance = $uibModal.open({
+                        backdrop: false,
+                        animation: true,
+                        controller: function () {
+                            var mCtrl = this;
+                            mCtrl.message = "您确认要删除吗?";
+                        },
+                        controllerAs: 'mCtrl',
+                        template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="warning" ></bkm-msg-modal>'
+                    });
 
-                	modalInstance.result
+                    modalInstance.result
                 		.then(function (result) {
                 		    return delSvc(delParas);
                 		})
                 		.then(function (result) {
-                			ctrl.searchData();
-                			toastr.success("已被成功的删除!");
+                		    ctrl.searchData();
+                		    toastr.success("已被成功的删除!");
                 		})
                 		.catch(function (reason) {
-                			if (typeof (reason) == 'string') return;
-                			toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                		    if (typeof (reason) == 'string') return;
+                		    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
                 		});
                 }
 
                 //添加
-                parentCtrl.add=function()  {
+                parentCtrl.add = function () {
                     modalForm();
                 }
 
@@ -283,7 +283,7 @@
                         backdrop: false,
                         animation: true,
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
-                        controller: function ($scope,$state, $uibModal, toastr) {
+                        controller: function ($scope, $state, $uibModal, toastr) {
 
                             var ctrl = this;
 
@@ -302,17 +302,16 @@
 
                             //初始化表单数据模型回调
                             if (typeof parentCtrl.formSetting.initFormModelFn == 'function') {
-                                parentCtrl.formSetting.initFormModelFn(formModel, rtnRow);
+                                parentCtrl.formSetting.initFormModelFn(formModel, rtnRow, isEdit);
                             }
 
                             //表单标题头提示
-                            var promptName = parentCtrl.formSetting.promptName||'';
-                            $scope.modalTitle = !rtnRow ? '新建'+promptName : promptName+"详情";
+                            var promptName = parentCtrl.formSetting.promptName || '';
+                            $scope.modalTitle = !rtnRow ? '新建' + promptName : promptName + "详情";
 
                             //配置表单指令参数
                             angular.extend(ctrl.formOption,
                                 {
-                                    isReadonlyForm: !!rtnRow && !isEdit,
                                     buttons: !!rtnRow && !isEdit ? [] : [
                                             {
                                                 text: '提交',
@@ -324,23 +323,36 @@
                             );
 
                             //查看详情或编辑时加载数据
-                            var attachesPara = { 'relatedId': !!rtnRow ? rtnRow.id : '' };//初始化附件查询参数对象
+                            var attachesPara = { 'relatedId': !!rtnRow?rtnRow.id: '' };//初始化附件查询参数对象
                             if (!!rtnRow) {
                                 //获取信息
                                 resourceSvc.get({ id: rtnRow.id })
                                     .then(function (result) {
                                         var items = result.data || [];
 
+                                        //表单数据绑定
+                                        angular.extend(formModel, items);
+
+                                        //字典数据对象转换
+                                        angular.forEach(ctrl.formOption.items, function (v, i) {
+                                            if (v.type == 'dropDown' && !v.notDict) {
+                                                var t = v.model.replace(/(\w{1,})Obj$/, '$1');
+                                                var k = t.substring(0, 1).toUpperCase() + t.substring(1);
+                                                formModel[v.model] = $filter(k)(items[t], true);
+                                            }else if(v.type=='date'){
+                                                //日期数据处理
+                                                if (!!items[v.model])
+                                                    formModel[v.model] = new Date(items[v.model]);
+                                            }
+                                        });
+
                                         //数据处理回调
                                         if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
                                             parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
-                                            if (attachesPara.relatedIds) {
-                                                angular.extend(ctrl.formOption.attaches.params, attachesPara);
-                                                ctrl.formOption.attaches.searchData();
-                                            }
+                                            angular.extend(ctrl.formOption.attaches.params, attachesPara);
+                                            ctrl.formOption.attaches.searchData();
                                         }
-                                        //表单数据绑定
-                                        angular.extend(formModel, items);
+                                        
                                     })
                                     .catch(function (reason) {
                                         toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
@@ -350,17 +362,21 @@
                             //附件列表
                             if (!!parentCtrl.formSetting.hasAttaches) {
                                 angular.extend(ctrl.formOption, { includeUrl: logisCst.ATTACHES_TPL_URL });
-                                attachesFn(ctrl, attachesPara, $scope,  isEdit, !rtnRow);
+                                attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                             }
                             //提交表单
                             function submitFn() {
                                 ctrl.formOption.onSubmit(function (validResult) {
                                     if (validResult.isSuccess) {
+
+                                        //字典对象数据转换
+                                        bkm.util.dictObjFmt(formModel);
+
                                         //数据处理回调
                                         if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
                                             parentCtrl.formSetting.beforeSubmitFn(formModel);
                                         }
-                                        
+
                                         //设置附件列表的数据
                                         if (!!parentCtrl.formSetting.hasAttaches) {
                                             formModel.attachments = ctrl.formOption.attaches.gridOption.data;
@@ -512,7 +528,7 @@
                     });
 
                 }
-                
+
                 //附件列表操作
                 function attachesFn(
                     appliedCtrl,
@@ -559,7 +575,7 @@
                     };
 
                     //继承基类查询对象
-                    baseSearchFn.apply(attaches, [scope, fileSvc.getAll, toastr, true]);
+                    baseSearchFn.apply(attaches, [scope, fileSvc.getAll, toastr, false]);
 
                     //配置附件列表
                     angular.extend(attaches.gridOption, { paginationPageSize: 5 });
@@ -578,7 +594,7 @@
                     ];
                     //配置查询参数
                     if (!isNew)
-                        angular.extend(attaches.params,attchesPara);
+                        angular.extend(attaches.params, attchesPara);
 
                     //上传附件服务调用
                     attaches.uploadFiles = function (files) {
@@ -599,7 +615,7 @@
                     };
                 }
 
-                
+
 
                 linkFunc(
                     scope,
@@ -741,7 +757,7 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row"></div><div id="uibAccordions"><div ng-include="options.includeUrl"></div></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row"></div><div id="uibAccordions"></div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
 
             link: function (scope, el) {
 
@@ -826,9 +842,9 @@
             //设置数字输入默认的PlaceHolder提示语
             t.placeholder = t.placeholder || '';
             if (t.type == 'number' && !opt.isReadonlyForm)
-            t.placeholder = t.placeholder||('请填写数字，小数点保留两位');
-            if (t.type == 'text' && !opt.isReadonlyForm )
-            t.placeholder = t.placeholder||('请输入' + t.label);
+                t.placeholder = t.placeholder || ('请填写数字，小数点保留两位');
+            if (t.type == 'text' && !opt.isReadonlyForm)
+                t.placeholder = t.placeholder || ('请输入' + t.label);
             //设置鼠标点击事件函数名称
             var clickFnName = 'click' + i;
             if (!!t.click) {
@@ -843,7 +859,7 @@
                 placeholder: t.placeholder,
                 model: 'options.model.' + t.model,
                 formRequired: optionPrompt,
-                validateAttr: t.validateAttr.join(' ') + ((!!opt.isReadonlyForm || !!t.isRead)  ? ' disabled' : ''),
+                validateAttr: t.validateAttr.join(' ') + ((!!opt.isReadonlyForm || !!t.isRead) ? ' disabled' : ''),
                 formName: t.model,
                 validError: validError,
                 cols: elemCols,
@@ -854,7 +870,7 @@
                 isShowSpan: !!t.click //默认不添加span元素
             };
 
-            
+
             if (t.type == 'text' || t.type == 'number') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textTemp));
             } else if (t.type == 'textarea') {
@@ -919,8 +935,8 @@
                 previous.append(formatTemplate(elemOptions, uiComponents.placeHolderTemp));
             } else if (t.type == 'address') {
                 angular.extend(elemOptions, {
-                    level: t.level||2,//默认2级
-                    isFullName: t.isFullName||false //默认显示简称
+                    level: t.level || 2,//默认2级
+                    isFullName: t.isFullName || false //默认显示简称
                 });
                 previous.append(formatTemplate(elemOptions, uiComponents.addressTemp));
             }
@@ -969,7 +985,8 @@
         angular.forEach(opt.accordions, function (t, i) {
             var accordOptions = {
                 title: t.title,
-                accordId: t.accordId
+                accordId: t.accordId,
+                isExpanded: !!t.isExpanded
             };
             accordElem.append(formatTemplate(accordOptions, uiComponents.accordTemp));
         });
