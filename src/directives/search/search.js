@@ -349,10 +349,11 @@
                                         //数据处理回调
                                         if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
                                             parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
+                                        }
+                                        if (!!parentCtrl.formSetting.hasAttaches) {
                                             angular.extend(ctrl.formOption.attaches.params, attachesPara);
                                             ctrl.formOption.attaches.searchData();
                                         }
-                                        
                                     })
                                     .catch(function (reason) {
                                         toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
@@ -767,15 +768,15 @@
                     bkmFmValSvc.isValid(scope.myForm).then(onSubmitFn, null);
                 };
 
-                //format footer template
-                //设置默认的关闭操作按钮
-                scope.options.buttons = scope.options.buttons || [];
-                //设置默认的关闭按钮
-                scope.options.buttons.push({
-                    text: '关闭',
-                    category: 'cancel',
-                    click: scope.$parent.$dismiss
-                });
+                ////format footer template
+                ////设置默认的关闭操作按钮
+                //scope.options.buttons = scope.options.buttons || [];
+                ////设置默认的关闭按钮
+                //scope.options.buttons.push({
+                //    text: '关闭',
+                //    category: 'cancel',
+                //    click: scope.$parent.$dismiss
+                //});
 
                 //format body template
                 linkFunc(
