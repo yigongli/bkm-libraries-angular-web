@@ -6,6 +6,7 @@
 
     var formComponents = {
         textTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" /><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
+        //tagsTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<tags-input bkm-input name="{formName}" class="form-control " placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" display-property="{dispProp}"><auto-complete source="{loadFn}"></auto-complete></tags-input><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
         textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" ng-click="{click}" /></div></div>',
         dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
         dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
@@ -336,7 +337,7 @@
                                         //字典数据对象转换
                                         angular.forEach(ctrl.formOption.items, function (v, i) {
                                             if (v.type == 'dropDown' && !v.notDict) {
-                                                var t = v.model.replace(/(\w{1,})Obj$/, '$1');
+                                                var t = v.model.replace(/\w{1,}\.(\w{1,})Obj$|(\w{1,})Obj$/, '$2' + '$1')
                                                 var k = t.substring(0, 1).toUpperCase() + t.substring(1);
                                                 formModel[v.model] = $filter(k)(items[t], true);
                                             }else if(v.type=='date'){
@@ -616,7 +617,7 @@
                     };
                 }
 
-
+               
 
                 linkFunc(
                     scope,
@@ -941,6 +942,19 @@
                 });
                 previous.append(formatTemplate(elemOptions, uiComponents.addressTemp));
             }
+            //else if (t.type == 'tags') {
+            //    var loadFnName = 'loadFn' + i;
+            //    if (!!t.loadFn) {
+            //        opt[loadFnName] = function (query) {
+            //            t.loadFn(query);
+            //        };
+            //    }
+            //    angular.extend(elemOptions, {
+            //        dispProp: t.dispProp, //配置tags-input的对象显示字段
+            //        loadFn: 'dCtrl.opt.' + loadFnName + '(query)' //配置auto-complete的数据load方法
+            //    });
+            //    previous.append(formatTemplate(elemOptions, uiComponents.tagsTemp));
+            //}
         });
 
         angular.forEach(opt.buttons, function (t, i) {
