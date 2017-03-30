@@ -310,7 +310,7 @@
                             var promptName = parentCtrl.formSetting.promptName || '';
                             $scope.modalTitle = !rtnRow ? '新建' + promptName : promptName + "详情";
 
-                            //配置表单指令参数
+                            //配置新建表单指令参数
                             angular.extend(ctrl.formOption,
                                 {
                                     buttons: !!rtnRow && !isEdit ? [] : [
@@ -324,12 +324,23 @@
                             );
 
                             //查看详情或编辑时加载数据
-                            var attachesPara = { 'relatedId': !!rtnRow?rtnRow.id: '' };//初始化附件查询参数对象
+                            var attachesPara = { 'relatedId': !!rtnRow ? rtnRow.id : '' };//初始化附件查询参数对象
                             if (!!rtnRow) {
                                 //获取信息
                                 resourceSvc.get({ id: rtnRow.id })
                                     .then(function (result) {
                                         var items = result.data || [];
+
+                                        function setModelVal(obj1, obj2, arr, i) {
+                                            if (arr.length - 1 == i) {
+                                                obj1[arr[i]] = new Date(obj2[arr[i]]);
+                                                return;
+                                            }
+                                            if (!obj1[arr[i]]) {
+                                                obj1[arr[i]] = {};
+                                            }
+                                            setModelVal(obj1[arr[i]], obj2[arr[i]], arr, ++i);
+                                        }
 
                                         //表单数据绑定
                                         angular.extend(formModel, items);
@@ -340,10 +351,9 @@
                                                 var t = v.model.replace(/\w{1,}\.(\w{1,})Obj$|(\w{1,})Obj$/, '$2' + '$1')
                                                 var k = t.substring(0, 1).toUpperCase() + t.substring(1);
                                                 formModel[v.model] = $filter(k)(items[t], true);
-                                            }else if(v.type=='date'){
-                                                //日期数据处理
-                                                if (!!items[v.model])
-                                                    formModel[v.model] = new Date(items[v.model]);
+                                            } else if (v.type == 'date') {//日期字符串转换未日期对象并赋值到模型上
+                                                var rtnArr = v.model.split(".");
+                                                setModelVal(formModel, items, rtnArr, 0);
                                             }
                                         });
 
@@ -617,7 +627,7 @@
                     };
                 }
 
-               
+
 
                 linkFunc(
                     scope,
