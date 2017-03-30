@@ -282,7 +282,7 @@
 
                     $uibModal.open({
                         backdrop: false,
-                        animation: true,
+                        animation: false,
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
                         controller: function ($scope, $state, $uibModal, toastr) {
 
@@ -838,7 +838,7 @@
             }
             //设置默认可选提示符
             var optionPrompt = (!!t.option || formStyle == '') ? '' : " * ",
-            validError = 'ng-class="{\'has-error\':!myForm.' + t.model + '.$valid && (myForm.' + t.model + '.$dirt || myForm.$submitted)}"';
+            validError = 'ng-class="{\'has-error\':!myForm[\'' + t.model + '\'].$valid && (myForm[\'' + t.model + '\'].$dirt || myForm.$submitted)}"';
             //未设置tooltip时，默认清空提示
             t.tooltip = t.tooltip || '';
             //设置数字输入默认的PlaceHolder提示语
