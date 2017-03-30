@@ -331,32 +331,14 @@
                                     .then(function (result) {
                                         var items = result.data || [];
 
-                                        function setModelVal(obj1, obj2, arr, i) {
-                                            if (arr.length - 1 == i) {
-                                                obj1[arr[i]] = new Date(obj2[arr[i]]);
-                                                return;
-                                            }
-                                            if (!obj1[arr[i]]) {
-                                                obj1[arr[i]] = {};
-                                            }
-                                            setModelVal(obj1[arr[i]], obj2[arr[i]], arr, ++i);
-                                        }
-
                                         //表单数据绑定
                                         angular.extend(formModel, items);
 
                                         //字典数据对象转换
-                                        angular.forEach(ctrl.formOption.items, function (v, i) {
-                                            if (v.type == 'dropDown' && !v.notDict) {
-                                                var t = v.model.replace(/\w{1,}\.(\w{1,})Obj$|(\w{1,})Obj$/, '$2' + '$1')
-                                                var k = t.substring(0, 1).toUpperCase() + t.substring(1);
-                                                formModel[v.model] = $filter(k)(items[t], true);
-                                            } else if (v.type == 'date') {//日期字符串转换未日期对象并赋值到模型上
-                                                var rtnArr = v.model.split(".");
-                                                setModelVal(formModel, items, rtnArr, 0);
-                                            }
-                                        });
-
+                                        conVal2Obj($filter,ctrl.formOption.items, formModel, items);
+                                        for (var m in ctrl.formOption.accordions) {
+                                            conVal2Obj($filter,ctrl.formOption.accordions[m].accordOption.items, formModel, items);
+                                        }
                                         //数据处理回调
                                         if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
                                             parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
