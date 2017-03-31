@@ -9,7 +9,7 @@
         //tagsTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<tags-input bkm-input name="{formName}" class="form-control " placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" display-property="{dispProp}"><auto-complete source="{loadFn}"></auto-complete></tags-input><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
         textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" ng-click="{click}" /></div></div>',
         dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
-        dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
+        dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-conver-val2-date uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         buttonTemp: '<button uib-popover="{tooltip}" popover-trigger="mouseenter" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="mouseenter" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
@@ -25,7 +25,8 @@
         .directive('bkmGeneralCrud', ['$compile', '$filter', '$uibModal', 'toastr', 'bkmCommGetDict', 'logisCst', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
         .directive('bkmElements', bkmElements)
         .directive('bkmMsgModal', bkmMsgModal)
-        .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm]);
+        .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
+        .directive('bkmConverVal2Date', bkmConverVal2Date);
 
     function directiveCtrl() {
         var ctrl = this;
@@ -1005,4 +1006,25 @@
 
     }
 
+    function bkmConverVal2Date($parse) {
+        return {
+            priority: 999,
+            scope: false,
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, el, attrs, ngModel) {
+                var clearWatch = scope.$watch(attrs.ngModel, function (n, o) {
+                    if (angular.isString(n)) {
+                        var t = $parse(attrs.ngModel);
+                        if (t(scope.$parent)) {
+                            t.assign(scope.$parent, new Date(t(scope.$parent)));
+                        } else if (t(scope)) {
+                            t.assign(scope, new Date(t(scope)));
+                        }
+                        clearWatch();
+                    }
+                });
+            }
+        };
+    }
 })();
