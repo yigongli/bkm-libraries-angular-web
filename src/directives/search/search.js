@@ -334,12 +334,7 @@
                                         //表单数据绑定
                                         angular.extend(formModel, items);
 
-                                        //字典数据对象转换
-                                        conVal2Obj($filter,ctrl.formOption.items, formModel, items);
-                                        for (var m in ctrl.formOption.accordions) {
-                                            conVal2Obj($filter,ctrl.formOption.accordions[m].accordOption.items, formModel, items);
-                                        }
-                                        //数据处理回调
+                                        //表单绑定数据处理回调
                                         if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
                                             parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
                                         }
@@ -362,9 +357,6 @@
                             function submitFn() {
                                 ctrl.formOption.onSubmit(function (validResult) {
                                     if (validResult.isSuccess) {
-
-                                        //字典对象数据转换
-                                        bkm.util.dictObjFmt(formModel);
 
                                         //数据处理回调
                                         if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
@@ -871,7 +863,8 @@
                 previous.append(formatTemplate(elemOptions, uiComponents.textareaTemp));
             } else if (t.type == 'dropDown') {
                 angular.extend(elemOptions, {
-                    repeat: 'i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource'
+                    //repeat: 'i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource'
+                    repeat: 'i.' + t.keyName + ' as i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource'
                 });
                 previous.append(formatTemplate(elemOptions, uiComponents.dropDownTemp));
                 if (!!t.parent) {
