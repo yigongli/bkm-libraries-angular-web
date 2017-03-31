@@ -1013,23 +1013,29 @@
 
     }
 
-    function bkmConverVal2Date($parse) {
+    function bkmConverVal2Date($filter, $timeout) {
         return {
             priority: 999,
             scope: false,
             restrict: 'A',
-            require: 'ngModel',
+            controller: function () {
+            },
+            require: ['ngModel', 'uibDatepickerPopup'],
             link: function (scope, el, attrs, ngModel) {
-                var clearWatch = scope.$watch(attrs.ngModel, function (n, o) {
-                    if (angular.isString(n)) {
-                        var t = $parse(attrs.ngModel);
-                        if (t(scope.$parent)) {
-                            t.assign(scope.$parent, new Date(t(scope.$parent)));
-                        } else if (t(scope)) {
-                            t.assign(scope, new Date(t(scope)));
-                        }
-                        clearWatch();
+                var m = ngModel[0],
+                    o = ngModel[1];
+                o.init(m);
+                m.$formatters.unshift(function (value) {
+                    var mv = value || m.$modelValue;
+                    //从 model -> view 的转换
+                    if (!!mv && angular.isString(mv)) {
+                        var v = new Date(mv);
+                        $timeout(function () {
+                            m.$setViewValue(v);
+                        }, 200);
+                        return $filter('date')(v, 'yyyy-MM-dd');
                     }
+                    return mv;
                 });
             }
         };
