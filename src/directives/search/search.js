@@ -341,7 +341,7 @@
                                     },
                                     {
                                         type: 'dropDown',
-                                        model: 'typeObj',
+                                        model: 'type',
                                         label: '拒绝原因',
                                         option: true,
                                         cols: 12,
@@ -376,7 +376,7 @@
 
                             //审核不通过
                             function rejectFn() {
-                                if (!formModel.typeObj) {
+                                if (formModel.type == undefined) {
                                     toastr.info("请选择拒绝原因的类型!");
                                     return;
                                 }
@@ -388,16 +388,15 @@
                                         mCtrl.message = "您确认要拒绝吗?";
                                     },
                                     controllerAs: 'mCtrl',
-                                    template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="warning" ></bkm-msg-modal>'
+                                    template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="danger" ></bkm-msg-modal>'
                                 });
 
                                 modalInstance.result
                                     .then(function (result) {
                                         angular.extend(formModel, {
                                             isPass: false,
-                                            type: formModel.typeObj.key,
-                                            reason: formModel.reason,
-                                            typeObj: null
+                                            type: formModel.type,
+                                            reason: formModel.reason
                                         });
                                         return approveSvc.approve(formModel);
                                     })
@@ -573,6 +572,7 @@
                         bgType: 'bg-danger',
                         iconClass: 'ion-flame',
                         titleType: '重要',
+                        message: scope.message,
                         btnClass: 'btn btn-danger'
                     }
                 };
