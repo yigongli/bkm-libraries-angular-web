@@ -50,7 +50,7 @@
 
                 var formCtrlOpt = ctrl.opt.includeOption || [];
                 if (scope.isAccordions) {
-                    var result = $filter('filter')(ctrl.opt.accordions, { accordId: scope.accordionId });
+                    var result = $filter('filter')(ctrl.opt.accordions, {accordId: scope.accordionId});
                     formCtrlOpt = result.length == 0 ? formCtrlOpt : result[0].accordOption;
                 }
                 scope.options = !!scope.includeOption ? scope.includeOption : formCtrlOpt;
@@ -205,7 +205,7 @@
                     scope.options,
                     cols,
                     ''
-                    );
+                );
                 $compile(el)(scope);
             }
         };
@@ -246,7 +246,7 @@
 
                     var ctrl = parentCtrl;
                     var delSvc = ctrl.formSetting.resourceSvc.delete;
-                    var delParas = ctrl.formSetting.deleteParas || { id: row.entity.id };
+                    var delParas = ctrl.formSetting.deleteParas || {id: row.entity.id};
 
                     var modalInstance = $uibModal.open({
                         backdrop: false,
@@ -260,17 +260,17 @@
                     });
 
                     modalInstance.result
-                		.then(function (result) {
-                		    return delSvc(delParas);
-                		})
-                		.then(function (result) {
-                		    ctrl.searchData();
-                		    toastr.success("已被成功的删除!");
-                		})
-                		.catch(function (reason) {
-                		    if (typeof (reason) == 'string') return;
-                		    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
-                		});
+                        .then(function (result) {
+                            return delSvc(delParas);
+                        })
+                        .then(function (result) {
+                            ctrl.searchData();
+                            toastr.success("已被成功的删除!");
+                        })
+                        .catch(function (reason) {
+                            if (typeof (reason) == 'string') return;
+                            toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                        });
                 }
 
                 //添加
@@ -295,7 +295,8 @@
                             if (!!$scope.$resolve.items) {
                                 rtnRow = $scope.$resolve.items.entity;
                                 isEdit = !!$scope.$resolve.items.isEdit;
-                            };
+                            }
+                            ;
 
                             //初始化数据模型
                             ctrl.formOption = {};
@@ -315,20 +316,20 @@
                             angular.extend(ctrl.formOption,
                                 {
                                     buttons: !!rtnRow && !isEdit ? [] : [
-                                            {
-                                                text: '提交',
-                                                category: 'submit',
-                                                click: submitFn
-                                            }]
+                                        {
+                                            text: '提交',
+                                            category: 'submit',
+                                            click: submitFn
+                                        }]
                                 },
                                 parentCtrl.newformOption
                             );
 
                             //查看详情或编辑时加载数据
-                            var attachesPara = { 'relatedId': !!rtnRow ? rtnRow.id : '' };//初始化附件查询参数对象
+                            var attachesPara = {'relatedId': !!rtnRow ? rtnRow.id : ''};//初始化附件查询参数对象
                             if (!!rtnRow) {
                                 //获取信息
-                                resourceSvc.get({ id: rtnRow.id })
+                                resourceSvc.get({id: rtnRow.id})
                                     .then(function (result) {
                                         var items = result.data || [];
 
@@ -351,7 +352,7 @@
 
                             //附件列表
                             if (!!parentCtrl.formSetting.hasAttaches) {
-                                angular.extend(ctrl.formOption, { includeUrl: logisCst.ATTACHES_TPL_URL });
+                                angular.extend(ctrl.formOption, {includeUrl: logisCst.ATTACHES_TPL_URL});
                                 attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                             }
                             //提交表单
@@ -419,19 +420,19 @@
                             //初始化数据模型
                             var ctrl = this;
                             ctrl.formOption = {};
-                            var formModel = ctrl.formOption.model = parentCtrl.formSetting.approveParams || { relatedId: rtnRows[0].id };
+                            var formModel = ctrl.formOption.model = parentCtrl.formSetting.approveParams || {relatedId: rtnRows[0].id};
 
                             //表单数据模型绑定
                             $scope.modalTitle = promptName + '审核';
                             angular.extend(ctrl.formOption, {
                                 items: [
-                                     {
-                                         type: 'textarea',
-                                         model: 'reason',
-                                         label: '备注',
-                                         option: true,
-                                         cols: 12
-                                     },
+                                    {
+                                        type: 'textarea',
+                                        model: 'reason',
+                                        label: '备注',
+                                        option: true,
+                                        cols: 12
+                                    },
                                     {
                                         type: 'dropDown',
                                         model: 'typeObj',
@@ -441,16 +442,16 @@
                                         dataSource: dict.dictionary[dict.AuditType()]
                                     }],
                                 buttons: [
-                                {
-                                    text: '同意',
-                                    category: 'approve',
-                                    click: approveFn
-                                },
-                                {
-                                    text: '拒绝',
-                                    category: 'reject',
-                                    click: rejectFn
-                                }]
+                                    {
+                                        text: '同意',
+                                        category: 'approve',
+                                        click: approveFn
+                                    },
+                                    {
+                                        text: '拒绝',
+                                        category: 'reject',
+                                        click: rejectFn
+                                    }]
                             });
 
                             //审核通过
@@ -517,13 +518,12 @@
                 }
 
                 //附件列表操作
-                function attachesFn(
-                    appliedCtrl,
-                    attchesPara,
-                    scope,
-                    isEdit, //附件列表是否处于编辑状态
-                    isNew //附件列表是否处于新建状态
-                    ) {
+                function attachesFn(appliedCtrl,
+                                    attchesPara,
+                                    scope,
+                                    isEdit, //附件列表是否处于编辑状态
+                                    isNew //附件列表是否处于新建状态
+                ) {
 
                     //初始化附件数据模型
                     var self = appliedCtrl;
@@ -565,18 +565,22 @@
                     baseSearchFn.apply(attaches, [scope, fileSvc.getAll, toastr, false]);
 
                     //配置附件列表
-                    angular.extend(attaches.gridOption, { paginationPageSize: 5 });
+                    angular.extend(attaches.gridOption, {paginationPageSize: 5});
                     attaches.gridOption.columnDefs = [
-                        { field: "seq", displayName: "序号", width: 50 },
+                        {field: "seq", displayName: "序号", width: 50},
                         {
-                            field: " ", displayName: '附件名称', cellTemplate: '<div class="operation attaches"> <a  href="{{row.entity.id|pathUrl}}">{{row.entity.name}}</a></div>'
+                            field: " ",
+                            displayName: '附件名称',
+                            cellTemplate: '<div class="operation attaches"> <a  href="{{row.entity.id|pathUrl}}">{{row.entity.name}}</a></div>'
                         },
-                        { field: "contentType", displayName: "附件类型" },
-                        { field: "contentLength", displayName: "附件大小(KB)", cellFilter: "kbSize|number" },
-                        { field: "creatorName", displayName: "创建人" },
-                        { field: "creationTime", displayName: "创建时间", cellFilter: "date:'yyyy-MM-dd HH:mm'" },
+                        {field: "contentType", displayName: "附件类型"},
+                        {field: "contentLength", displayName: "附件大小(KB)", cellFilter: "kbSize|number"},
+                        {field: "creatorName", displayName: "创建人"},
+                        {field: "creationTime", displayName: "创建时间", cellFilter: "date:'yyyy-MM-dd HH:mm'"},
                         {
-                            field: "operation", displayName: '操作', cellTemplate: '<div class="operation"> <a  href="{{row.entity.id|pathUrl:true}}">下载&nbsp;&nbsp;</a><a ng-if="grid.appScope.isShowDelete"  ng-click="grid.appScope.delAttch(row);">删除</a></div>'
+                            field: "operation",
+                            displayName: '操作',
+                            cellTemplate: '<div class="operation"> <a  href="{{row.entity.id|pathUrl:true}}">下载&nbsp;&nbsp;</a><a ng-if="grid.appScope.isShowDelete"  ng-click="grid.appScope.delAttch(row);">删除</a></div>'
                         }
                     ];
                     //配置查询参数
@@ -603,7 +607,6 @@
                 }
 
 
-
                 linkFunc(
                     scope,
                     el,
@@ -615,7 +618,7 @@
                     scope.options,
                     cols,
                     ''
-                    );
+                );
                 $compile(el)(scope);
             }
         };
@@ -704,35 +707,35 @@
                     scope,
                     el,
                     formComponents,
-                     {
-                         items: '',
-                         buttons: '.modal-footer'
-                     },
+                    {
+                        items: '',
+                        buttons: '.modal-footer'
+                    },
                     scope.options,
                     scope.cols,
                     ''
-                    );
+                );
                 $compile(el)(scope);
             }
         };
     }
 
     /**
- * @ngdoc directive
- * @name demo.directive:bkmModalForm
- * @description
- * 列表页面的搜索指令
- * 使用方法：
- * 1. 页面控制器中设置模态框标题：scope.modalTitle="我的标题"
- * 2. 
- * 
- * @param {Object} options = 指令所需的配置对象
- * options.items 该数组接收需要显示的搜索项
- * options.includeUrl 该参数提供一个个性化模板地址，插入到Form表单中
- * 
- * @param {int} cols = 可选参数，设置表单元素的布局列数，默认为两列
- * 
- */
+     * @ngdoc directive
+     * @name demo.directive:bkmModalForm
+     * @description
+     * 列表页面的搜索指令
+     * 使用方法：
+     * 1. 页面控制器中设置模态框标题：scope.modalTitle="我的标题"
+     * 2.
+     *
+     * @param {Object} options = 指令所需的配置对象
+     * options.items 该数组接收需要显示的搜索项
+     * options.includeUrl 该参数提供一个个性化模板地址，插入到Form表单中
+     *
+     * @param {int} cols = 可选参数，设置表单元素的布局列数，默认为两列
+     *
+     */
     function bkmModalForm($compile, bkmFmValSvc) {
 
         return {
@@ -769,15 +772,15 @@
                     scope,
                     el,
                     formComponents,
-                     {
-                         items: '.row',
-                         buttons: '.modal-footer',
-                         accordions: '#uibAccordions'
-                     },
+                    {
+                        items: '.row',
+                        buttons: '.modal-footer',
+                        accordions: '#uibAccordions'
+                    },
                     scope.options,
                     scope.cols,
                     'form-group'
-                    );
+                );
                 $compile(el)(scope);
 
                 //判断是否移除掉附件列表的翻页控件
@@ -823,7 +826,7 @@
             }
             //设置默认可选提示符
             var optionPrompt = (!!t.option || formStyle == '') ? '' : " * ",
-            validError = 'ng-class="{\'has-error\':!myForm[\'' + t.model + '\'].$valid && (myForm[\'' + t.model + '\'].$dirt || myForm.$submitted)}"';
+                validError = 'ng-class="{\'has-error\':!myForm[\'' + t.model + '\'].$valid && (myForm[\'' + t.model + '\'].$dirt || myForm.$submitted)}"';
             //未设置tooltip时，默认清空提示
             t.tooltip = t.tooltip || '';
             //设置数字输入默认的PlaceHolder提示语
@@ -978,7 +981,7 @@
                 });
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.downloadButtonTemp));
             } else if (t.type == 'bkmButton') {
-                angular.extend(btnOptions, { category: t.category });
+                angular.extend(btnOptions, {category: t.category});
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.bkmButtonTemp));
             }
         });
@@ -1008,25 +1011,23 @@
 
     function bkmConverVal2Date($filter, $timeout) {
         return {
-            priority: 999,
-            scope: false,
             restrict: 'A',
-            controller: function () {
-            },
-            require: ['ngModel', 'uibDatepickerPopup'],
+            require: ['ngModel'],
             link: function (scope, el, attrs, ngModel) {
-                var m = ngModel[0],
-                    o = ngModel[1];
-                o.init(m);
+                var m = ngModel[0];
                 m.$formatters.unshift(function (value) {
                     var mv = value || m.$modelValue;
                     //从 model -> view 的转换
                     if (!!mv && angular.isString(mv)) {
                         var v = new Date(mv);
-                        $timeout(function () {
-                            m.$setViewValue(v);
-                        }, 200);
-                        return $filter('date')(v, 'yyyy-MM-dd');
+                        if (!isNaN(v.getTime())) {
+                            $timeout(function () {
+                                m.$setViewValue(v);
+                            }, 200);
+                            return $filter('date')(v, 'yyyy-MM-dd');
+                        } else {
+                            return mv;
+                        }
                     }
                     return mv;
                 });
