@@ -22,11 +22,276 @@
     angular.module('bkm.library.angular.web', [])
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', bkmSearch)
-        .directive('bkmGeneralCrud', ['$compile', '$filter', '$uibModal', 'toastr', 'bkmCommGetDict', 'logisCst', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
+        .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict',  'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
         .directive('bkmElements', bkmElements)
         .directive('bkmMsgModal', bkmMsgModal)
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
-        .directive('bkmConverVal2Date', bkmConverVal2Date);
+        .directive('bkmConverVal2Date', bkmConverVal2Date)
+        .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', function (toastr, $uibModal,dict, $templateCache) {
+
+            $templateCache.put('attatchesList.html',
+                '<v-accordion class="vAccordion--default">\
+                     <v-pane expanded=false>\
+                        <v-pane-header>附件列表</v-pane-header>\
+                        <v-pane-content>\
+                            <div class="attaches upfile row" ng-if="options.attaches.isShowUpload">\
+                                <div class="col-md-6">{{options.attaches.prompt}}</div>\
+                                <div class="col-md-6 operation"><i class="fa fa-upload" aria-hidden="true"></i><a ngf-select="options.attaches.uploadFiles($files)" ngf-pattern="{{options.attaches.attachesPattern}}" ngf-multiple="{{options.attaches.multiple}}">&nbsp;&nbsp;添加附件...</a></div>\
+                            </div>\
+                            <div ui-grid="options.attaches.gridOption" class="grid" ui-grid-selection ui-grid-pagination ui-grid-auto-resize ng-style="options.attaches.gridOption.autoHeight()"></div>\
+                        </v-pane-content>\
+                    </v-pane>\
+                </v-accordion>'
+            );
+
+           /**
+           * @ngdoc directive
+           * @name extendSearchObj
+           * @description
+           * 用于构造通用的查询参数
+           * Construct search parameters object for different controllers usage
+           *
+           * @param input {obj} 接收的值
+           * 
+           * @returns {obj} 返回替换后的值
+           */
+            window.extendSearchObj = function (obj) {
+                return angular.extend({}, {
+                    dictionaryTypes: [],
+                    dictionaryHash: '',
+                    sorting: '',
+                    skipCount: '0',
+                    maxResultCount: '500'
+                }, obj);
+            };
+
+            /**
+            * @ngdoc directive
+            * @name baseSearchFn
+            * @description
+            * UI-GRID 通用的页面查询和结果集绑定的函数，可以用于普通查询页面的查询方法的快速构造
+            * 用法：baseSearchFn.apply(ctrl.页面绑定的gridoption名称, [ $scope,  ABP查询服务
+            * 的方法名称, toastr, 是否需要首次加载数据,  Controller中需要注册的UI-GRID事件]);
+            *
+            * @param input {scope,serviceApiFunc,toastr,isInitLoad,registerCustomizedApi,paramsSetting} 接收的值
+            * serviceApiFunc:需要传入的查询服务方法, 
+            * isInitLoad:是否需要在页面首次打开时加载数据
+            * registerCustomizedApi: 需要controller中定义的UI-GRID事件方法, 
+            * paramsSetting： 在调用searchData方法时需要额外配置的查询参数
+            * @returns {string} 返回替换后的值
+            */
+            window.baseSearchFn = function (
+                $scope,
+                serviceApiFunc,
+                paramsSetting,
+                isInitLoad,
+                registerCustomizedApi
+                ) {
+
+                var self = this;
+                //构造页面查询参数基类对象
+                self.params = extendSearchObj();
+                //设置UI-GRID属性参数
+                self.gridOption = baseUiGridProp();
+                //配置UI-GRID的grid.appScope的作用域为当前Ctrl
+                self.gridOption.appScopeProvider = self;
+                //UI-GRID高度自动伸缩函数
+                self.gridOption.autoHeight = function () {
+                    return {
+                        height: (self.gridOption.paginationPageSize * 24 + 30) + "px"
+                    };
+                };
+
+                //注册事件回调函数
+                self.gridApi = {};
+                self.gridOption.onRegisterApi = function (gridApi) {
+                    self.gridApi = gridApi;
+                    //判断在页面第一次加载的时候需要加载数据
+                    if (isInitLoad == undefined || isInitLoad)
+                        getData();
+                    //注册UI-GRID翻页函数
+                    gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                        getData();
+                    });
+                    //注册Controller自己的UI-GRID 个性化事件
+                    if (angular.isFunction(registerCustomizedApi)) {
+                        registerCustomizedApi(gridApi);
+                    }
+                };
+
+                self.searchData = getData;
+                //查询数据
+                function getData() {
+                    //查询参数处理回调函数
+                    if (typeof paramsSetting == 'function') {
+                        paramsSetting();
+                    }
+                    //合并分页查询参数
+                    self.params.skipCount = (typeof self.gridApi.pagination == 'object') ? (self.gridApi.pagination.getPage() - 1) * self.gridOption.paginationPageSize : 0;
+                    //调用查询服务
+                    serviceApiFunc(self.params)
+                         .then(function (result) {
+                             self.gridOption.data = result.data.items;
+                             self.gridOption.totalItems = result.data.totalCount;
+                         })
+                         .catch(function (reason) {
+                             toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                         });
+                };
+
+                //Construct base UI-grid component properties group
+                function baseUiGridProp(obj) {
+                    return angular.extend({}, obj, {
+                        enableColumnResizing: true,
+                        enableRowSelection: true,
+                        enableRowHeaderSelection: false,
+                        modifierKeysToMultiSelect: false,
+                        noUnselect: false,
+                        multiSelect: false,
+                        useExternalPagination: true,
+                        paginationPageSize: 10,
+                        paginationPageSizes: [5, 10, 20],
+                        enableColumnMenus: false
+                    });
+                };
+            };
+
+
+
+            /**
+            * @ngdoc directive
+            * @name baseApproveFn
+            * @description
+            * 通用的审核功能
+            *
+            * @param input {parentCtrl,rowEntity} 接收的值
+            * parentCtrl:传入应用所在的ctrl, 
+            * rowEntity: (可选)审批按钮在行上定义的时候需要传入row.entity对象
+            * 
+            * @returns {string} 返回替换后的值
+            */
+            window.baseApproveFn = function (parentCtrl,rowEntity) {
+
+                var self = parentCtrl;
+
+                var promptName = self.formSetting.promptName;
+                var approveSvc = self.formSetting.resourceSvc;
+
+                //获取所选择审核的记录
+                var rtnRows = [];
+                rtnRows[0] = rowEntity || self.gridApi.selection.getSelectedRows()[0];
+                if (!!!rtnRows.length || rtnRows[0].status != 0) {
+                    toastr.info(bkm.util.format("请选择 {0} 状态为待审核的记录!", promptName));
+                    return;
+                }
+
+                //审核的对话框
+                var uibModalInstance = $uibModal.open({
+                    backdrop: false,
+                    animation: true,
+                    template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
+                    controller: function ($uibModalInstance, $scope) {
+
+                        //初始化数据模型
+                        var ctrl = this;
+                        ctrl.formOption = {};
+                        var formModel = ctrl.formOption.model = self.formSetting.approveParams || { relatedId: rtnRows[0].id };
+
+                        //表单数据模型绑定
+                        $scope.modalTitle = promptName + '审核';
+                        angular.extend(ctrl.formOption, {
+                            items: [
+                                {
+                                    type: 'textarea',
+                                    model: 'reason',
+                                    label: '备注',
+                                    option: true,
+                                    cols: 12
+                                },
+                                {
+                                    type: 'dropDown',
+                                    model: 'type',
+                                    label: '拒绝原因',
+                                    option: true,
+                                    cols: 12,
+                                    dataSource: dict.dictionary[dict.AuditType()]
+                                }],
+                            buttons: [
+                                {
+                                    text: '同意',
+                                    category: 'approve',
+                                    click: approveFn
+                                },
+                                {
+                                    text: '拒绝',
+                                    category: 'reject',
+                                    click: rejectFn
+                                }]
+                        });
+
+                        //审核通过
+                        function approveFn() {
+                            formModel.isPass = true;
+                            approveSvc.approve(formModel)
+                                .then(function (result) {
+                                    toastr.success("审核成功!");
+                                    $uibModalInstance.close();
+                                    self.searchData();
+                                })
+                                .catch(function (reason) {
+                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                });
+                        };
+
+                        //审核不通过
+                        function rejectFn() {
+                            if (formModel.type == undefined) {
+                                toastr.info("请选择拒绝原因的类型!");
+                                return;
+                            }
+                            var modalInstance = $uibModal.open({
+                                backdrop: false,
+                                animation: true,
+                                controller: function () {
+                                    var mCtrl = this;
+                                    mCtrl.message = "您确认要拒绝吗?";
+                                },
+                                controllerAs: 'mCtrl',
+                                template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="danger" ></bkm-msg-modal>'
+                            });
+
+                            modalInstance.result
+                                .then(function (result) {
+                                    angular.extend(formModel, {
+                                        isPass: false,
+                                        type: formModel.type,
+                                        reason: formModel.reason
+                                    });
+                                    return approveSvc.approve(formModel);
+                                })
+                                .then(function (result) {
+                                    toastr.success(bkm.util.format("该{0}已被标记为审核不通过!", promptName));
+                                    $uibModalInstance.close();
+                                    self.searchData();
+                                })
+                                .catch(function (reason) {
+                                    if ((reason.toString().match('cancel') == null) && (reason.toString().match('escape') == null))
+                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                });
+                        }
+                    },
+                    controllerAs: 'ctrl',
+                    size: 'lg',
+                    resolve: {
+                        items: function () {
+                            return rtnRows;
+                        }
+                    }
+                });
+            };
+
+
+        }]);
 
     function directiveCtrl() {
         var ctrl = this;
@@ -117,7 +382,25 @@
         };
     }
 
-    function bkmGeneralCrud($compile, $filter, $uibModal, toastr, dict, logisCst, fileSvc, bkmUpload) {
+    /**
+      * @ngdoc directive
+      * @name bkmGeneralCrud
+      * @description
+      * 通用的增、删、改功能指令封装
+      *
+      * @restrict E
+      * @scope
+      * @param {Object} options = 指令所需的配置对象
+      * options.items 该数组接收需要显示的搜索项
+      * 搜索项有六种类型：
+      * 
+      */
+    function bkmGeneralCrud($compile,
+        $uibModal,
+        toastr,
+        dict,
+        fileSvc,
+        bkmUpload) {
 
         return {
             restrict: 'E',
@@ -130,9 +413,13 @@
             replace: true,
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
             link: function (scope, el, attrs) {
+
+                //定义附件列表的模板文件地址(缓冲模板文件)
+                var attachesTempUrl = 'attatchesList.html';
+
                 //定义默认的布局列数
                 var cols = scope.cols ? scope.cols : 3;
-
+                //获取options中定义的parentCtrl
                 var parentCtrl = scope.options.parentCtrl;
 
                 //显示详情
@@ -140,13 +427,11 @@
                     row.isEdit = false;
                     modalForm(row);
                 }
-
                 //编辑
                 parentCtrl.edit = function (row) {
                     row.isEdit = true;
                     modalForm(row);
                 }
-
                 //删除
                 parentCtrl.delete = function (row) {
 
@@ -178,12 +463,14 @@
                             toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
                         });
                 }
-
                 //添加
                 parentCtrl.add = function () {
                     modalForm();
                 }
-
+                //审核操作
+                parentCtrl.approve = function () {
+                    baseApproveFn(parentCtrl);
+                }
                 //新建表单
                 function modalForm(row) {
 
@@ -256,9 +543,9 @@
                                     });
                             }
 
-                            //附件列表
+                            //附件列表模板
                             if (!!parentCtrl.formSetting.hasAttaches) {
-                                angular.extend(ctrl.formOption, {includeUrl: logisCst.ATTACHES_TPL_URL});
+                                angular.extend(ctrl.formOption, { includeUrl: attachesTempUrl }); 
                                 attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                             }
                             //提交表单
@@ -301,126 +588,7 @@
                     });
                 };
 
-                //审核操作
-                parentCtrl.approve = function () {
-
-                    var promptName = parentCtrl.formSetting.promptName;
-                    var approveSvc = parentCtrl.formSetting.resourceSvc;
-
-                    var self = parentCtrl;
-
-                    //获取所选择审核的记录
-                    var rtnRows = self.gridApi.selection.getSelectedRows();
-                    if (!!!rtnRows.length || rtnRows[0].status != 0) {
-                        toastr.info(bkm.util.format("请选择 {0} 状态为待审核的记录!", promptName));
-                        return;
-                    }
-
-                    //审核的对话框
-                    var uibModalInstance = $uibModal.open({
-                        backdrop: false,
-                        animation: true,
-                        template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
-                        controller: function ($uibModalInstance, $scope) {
-
-                            //初始化数据模型
-                            var ctrl = this;
-                            ctrl.formOption = {};
-                            var formModel = ctrl.formOption.model = parentCtrl.formSetting.approveParams || {relatedId: rtnRows[0].id};
-
-                            //表单数据模型绑定
-                            $scope.modalTitle = promptName + '审核';
-                            angular.extend(ctrl.formOption, {
-                                items: [
-                                    {
-                                        type: 'textarea',
-                                        model: 'reason',
-                                        label: '备注',
-                                        option: true,
-                                        cols: 12
-                                    },
-                                    {
-                                        type: 'dropDown',
-                                        model: 'type',
-                                        label: '拒绝原因',
-                                        option: true,
-                                        cols: 12,
-                                        dataSource: dict.dictionary[dict.AuditType()]
-                                    }],
-                                buttons: [
-                                    {
-                                        text: '同意',
-                                        category: 'approve',
-                                        click: approveFn
-                                    },
-                                    {
-                                        text: '拒绝',
-                                        category: 'reject',
-                                        click: rejectFn
-                                    }]
-                            });
-
-                            //审核通过
-                            function approveFn() {
-                                formModel.isPass = true;
-                                approveSvc.approve(formModel)
-                                    .then(function (result) {
-                                        toastr.success("审核成功!");
-                                        $uibModalInstance.close();
-                                        self.searchData();
-                                    })
-                                    .catch(function (reason) {
-                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
-                                    });
-                            };
-
-                            //审核不通过
-                            function rejectFn() {
-                                if (formModel.type == undefined) {
-                                    toastr.info("请选择拒绝原因的类型!");
-                                    return;
-                                }
-                                var modalInstance = $uibModal.open({
-                                    backdrop: false,
-                                    animation: true,
-                                    controller: function () {
-                                        var mCtrl = this;
-                                        mCtrl.message = "您确认要拒绝吗?";
-                                    },
-                                    controllerAs: 'mCtrl',
-                                    template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="danger" ></bkm-msg-modal>'
-                                });
-
-                                modalInstance.result
-                                    .then(function (result) {
-                                        angular.extend(formModel, {
-                                            isPass: false,
-                                            type: formModel.type,
-                                            reason: formModel.reason
-                                        });
-                                        return approveSvc.approve(formModel);
-                                    })
-                                    .then(function (result) {
-                                        toastr.success(bkm.util.format("该{0}已被标记为审核不通过!", promptName));
-                                        $uibModalInstance.close();
-                                        self.searchData();
-                                    })
-                                    .catch(function (reason) {
-                                        if ((reason.toString().match('cancel') == null) && (reason.toString().match('escape') == null))
-                                            toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
-                                    });
-                            }
-                        },
-                        controllerAs: 'ctrl',
-                        size: 'lg',
-                        resolve: {
-                            items: function () {
-                                return rtnRows;
-                            }
-                        }
-                    });
-
-                }
+               
 
                 //附件列表操作
                 function attachesFn(appliedCtrl,
@@ -467,7 +635,7 @@
                     };
 
                     //继承基类查询对象
-                    baseSearchFn.apply(attaches, [scope, fileSvc.getAll, toastr, false]);
+                    baseSearchFn.apply(attaches, [scope, fileSvc.getAll, , false]);
 
                     //配置附件列表
                     angular.extend(attaches.gridOption, {paginationPageSize: 5});
