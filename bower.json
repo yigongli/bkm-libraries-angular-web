@@ -22,7 +22,7 @@
     "angular-bootstrap": "~2.4.0",
     "font-awesome": "fontawesome#~4.7.0",
     "moment": "~2.10.6",
-    "ztree_v3": "~3.5.28"
+    "bkm-zTree-v3": "4.0.0"
   },
   "main": [
     "./src/directives/search/search.js",
