@@ -28,7 +28,6 @@
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
         .directive('bkmConverVal2Date', bkmConverVal2Date)
         .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', function (toastr, $uibModal,dict, $templateCache) {
-
             $templateCache.put('attatchesList.html',
                 '<v-accordion class="vAccordion--default">\
                      <v-pane expanded=false>\
@@ -1021,6 +1020,9 @@
         });
 
         angular.forEach(opt.buttons, function (t, i) {
+
+            //如果空对象或未定义则继续下一个
+            if(!t) return;
 
             //未提供type时，默认使用bkmButton
             t.type = !!t.type ? t.type : 'bkmButton';
