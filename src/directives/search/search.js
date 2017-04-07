@@ -179,7 +179,7 @@
                 //获取所选择审核的记录
                 var rtnRows = [];
                 rtnRows[0] = rowEntity || self.gridApi.selection.getSelectedRows()[0];
-                if (!!!rtnRows.length || rtnRows[0].status != 0) {
+                if (!rtnRows[0] || rtnRows[0].status != 0) {
                     toastr.info(bkm.util.format("请选择 {0} 状态为待审核的记录!", promptName));
                     return;
                 }
