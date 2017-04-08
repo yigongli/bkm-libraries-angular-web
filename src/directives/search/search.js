@@ -5,7 +5,7 @@
     'use strict';
 
     var formComponents = {
-        textTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control " type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" /><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
+        textTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" data-toggle="{type}" /><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
         //tagsTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<tags-input bkm-input name="{formName}" class="form-control " placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" display-property="{dispProp}"><auto-complete source="{loadFn}"></auto-complete></tags-input><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
         textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" ng-click="{click}" /></div></div>',
         dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
@@ -856,6 +856,9 @@
                 );
                 $compile(el)(scope);
 
+                //用于初始化Password输入框的show/hide功能
+                el.find('.password').password();
+
                 //判断是否移除掉附件列表的翻页控件
                 if (!!scope.options.attaches && !!scope.options.attaches.isRemovePaging) {
                     setTimeout(function () {
@@ -934,13 +937,12 @@
             };
 
 
-            if (t.type == 'text' || t.type == 'number') {
+            if (t.type == 'text' || t.type == 'number' || t.type == 'password' || t.type == 'email') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textTemp));
             } else if (t.type == 'textarea') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textareaTemp));
             } else if (t.type == 'dropDown') {
                 angular.extend(elemOptions, {
-                    //repeat: 'i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource'
                     repeat: 'i.' + t.keyName + ' as i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource'
                 });
                 previous.append(formatTemplate(elemOptions, uiComponents.dropDownTemp));
