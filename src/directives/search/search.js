@@ -501,8 +501,6 @@
                                 rtnRow = $scope.$resolve.items.entity;
                                 isEdit = !!$scope.$resolve.items.isEdit;
                             }
-                            ;
-
                             //初始化数据模型
                             ctrl.formOption = {};
                             var formModel = ctrl.formOption.model = {};
