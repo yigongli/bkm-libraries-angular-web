@@ -25,16 +25,50 @@
                 enable: false,
             },
             async: {
-                enable: true
+                enable: false
             }
         })
         .directive('bkmTree', bkmTree)
         .directive('bkmInputTreeAddress', inputTree)
+        .service('bkm.zTree.Data', ['$window', 'abp.services.app.region', '$q', bkmZtreeData])
         .controller('bkmInputTreeAddressCtrl', [
             '$timeout',
-            'abp.services.app.region',
+            'bkm.zTree.Data',
             bkmInputTreeAddressCtrl
         ]);
+
+    function bkmZtreeData($window, regionAipService, $q) {
+        var self = this;
+        self.getData = function (parentId) {
+            var deferred = $q.defer(),
+                key = parentId || "root",
+                data;
+            data = $window.localStorage["addressData"];
+            if (!!!data) {
+                data = {};
+                $window.localStorage["addressData"] = "";
+            } else {
+                data = JSON.parse(data);
+                if (!!data[key]) {
+                    return $q.resolve(data[key]);
+                }
+            }
+
+            regionAipService.getAll({
+                "parentId": parentId,
+                "sorting": "code",
+                "skipCount": 0,
+                "maxResultCount": 999
+            }).then(function (result) {
+                data[key] = result.data.items;
+                $window.localStorage["addressData"] = JSON.stringify(data);
+                deferred.resolve(data[key]);
+            }).catch(function (result) {
+                deferred.reject();
+            });
+            return deferred.promise;
+        }
+    }
 
     function bkmTree(treeSetting) {
         return {
@@ -95,7 +129,7 @@
         };
     }
 
-    function bkmInputTreeAddressCtrl($timeout, regionAipService) {
+    function bkmInputTreeAddressCtrl($timeout, treeDataService) {
         var ctrl = this;
         ctrl.show = false;
         ctrl.ngModel = null;
@@ -113,63 +147,32 @@
                     enable: true
                 }
             },
-            async: {
-                autoParam: ["id=parentId"],
-                contentType: "application/json; charset=utf-8",
-                dataFilter: asyncDataFilter,
-                dataType: "JSON",
-                otherParam: {
-                    "sorting": 'code',
-                    "skipCount": 0,
-                    "maxResultCount": 999
-                },
-                type: "post",
-                url: "web/api/services/app/region/GetAll"
-            },
             callback: {
                 //【节点】点击事件
                 beforeClick: beforeClick,
                 //【节点】点击事件
                 onClick: onClick,
-                beforeExpand: beforeExpand,
-                onAsyncSuccess: onAsyncSuccess,
-                beforeAsync: beforeAsync
+                beforeExpand: beforeExpand
             }
         };
 
-        function beforeAsync(treeId, treeNode) {
-            return !!!treeNode.zAsync;
-        }
-
         function beforeExpand(treeId, treeNode) {
-            if (!treeNode.zAsync) {
-                ajaxGetNodes(treeNode, "refresh");
-                return true;
+            if (!!!treeNode.children || !!!treeNode.children.length) {
+                treeDataService
+                    .getData(treeNode.id)
+                    .then(function (data) {
+                        var newNode = convertData(data, treeNode.level + 1 < ctrl.opt.chooseLevel);
+                        ctrl.setting.treeInstance.addNodes(treeNode, newNode);
+                    })
+                    .catch(function () {
+                        console.log('get tree data error');
+                    });
+
             } else {
                 ctrl.setting.treeInstance.expandNode(treeNode, true, false, null);
-                return false;
             }
-        }
+            return false;
 
-        function onAsyncSuccess(event, treeId, treeNode, msg) {
-            if (!msg || msg.length == 0) {
-                return;
-            }
-
-            treeNode.icon = "";
-            ctrl.setting.treeInstance.updateNode(treeNode);
-            ctrl.setting.treeInstance.selectNode(treeNode.children[0]);
-        }
-
-        function ajaxGetNodes(treeNode, reloadType) {
-            if (reloadType == "refresh") {
-                ctrl.setting.treeInstance.updateNode(treeNode);
-            }
-            ctrl.setting.treeInstance.reAsyncChildNodes(treeNode, reloadType, true);
-        }
-
-        function asyncDataFilter(treeId, parentNode, data) {
-            return convertData(data.result.items, parentNode.level + 1 < 2);
         }
 
         //【节点】点击事件
@@ -228,17 +231,15 @@
         }
 
         //初始化省市区数据
-        (function (parentId, level, parentNode) {
-            regionAipService.getAll({
-                "parentId": parentId,
-                "sorting": "code",
-                "skipCount": 0,
-                "maxResultCount": 999
-            }).then(function (result) {
-                var data = convertData(result.data.items, level < 2);
-                ctrl.setting.setNodes(data);
-            }, null);
-        })("", 0);
+        treeDataService
+            .getData('')
+            .then(function (data) {
+                var newNode = convertData(data, 0 < ctrl.opt.chooseLevel);
+                ctrl.setting.setNodes(newNode);
+            })
+            .catch(function () {
+                console.log('get tree data error');
+            });
 
         function convertData(data, isParent) {
             angular.forEach(data, function (v, i) {
