@@ -499,7 +499,7 @@
                             var isEdit = false;
                             if (!!$scope.$resolve.items) {
                                 rtnRow = $scope.$resolve.items.entity;
-                                isEdit = true;//!!$scope.$resolve.items.isEdit;
+                                isEdit = !!$scope.$resolve.items.isEdit;
                             }
                             ;
 
