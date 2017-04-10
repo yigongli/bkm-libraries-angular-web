@@ -434,6 +434,19 @@
                 //删除
                 parentCtrl.delete = function (row) {
 
+                    if (!row) {
+                        toastr.info("请选择要删除的记录!");
+                        retur;
+                    }
+
+                    //删除数据回调
+                    if (typeof parentCtrl.formSetting.deleteRowFn == 'function') {
+                        var isGoingon = parentCtrl.formSetting.deleteRowFn(row.entity);
+                        //如果不继续提交则直接返回
+                        if (isGoingon != undefined && !isGoingon)
+                            return;
+                    }
+
                     var ctrl = parentCtrl;
                     var delSvc = ctrl.formSetting.resourceSvc.delete;
                     var delParas = ctrl.formSetting.deleteParas || {id: row.entity.id};
