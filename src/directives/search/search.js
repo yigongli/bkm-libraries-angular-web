@@ -438,10 +438,10 @@
                         toastr.info("请选择要删除的记录!");
                         retur;
                     }
-
+                        
                     //删除数据回调
                     if (typeof parentCtrl.formSetting.deleteRowFn == 'function') {
-                        var isGoingon = parentCtrl.formSetting.deleteRowFn(row.entity);
+                        var isGoingon=parentCtrl.formSetting.deleteRowFn(row.entity);
                         //如果不继续提交则直接返回
                         if (isGoingon != undefined && !isGoingon)
                             return;
@@ -499,7 +499,7 @@
                             var isEdit = false;
                             if (!!$scope.$resolve.items) {
                                 rtnRow = $scope.$resolve.items.entity;
-                                isEdit = !!$scope.$resolve.items.isEdit;
+                                isEdit = true;//!!$scope.$resolve.items.isEdit;
                             }
                             ;
 
