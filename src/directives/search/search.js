@@ -554,7 +554,10 @@
 
                                         //数据处理回调
                                         if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
-                                            parentCtrl.formSetting.beforeSubmitFn(formModel);
+                                            var isGoingon = parentCtrl.formSetting.beforeSubmitFn(formModel);
+                                            //如果不继续提交则直接返回
+                                            if (isGoingon != undefined && !isGoingon)
+                                                return;
                                         }
 
                                         //设置附件列表的数据
