@@ -338,7 +338,14 @@
                 );
                 $compile(el)(scope);
                 //设置表单对象
-                scope.myForm = !!ctrl.myForm ? ctrl.myForm : {};
+                if (!!ctrl.myForm) {
+                    (function setMyform(s) {
+                        scope.myForm = s.myForm;
+                        if(!!!scope.myForm){
+                            setMyform(s.$parent);
+                        }
+                    })(scope.$parent);
+                }
             }
         };
     }
@@ -874,6 +881,10 @@
                     scope.cols,
                     'form-group'
                 );
+
+                //将指令的myForm对象通过Controller传递给其他使用myForm的指令
+                scope.dCtrl.myForm = !!scope.myForm ? scope.myForm : {};
+
                 $compile(el)(scope);
 
                 //用于初始化Password输入框的show/hide功能
@@ -886,8 +897,6 @@
                     }, 0);
                 }
 
-                //将指令的myForm对象通过Controller传递给其他使用myForm的指令
-                scope.dCtrl.myForm = !!scope.myForm ? scope.myForm : {};
             }
         };
     }
