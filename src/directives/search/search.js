@@ -27,7 +27,7 @@
         .directive('bkmMsgModal', bkmMsgModal)
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
         .directive('bkmConverVal2Date', bkmConverVal2Date)
-        .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', function (toastr, $uibModal,dict, $templateCache) {
+        .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', '$timeout', function (toastr, $uibModal, dict, $templateCache, $timeout) {
             $templateCache.put('attatchesList.html',
                 '<v-accordion class="vAccordion--default">\
                      <v-pane expanded=false>\
@@ -132,6 +132,12 @@
                          .then(function (result) {
                              self.gridOption.data = result.data.items;
                              self.gridOption.totalItems = result.data.totalCount;
+
+                             if (typeof self.getSuccessFn == 'function') {
+                                 $timeout(function () {
+                                     return self.getSuccessFn();
+                                 })
+                             }
                          })
                          .catch(function (reason) {
                              toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
