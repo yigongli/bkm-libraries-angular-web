@@ -133,9 +133,9 @@
                              self.gridOption.data = result.data.items;
                              self.gridOption.totalItems = result.data.totalCount;
 
-                             if (typeof self.getSuccessFn == 'function') {
+                             if (typeof self.searchSuccessFn == 'function') {
                                  $timeout(function () {
-                                     return self.getSuccessFn();
+                                     return self.searchSuccessFn();
                                  })
                              }
                          })
