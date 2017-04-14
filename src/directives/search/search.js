@@ -5,7 +5,7 @@
     'use strict';
 
     var formComponents = {
-        textTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" data-toggle="{type}" /><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
+        textTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input name="{formName}" class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter"/><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
         //tagsTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<tags-input bkm-input name="{formName}" class="form-control " placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" display-property="{dispProp}"><auto-complete source="{loadFn}"></auto-complete></tags-input><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
         textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" ng-click="{click}" /></div></div>',
         dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="mouseenter" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
@@ -140,7 +140,7 @@
                              }
                          })
                          .catch(function (reason) {
-                             toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                             toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
                          });
                 };
 
@@ -244,7 +244,7 @@
                                     self.searchData();
                                 })
                                 .catch(function (reason) {
-                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
                                 });
                         };
 
@@ -281,7 +281,7 @@
                                 })
                                 .catch(function (reason) {
                                     if ((reason.toString().match('cancel') == null) && (reason.toString().match('escape') == null))
-                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
                                 });
                         }
                     },
@@ -485,7 +485,7 @@
                         })
                         .catch(function (reason) {
                             if (typeof (reason) == 'string') return;
-                            toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                            toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
                         });
                 }
                 //添加
@@ -562,7 +562,7 @@
                                         }
                                     })
                                     .catch(function (reason) {
-                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
                                     });
                             }
 
@@ -595,7 +595,7 @@
                                                 parentCtrl.searchData();
                                             })
                                             .catch(function (reason) {
-                                                toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                                toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
                                             });
                                     }
                                     else {
@@ -655,7 +655,7 @@
                             })
                             .catch(function (reason) {
                                 if ((reason.toString().match('cancel') == null) && (reason.toString().match('escape') == null))
-                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
                             });
 
                     };
@@ -699,7 +699,7 @@
                                     attaches.gridOption.data = attaches.gridOption.data.concat(files);
                                 })
                                 .catch(function (reason) {
-                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " + reason.statusText));
+                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
                                 });
                         }
                     };
