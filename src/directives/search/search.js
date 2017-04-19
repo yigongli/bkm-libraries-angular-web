@@ -453,7 +453,7 @@
                     }
                         
                     //删除数据回调
-                    if (typeof parentCtrl.formSetting.deleteRowFn == 'function') {
+                    if (!!parentCtrl.formSetting && typeof parentCtrl.formSetting.deleteRowFn == 'function') {
                         var isGoingon=parentCtrl.formSetting.deleteRowFn(row.entity);
                         //如果不继续提交则直接返回
                         if (isGoingon != undefined && !isGoingon)
