@@ -593,6 +593,10 @@
                                             .then(function (result) {
                                                 toastr.success('提交成功，请继续添加或点击关闭按钮返回！');
                                                 parentCtrl.searchData();
+                                                //更新成功处理回调
+                                                if (typeof parentCtrl.formSetting.postSubmitFn == 'function') {
+                                                    parentCtrl.formSetting.postSubmitFn(formModel);
+                                                }
                                             })
                                             .catch(function (reason) {
                                                 toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
