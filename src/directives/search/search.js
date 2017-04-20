@@ -543,9 +543,9 @@
 
                             //查看详情或编辑时加载数据
                             var attachesPara = {'relatedId': !!rtnRow ? rtnRow.id : ''};//初始化附件查询参数对象
-                            if (!!rtnRow) {
+                            if (rtnRow) {
                                 //获取信息
-                                resourceSvc.get({id: rtnRow.id})
+                                resourceSvc.get({ id: rtnRow.id })
                                     .then(function (result) {
                                         var items = result.data || [];
 
@@ -557,20 +557,20 @@
                                             parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
                                         }
                                         if (!!parentCtrl.formSetting.hasAttaches) {
+                                            angular.extend(ctrl.formOption, { includeUrl: attachesTempUrl });
+                                            attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                                             angular.extend(ctrl.formOption.attaches.params, attachesPara);
                                             ctrl.formOption.attaches.searchData();
                                         }
                                     })
                                     .catch(function (reason) {
-                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
+                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                     });
-                            }
-
-                            //附件列表模板
-                            if (!!parentCtrl.formSetting.hasAttaches) {
-                                angular.extend(ctrl.formOption, { includeUrl: attachesTempUrl }); 
+                            } else if (!!parentCtrl.formSetting.hasAttaches) {
+                                angular.extend(ctrl.formOption, { includeUrl: attachesTempUrl });
                                 attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                             }
+
                             //提交表单
                             function submitFn() {
                                 ctrl.formOption.onSubmit(function (validResult) {
@@ -630,13 +630,14 @@
 
                     //初始化附件数据模型
                     var self = appliedCtrl;
+                    attchesPara.addiPrompt = attchesPara.addiPrompt || '';
                     var attaches = self.formOption.attaches = {
                         attachesPattern: "'.jpg,.png'",
                         multiple: true,
                         isShowUpload: !!isNew || !!isEdit,
                         isRemovePaging: !!isNew || !!isEdit,
                         isShowDelete: !!isNew || !!isEdit,
-                        prompt: "支持文件格式(jpg,png)，文件大小不超过200K"
+                        prompt: "支持文件格式(jpg,png)，文件大小不超过200K" + attchesPara.addiPrompt
                     };
 
                     //删除附件
