@@ -294,7 +294,7 @@
                 elem.attr("readonly", true);
                 angular.extend(scope.dCtrl.opt, { chooseLevel: attr.chooseLevel, showFullName: attr.showFullName });
                 scope.dCtrl.ngModel = ngModel;
-                scope.dCtrl.showFullName = attr.showFullName.toLowerCase() === 'true';
+                scope.dCtrl.showFullName = !!attr.showFullName && attr.showFullName.toLowerCase() === 'true';
                 var el = angular.element(treeTemplate);
                 //如果不为 ztree 设置id,则同一个页面有多个 atree 时，将会是同一个实例
                 el.find('.ztree').attr("id", newGuid());
