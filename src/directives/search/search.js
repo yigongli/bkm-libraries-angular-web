@@ -499,11 +499,11 @@
                 //新建表单
                 function modalForm(row) {
 
-                    $uibModal.open({
+                    var modalInstance = $uibModal.open({
                         backdrop: false,
                         animation: false,
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
-                        controller: function ($scope, $state, $uibModal, toastr) {
+                        controller: function ($scope, $state, $uibModalInstance, toastr) {
 
                             var ctrl = this;
 
@@ -597,6 +597,7 @@
                                                 if (typeof parentCtrl.formSetting.postSubmitFn == 'function') {
                                                     parentCtrl.formSetting.postSubmitFn(formModel);
                                                 }
+                                                $uibModalInstance.close();
                                             })
                                             .catch(function (reason) {
                                                 toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
