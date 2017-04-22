@@ -42,7 +42,7 @@
         .directive('bkmConverVal2Date', bkmConverVal2Date)
         .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', '$timeout', function (toastr, $uibModal, dict, $templateCache, $timeout) {
             $templateCache.put('attatchesList.html',
-                '<uib-accordion close-others="oneAtATime" class="row bkm-uib-accordion">\
+                '<uib-accordion close-others="oneAtATime" class="row bkm-uib-accordion" style="margin: 0;">\
                     <div uib-accordion-group class="panel-default bkm-attatches" is-open="status.open">\
                         <uib-accordion-heading>\
                             <div class="bkm-panel-title" ng-click="status.open=!!!status.open">\
