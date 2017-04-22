@@ -1,0 +1,46 @@
+.bkm-uib-accordion .panel {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.bkm-uib-accordion .panel-group .panel-heading + .panel-collapse > .panel-body ,
+.bkm-uib-accordion .panel-default
+.bkm-uib-accordion .panel-body,
+.bkm-attatches .panel-heading {
+    padding: 0;
+}
+
+.bkm-uib-accordion .panel-body:before {
+    margin-bottom: 5px;
+}
+
+.bkm-uib-accordion .panel-heading {
+    padding: 0 15px;
+    height: 30px;
+    box-shadow: none;
+}
+
+.bkm-uib-accordion .panel-heading .bkm-panel-title {
+    border-bottom: 2px solid #209e91 !important;
+    background: #eff0f4;
+    padding: 5px;
+    font-size: 13px;
+}
+
+.bkm-uib-accordion .panel-heading .bkm-panel-title i {
+    color: #209e91;
+}
+
+.bkm-uib-accordion .bkm-panel-title {
+    display: inline-block;
+    width: 100%;
+}
+
+.bkm-uib-accordion .panel-default > .panel-heading {
+    border: 0;
+    background: none;
+}
+
+.bkm-uib-accordion .panel-group {
+    margin: 0;
+}

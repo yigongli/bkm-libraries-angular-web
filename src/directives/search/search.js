@@ -15,45 +15,62 @@
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
         beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
-        accordTemp: '<v-accordion class="vAccordion--default"><v-pane expanded={isExpanded}><v-pane-header>{title}</v-pane-header><v-pane-content class="row"><bkm-elements is-accordions=true accordion-id="{accordId}" ></bkm-elements></v-pane-content></v-pane></v-accordion>',
+        accordTemp:
+            '<uib-accordion close-others="oneAtATime" class="row bkm-uib-accordion">\
+                <div uib-accordion-group class="panel-default" is-open="status.open">\
+                    <uib-accordion-heading>\
+                        <div class="col-md-12 bkm-panel-title" ng-click="status.open=!!!status.open">\
+                            <span>{title}</span>\
+                            <i class="pull-right glyphicon" \
+                               ng-class="{\'glyphicon-chevron-down\': status.open, \'glyphicon-chevron-right\': !status.open}"></i>\
+                        </div>\
+                    </uib-accordion-heading>\
+                    <bkm-elements is-accordions=true accordion-id="{accordId}"></bkm-elements>\
+                </div>\
+            </uib-accordion>',
+
         addressTemp: '<div class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" /></div></div>'
     };
 
     angular.module('bkm.library.angular.web', [])
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', bkmSearch)
-        .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict',  'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
+        .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
         .directive('bkmElements', bkmElements)
         .directive('bkmMsgModal', bkmMsgModal)
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
         .directive('bkmConverVal2Date', bkmConverVal2Date)
         .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', '$timeout', function (toastr, $uibModal, dict, $templateCache, $timeout) {
             $templateCache.put('attatchesList.html',
-                '<v-accordion class="vAccordion--default">\
-                     <v-pane expanded=false>\
-                        <v-pane-header>附件列表</v-pane-header>\
-                        <v-pane-content>\
-                            <div class="attaches upfile row" ng-if="options.attaches.isShowUpload">\
-                                <div class="col-md-6">{{options.attaches.prompt}}</div>\
-                                <div class="col-md-6 operation"><i class="fa fa-upload" aria-hidden="true"></i><a ngf-select="options.attaches.uploadFiles($files)" ngf-pattern="{{options.attaches.attachesPattern}}" ngf-multiple="{{options.attaches.multiple}}">&nbsp;&nbsp;添加附件...</a></div>\
+                '<uib-accordion close-others="oneAtATime" class="row bkm-uib-accordion">\
+                    <div uib-accordion-group class="panel-default bkm-attatches" is-open="status.open">\
+                        <uib-accordion-heading>\
+                            <div class="bkm-panel-title" ng-click="status.open=!!!status.open">\
+                                <span>附件列表</span>\
+                                <i class="pull-right glyphicon" \
+                                   ng-class="{\'glyphicon-chevron-down\': status.open, \'glyphicon-chevron-right\': !status.open}"></i>\
                             </div>\
-                            <div ui-grid="options.attaches.gridOption" class="grid" ui-grid-selection ui-grid-pagination ui-grid-auto-resize ng-style="options.attaches.gridOption.autoHeight()"></div>\
-                        </v-pane-content>\
-                    </v-pane>\
-                </v-accordion>'
+                        </uib-accordion-heading>\
+                        <div class="attaches upfile row" ng-if="options.attaches.isShowUpload">\
+                            <div class="col-md-6">{{options.attaches.prompt}}</div>\
+                            <div class="col-md-6 operation"><i class="fa fa-upload" aria-hidden="true"></i><a ngf-select="options.attaches.uploadFiles($files)" ngf-pattern="{{options.attaches.attachesPattern}}" ngf-multiple="{{options.attaches.multiple}}">&nbsp;&nbsp;添加附件...</a></div>\
+                        </div>\
+                        <div ui-grid="options.attaches.gridOption" class="grid" ui-grid-selection ui-grid-pagination ui-grid-auto-resize ng-style="options.attaches.gridOption.autoHeight()"></div>\
+                    </div>\
+                </uib-accordion>'
             );
 
-           /**
-           * @ngdoc directive
-           * @name extendSearchObj
-           * @description
-           * 用于构造通用的查询参数
-           * Construct search parameters object for different controllers usage
-           *
-           * @param input {obj} 接收的值
-           * 
-           * @returns {obj} 返回替换后的值
-           */
+            /**
+             * @ngdoc directive
+             * @name extendSearchObj
+             * @description
+             * 用于构造通用的查询参数
+             * Construct search parameters object for different controllers usage
+             *
+             * @param input {obj} 接收的值
+             *
+             * @returns {obj} 返回替换后的值
+             */
             window.extendSearchObj = function (obj) {
                 return angular.extend({}, {
                     dictionaryTypes: [],
@@ -65,27 +82,25 @@
             };
 
             /**
-            * @ngdoc directive
-            * @name baseSearchFn
-            * @description
-            * UI-GRID 通用的页面查询和结果集绑定的函数，可以用于普通查询页面的查询方法的快速构造
-            * 用法：baseSearchFn.apply(ctrl.页面绑定的gridoption名称, [ $scope,  ABP查询服务
-            * 的方法名称, toastr, 是否需要首次加载数据,  Controller中需要注册的UI-GRID事件]);
-            *
-            * @param input {scope,serviceApiFunc,toastr,isInitLoad,registerCustomizedApi,paramsSetting} 接收的值
-            * serviceApiFunc:需要传入的查询服务方法, 
-            * isInitLoad:是否需要在页面首次打开时加载数据
-            * registerCustomizedApi: 需要controller中定义的UI-GRID事件方法, 
-            * paramsSetting： 在调用searchData方法时需要额外配置的查询参数
-            * @returns {string} 返回替换后的值
-            */
-            window.baseSearchFn = function (
-                $scope,
-                serviceApiFunc,
-                paramsSetting,
-                isInitLoad,
-                registerCustomizedApi
-                ) {
+             * @ngdoc directive
+             * @name baseSearchFn
+             * @description
+             * UI-GRID 通用的页面查询和结果集绑定的函数，可以用于普通查询页面的查询方法的快速构造
+             * 用法：baseSearchFn.apply(ctrl.页面绑定的gridoption名称, [ $scope,  ABP查询服务
+             * 的方法名称, toastr, 是否需要首次加载数据,  Controller中需要注册的UI-GRID事件]);
+             *
+             * @param input {scope,serviceApiFunc,toastr,isInitLoad,registerCustomizedApi,paramsSetting} 接收的值
+             * serviceApiFunc:需要传入的查询服务方法,
+             * isInitLoad:是否需要在页面首次打开时加载数据
+             * registerCustomizedApi: 需要controller中定义的UI-GRID事件方法,
+             * paramsSetting： 在调用searchData方法时需要额外配置的查询参数
+             * @returns {string} 返回替换后的值
+             */
+            window.baseSearchFn = function ($scope,
+                                            serviceApiFunc,
+                                            paramsSetting,
+                                            isInitLoad,
+                                            registerCustomizedApi) {
 
                 var self = this;
                 //构造页面查询参数基类对象
@@ -129,19 +144,19 @@
                     self.params.skipCount = (typeof self.gridApi.pagination == 'object') ? (self.gridApi.pagination.getPage() - 1) * self.gridOption.paginationPageSize : 0;
                     //调用查询服务
                     serviceApiFunc(self.params)
-                         .then(function (result) {
-                             self.gridOption.data = result.data.items;
-                             self.gridOption.totalItems = result.data.totalCount;
+                        .then(function (result) {
+                            self.gridOption.data = result.data.items;
+                            self.gridOption.totalItems = result.data.totalCount;
 
-                             if (typeof self.searchSuccessFn == 'function') {
-                                 $timeout(function () {
-                                     return self.searchSuccessFn();
-                                 })
-                             }
-                         })
-                         .catch(function (reason) {
-                             toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
-                         });
+                            if (typeof self.searchSuccessFn == 'function') {
+                                $timeout(function () {
+                                    return self.searchSuccessFn();
+                                })
+                            }
+                        })
+                        .catch(function (reason) {
+                            toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
+                        });
                 };
 
                 //Construct base UI-grid component properties group
@@ -162,20 +177,19 @@
             };
 
 
-
             /**
-            * @ngdoc directive
-            * @name baseApproveFn
-            * @description
-            * 通用的审核功能
-            *
-            * @param input {parentCtrl,rowEntity} 接收的值
-            * parentCtrl:传入应用所在的ctrl, 
-            * rowEntity: (可选)审批按钮在行上定义的时候需要传入row.entity对象
-            * 
-            * @returns {string} 返回替换后的值
-            */
-            window.baseApproveFn = function (parentCtrl,rowEntity) {
+             * @ngdoc directive
+             * @name baseApproveFn
+             * @description
+             * 通用的审核功能
+             *
+             * @param input {parentCtrl,rowEntity} 接收的值
+             * parentCtrl:传入应用所在的ctrl,
+             * rowEntity: (可选)审批按钮在行上定义的时候需要传入row.entity对象
+             *
+             * @returns {string} 返回替换后的值
+             */
+            window.baseApproveFn = function (parentCtrl, rowEntity) {
 
                 var self = parentCtrl;
 
@@ -200,7 +214,7 @@
                         //初始化数据模型
                         var ctrl = this;
                         ctrl.formOption = {};
-                        var formModel = ctrl.formOption.model = self.formSetting.approveParams || { relatedId: rtnRows[0].id };
+                        var formModel = ctrl.formOption.model = self.formSetting.approveParams || {relatedId: rtnRows[0].id};
 
                         //表单数据模型绑定
                         $scope.modalTitle = promptName + '审核';
@@ -244,7 +258,7 @@
                                     self.searchData();
                                 })
                                 .catch(function (reason) {
-                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
+                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                 });
                         };
 
@@ -281,7 +295,7 @@
                                 })
                                 .catch(function (reason) {
                                     if ((reason.toString().match('cancel') == null) && (reason.toString().match('escape') == null))
-                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
+                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                 });
                         }
                     },
@@ -341,7 +355,7 @@
                 if (!!ctrl.myForm) {
                     (function setMyform(s) {
                         scope.myForm = s.myForm;
-                        if(!!!scope.myForm){
+                        if (!!!scope.myForm) {
                             setMyform(s.$parent);
                         }
                     })(scope.$parent);
@@ -360,7 +374,7 @@
      * @param {Object} options = 指令所需的配置对象
      * options.items 该数组接收需要显示的搜索项
      * 搜索项有六种类型：
-     * 
+     *
      */
     function bkmSearch($compile) {
 
@@ -395,24 +409,24 @@
     }
 
     /**
-      * @ngdoc directive
-      * @name bkmGeneralCrud
-      * @description
-      * 通用的增、删、改功能指令封装
-      *
-      * @restrict E
-      * @scope
-      * @param {Object} options = 指令所需的配置对象
-      * options.items 该数组接收需要显示的搜索项
-      * 搜索项有六种类型：
-      * 
-      */
+     * @ngdoc directive
+     * @name bkmGeneralCrud
+     * @description
+     * 通用的增、删、改功能指令封装
+     *
+     * @restrict E
+     * @scope
+     * @param {Object} options = 指令所需的配置对象
+     * options.items 该数组接收需要显示的搜索项
+     * 搜索项有六种类型：
+     *
+     */
     function bkmGeneralCrud($compile,
-        $uibModal,
-        toastr,
-        dict,
-        fileSvc,
-        bkmUpload) {
+                            $uibModal,
+                            toastr,
+                            dict,
+                            fileSvc,
+                            bkmUpload) {
 
         return {
             restrict: 'E',
@@ -451,10 +465,10 @@
                         toastr.info("请选择要删除的记录!");
                         retur;
                     }
-                        
+
                     //删除数据回调
                     if (!!parentCtrl.formSetting && typeof parentCtrl.formSetting.deleteRowFn == 'function') {
-                        var isGoingon=parentCtrl.formSetting.deleteRowFn(row.entity);
+                        var isGoingon = parentCtrl.formSetting.deleteRowFn(row.entity);
                         //如果不继续提交则直接返回
                         if (isGoingon != undefined && !isGoingon)
                             return;
@@ -485,7 +499,7 @@
                         })
                         .catch(function (reason) {
                             if (typeof (reason) == 'string') return;
-                            toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
+                            toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                         });
                 }
                 //添加
@@ -499,11 +513,11 @@
                 //新建表单
                 function modalForm(row) {
 
-                    var modalInstance = $uibModal.open({
+                    $uibModal.open({
                         backdrop: false,
                         animation: false,
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
-                        controller: function ($scope, $state, $uibModalInstance, toastr) {
+                        controller: function ($scope, $state, $uibModal, toastr) {
 
                             var ctrl = this;
 
@@ -545,7 +559,7 @@
                             var attachesPara = {'relatedId': !!rtnRow ? rtnRow.id : ''};//初始化附件查询参数对象
                             if (rtnRow) {
                                 //获取信息
-                                resourceSvc.get({ id: rtnRow.id })
+                                resourceSvc.get({id: rtnRow.id})
                                     .then(function (result) {
                                         var items = result.data || [];
 
@@ -557,7 +571,7 @@
                                             parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
                                         }
                                         if (!!parentCtrl.formSetting.hasAttaches) {
-                                            angular.extend(ctrl.formOption, { includeUrl: attachesTempUrl });
+                                            angular.extend(ctrl.formOption, {includeUrl: attachesTempUrl});
                                             attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                                             angular.extend(ctrl.formOption.attaches.params, attachesPara);
                                             ctrl.formOption.attaches.searchData();
@@ -567,7 +581,7 @@
                                         toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                     });
                             } else if (!!parentCtrl.formSetting.hasAttaches) {
-                                angular.extend(ctrl.formOption, { includeUrl: attachesTempUrl });
+                                angular.extend(ctrl.formOption, {includeUrl: attachesTempUrl});
                                 attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                             }
 
@@ -576,11 +590,6 @@
                                 ctrl.formOption.onSubmit(function (validResult) {
                                     if (validResult.isSuccess) {
 
-                                        //设置附件列表的数据
-                                        if (!!parentCtrl.formSetting.hasAttaches) {
-                                            formModel.attachments = ctrl.formOption.attaches.gridOption.data;
-                                        }
-
                                         //数据处理回调
                                         if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
                                             var isGoingon = parentCtrl.formSetting.beforeSubmitFn(formModel);
@@ -588,7 +597,11 @@
                                             if (isGoingon != undefined && !isGoingon)
                                                 return;
                                         }
-                                        
+
+                                        //设置附件列表的数据
+                                        if (!!parentCtrl.formSetting.hasAttaches) {
+                                            formModel.attachments = ctrl.formOption.attaches.gridOption.data;
+                                        }
                                         //调用创建或更新服务
                                         (isEdit ? resourceSvc.update(formModel) : resourceSvc.create(formModel))
                                             .then(function (result) {
@@ -598,10 +611,9 @@
                                                 if (typeof parentCtrl.formSetting.postSubmitFn == 'function') {
                                                     parentCtrl.formSetting.postSubmitFn(formModel);
                                                 }
-                                                $uibModalInstance.close();
                                             })
                                             .catch(function (reason) {
-                                                toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
+                                                toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                             });
                                     }
                                     else {
@@ -620,7 +632,6 @@
                     });
                 };
 
-               
 
                 //附件列表操作
                 function attachesFn(appliedCtrl,
@@ -662,7 +673,7 @@
                             })
                             .catch(function (reason) {
                                 if ((reason.toString().match('cancel') == null) && (reason.toString().match('escape') == null))
-                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
+                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                             });
 
                     };
@@ -706,7 +717,7 @@
                                     attaches.gridOption.data = attaches.gridOption.data.concat(files);
                                 })
                                 .catch(function (reason) {
-                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! " , reason.statusText));
+                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                 });
                         }
                     };
@@ -854,7 +865,7 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row"></div><div id="uibAccordions"></div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row bkm-form-item"></div><div id="uibAccordions" class="row"></div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
 
             link: function (scope, el) {
 
@@ -880,7 +891,7 @@
                     el,
                     formComponents,
                     {
-                        items: '.row',
+                        items: '.bkm-form-item',
                         buttons: '.modal-footer',
                         accordions: '#uibAccordions'
                     },
@@ -1060,7 +1071,7 @@
         angular.forEach(opt.buttons, function (t, i) {
 
             //如果空对象或未定义则继续下一个
-            if(!t) return;
+            if (!t) return;
 
             //未提供type时，默认使用bkmButton
             t.type = !!t.type ? t.type : 'bkmButton';

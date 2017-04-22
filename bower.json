@@ -27,7 +27,8 @@
   "main": [
     "./src/directives/search/search.js",
     "./src/directives/tree/bkm-tree.directive.js",
-    "./src/directives/tree/bkm.tree.css"
+    "./src/directives/tree/bkm.tree.css",
+    "./src/directives/search/search.css"
   ],
   "devDependencies": {
     "Chart.js": "~1.0.2",
