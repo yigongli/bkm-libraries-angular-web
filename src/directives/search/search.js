@@ -142,6 +142,7 @@
                     }
                     //合并分页查询参数
                     self.params.skipCount = (typeof self.gridApi.pagination == 'object') ? (self.gridApi.pagination.getPage() - 1) * self.gridOption.paginationPageSize : 0;
+                    self.params.maxResultCount = self.gridOption.paginationPageSize;
                     //调用查询服务
                     serviceApiFunc(self.params)
                         .then(function (result) {
