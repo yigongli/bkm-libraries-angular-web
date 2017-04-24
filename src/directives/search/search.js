@@ -934,9 +934,7 @@
         var accordElem = !!selectors.accordions ? el.find(selectors.accordions) : null;
 
         angular.forEach(opt.items, function (t, i) {
-
-            t = opt.items[i];
-
+            if (!t) return;
             //设置下拉列表默认的key,name标识
             t.keyName = !!t.keyName ? t.keyName : 'key';
             t.valName = !!t.valName ? t.valName : 'name';
