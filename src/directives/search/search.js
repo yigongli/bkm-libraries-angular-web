@@ -142,7 +142,6 @@
                     }
                     //合并分页查询参数
                     self.params.skipCount = (typeof self.gridApi.pagination == 'object') ? (self.gridApi.pagination.getPage() - 1) * self.gridOption.paginationPageSize : 0;
-                    self.params.maxResultCount = self.gridOption.paginationPageSize;
                     //调用查询服务
                     serviceApiFunc(self.params)
                         .then(function (result) {
@@ -572,7 +571,7 @@
                                             parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
                                         }
                                         if (!!parentCtrl.formSetting.hasAttaches) {
-                                            angular.extend(ctrl.formOption, {includeUrl: attachesTempUrl});
+                                            angular.extend(ctrl.formOption, {includeAttachesUrl: attachesTempUrl});
                                             attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                                             angular.extend(ctrl.formOption.attaches.params, attachesPara);
                                             ctrl.formOption.attaches.searchData();
@@ -582,7 +581,7 @@
                                         toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                     });
                             } else if (!!parentCtrl.formSetting.hasAttaches) {
-                                angular.extend(ctrl.formOption, {includeUrl: attachesTempUrl});
+                                angular.extend(ctrl.formOption, {includeAttachesUrl: attachesTempUrl});
                                 attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                             }
 
@@ -866,7 +865,7 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row bkm-form-item"></div><div id="uibAccordions" class="row"></div><div ng-include="options.includeUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row bkm-form-item"></div><div id="uibAccordions" class="row"></div><div ng-include="options.includeUrl"></div><div ng-include="options.includeAttachesUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
 
             link: function (scope, el) {
 
@@ -935,7 +934,9 @@
         var accordElem = !!selectors.accordions ? el.find(selectors.accordions) : null;
 
         angular.forEach(opt.items, function (t, i) {
-            if (!t) return;
+
+            t = opt.items[i];
+
             //设置下拉列表默认的key,name标识
             t.keyName = !!t.keyName ? t.keyName : 'key';
             t.valName = !!t.valName ? t.valName : 'name';
