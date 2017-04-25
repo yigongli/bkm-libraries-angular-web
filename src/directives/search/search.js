@@ -992,7 +992,7 @@
                 });
 
                 if (angular.isFunction(t.onChange)) {
-                    elemOptions.onChange = 'ng-change="dCtrl.opt.items[' + i + '].onChange(' + elemOptions.model + ')"';
+                    elemOptions.onChange = 'ng-change="dCtrl.opt.items[' + i + '].onChange(' + elemOptions.model + ',options.model)"';
                 } else {
                     elemOptions.onChange = "";
                 }
