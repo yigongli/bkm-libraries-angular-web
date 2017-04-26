@@ -63,7 +63,7 @@
             'image'
         ]
     ];
-    angular.module('bkm.library.angular.web', ['colorpicker.module']).directive('wysiwyg', [
+    angular.module('bkm.library.angular.web').directive('wysiwyg', [
         '$timeout',
         'wysiwgGui',
         '$compile',
