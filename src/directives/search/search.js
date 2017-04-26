@@ -1064,7 +1064,7 @@
                     placeholder: t.placeholder,
                     inputClass:'form-gropu',
                     name: t.model,
-                    format: 'hex8'
+                    format: 'hex'
                 };
                 if (!opt.isReadonlyForm) {
                     angular.extend(opt.colorPickerOpt, {
