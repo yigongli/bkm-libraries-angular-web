@@ -30,7 +30,7 @@
     "./src/directives/tree/bkm-tree.directive.js",
     "./src/directives/tree/bkm.tree.css",
     "./src/directives/search/search.css",
-    "./src/directives/textEditor/angular-wysiwyg.css",
+    "./src/directives/textEditor/angular-wysiwyg.js",
     "./src/directives/textEditor/wysiwyg.css"
   ],
   "devDependencies": {
