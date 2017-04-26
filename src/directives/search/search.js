@@ -688,7 +688,7 @@
                         {
                             field: " ",
                             displayName: '附件名称',
-                            cellTemplate: '<div class="operation attaches"> <a  href="{{row.entity.id|pathUrl}}">{{row.entity.name}}</a></div>'
+                            cellTemplate: '<div class="operation attaches"> <a target="blank" href="{{row.entity.id|pathUrl}}">{{row.entity.name}}</a></div>'
                         },
                         {field: "contentType", displayName: "附件类型"},
                         {field: "contentLength", displayName: "附件大小(KB)", cellFilter: "kbSize|number"},
