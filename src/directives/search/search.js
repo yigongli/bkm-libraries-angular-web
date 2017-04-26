@@ -21,7 +21,7 @@
                         <div class="col-md-12 bkm-panel-title" ng-click="status.open=!!!status.open">\
                             <span>{title}</span>\
                             <i class="pull-right glyphicon" \
-                               ng-class="{\'glyphicon-chevron-down\': status.open, \'glyphicon-chevron-right\': !status.open}"></i>\
+                               ng-class="{\'glyphicon-chevron-up\': status.open, \'glyphicon-chevron-down\': !status.open}"></i>\
                         </div>\
                     </uib-accordion-heading>\
                     <bkm-elements is-accordions=true accordion-id="{accordId}"></bkm-elements>\
