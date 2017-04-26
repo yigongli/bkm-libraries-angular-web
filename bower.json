@@ -23,7 +23,8 @@
     "font-awesome": "fontawesome#~4.7.0",
     "moment": "~2.10.6",
     "bkm-zTree-v3": "4.0.0",
-    "angular-bootstrap-colorpicker": "^3.0.28"
+    "angular-bootstrap-colorpicker": "^3.0.28",
+    "angularjs-color-picker": "~2.7.1"
   },
   "main": [
     "./src/main.module.js",

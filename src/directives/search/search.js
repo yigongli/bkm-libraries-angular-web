@@ -27,8 +27,8 @@
                     <bkm-elements is-accordions=true accordion-id="{accordId}"></bkm-elements>\
                 </div>\
             </uib-accordion>',
-
-        addressTemp: '<div class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" /></div></div>'
+        addressTemp: '<div class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="mouseenter" /></div></div>',
+        colorPickerTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<color-picker ng-model="{model}" class="form-group" options="dCtrl.opt.colorPickerOpt"></color-picker></div></div>'
     };
 
     angular.module('bkm.library.angular.web')
@@ -1057,6 +1057,36 @@
                     isFullName: t.isFullName || false //默认显示简称
                 });
                 previous.append(formatTemplate(elemOptions, uiComponents.addressTemp));
+            } else if (t.type == 'colorPicker') {
+                opt.colorPickerOpt = {
+                    required: !!!t.option,
+                    disabled: opt.isReadonlyForm,
+                    placeholder: t.placeholder,
+                    inputClass:'form-gropu',
+                    name: t.model,
+                    format: 'hex8'
+                };
+                if (!opt.isReadonlyForm) {
+                    angular.extend(opt.colorPickerOpt, {
+                        //round: true,
+                        close: {
+                            show: true,
+                            label: 'Close',
+                            class: '',
+                        },
+                        clear: {
+                            show: true,
+                            label: 'Clear',
+                            class: '',
+                        },
+                        reset: {
+                            show: true,
+                            label: 'Reset',
+                            class: '',
+                        }
+                    });
+                }
+                previous.append(formatTemplate(elemOptions, uiComponents.colorPickerTemp));
             }
             //else if (t.type == 'tags') {
             //    var loadFnName = 'loadFn' + i;

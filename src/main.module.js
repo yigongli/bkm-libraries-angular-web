@@ -3,5 +3,5 @@
  */
 (function () {
     'use strict';
-    angular.module('bkm.library.angular.web', ['colorpicker.module']);
+    angular.module('bkm.library.angular.web', ['colorpicker.module', 'color.picker']);
 })();

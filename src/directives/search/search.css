@@ -1,13 +1,14 @@
 .bkm-uib-accordion .panel {
     -webkit-box-shadow: none;
     box-shadow: none;
-    border:0 !important;
+    border: 0 !important;
 }
 
 .bkm-uib-accordion .panel-default > .panel-heading + .panel-collapse > .panel-body,
-.bkm-uib-accordion .panel-group .panel .panel-heading{
-    border:0;
+.bkm-uib-accordion .panel-group .panel .panel-heading {
+    border: 0;
 }
+
 .bkm-uib-accordion .panel-group .panel-heading + .panel-collapse > .panel-body,
 .bkm-uib-accordion .panel-default
 .bkm-uib-accordion .panel-body,
@@ -47,5 +48,9 @@
 }
 
 .bkm-uib-accordion .panel-group {
+    margin: 0;
+}
+
+.color-picker-wrapper .input-group {
     margin: 0;
 }
