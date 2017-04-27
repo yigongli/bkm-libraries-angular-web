@@ -14,7 +14,8 @@
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
-        beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{endDatePlaceholder}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
+        beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;' +
+        '<input class="form-control" type="text" placeholder="{endDatePlaceholder}" datepicker-options="{datepickerOptions}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
         accordTemp: '<uib-accordion close-others="oneAtATime" class="row bkm-uib-accordion">\
                 <div uib-accordion-group class="panel-default" is-open="status.open">\
                     <uib-accordion-heading>\
@@ -1031,8 +1032,18 @@
                 var endModelName = t.endDate.model;
                 var isEndOpen = 'endOpenDate' + endModelName.replace(/\./g, '_');
                 opt[isEndOpen] = false;
-                opt[isEndOpen + 'Click'] = function () {
+                opt[isEndOpen + 'Click'] = function (model, bName, eName) {
+                    if (!!model[bName]) {
+                        opt[isEndOpen + 'Options'].minDate = model[bName];
+                        if (!!!model[eName]) {
+                            model[eName] = model[bName];
+                        }
+                    }
                     opt[isEndOpen] = true;
+                };
+                opt[isEndOpen + 'Options'] = {
+                    minDate: new Date(),
+                    startingDay: 1
                 };
                 previous.append(formatTemplate({
                     cols: 'col-md-' + Number(elemCols.substr(elemCols.length - 1, 1)) * 2,
@@ -1046,7 +1057,8 @@
                     endDatePlaceholder: t.endDate.placeholder,
                     endDateModel: 'options.model.' + endModelName,
                     endDateOpenDate: 'dCtrl.opt.' + isEndOpen,
-                    endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click()',
+                    endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click(' + 'options.model,\'' + beginModelName + '\',\'' + endModelName + '\')',
+                    datepickerOptions: 'dCtrl.opt.' + isEndOpen + 'Options',
                     formRequired: optionPrompt
                 }, uiComponents.beginDateAndEndDateTemp));
             } else if (t.type == 'placeHolder') {
@@ -1062,7 +1074,7 @@
                     required: !!!t.option,
                     disabled: opt.isReadonlyForm,
                     placeholder: t.placeholder,
-                    inputClass:'form-gropu',
+                    inputClass: 'form-gropu',
                     name: t.model,
                     format: 'hex'
                 };
@@ -1071,17 +1083,17 @@
                         //round: true,
                         close: {
                             show: true,
-                            label: '关闭',
+                            label: 'Close',
                             class: '',
                         },
                         clear: {
                             show: true,
-                            label: '清空',
+                            label: 'Clear',
                             class: '',
                         },
                         reset: {
                             show: true,
-                            label: '重置',
+                            label: 'Reset',
                             class: '',
                         }
                     });
