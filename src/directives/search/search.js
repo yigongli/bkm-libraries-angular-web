@@ -1181,27 +1181,20 @@
 
     }
 
-    function bkmConverVal2Date($filter, $timeout) {
+    function bkmConverVal2Date($filter) {
         return {
             restrict: 'A',
             require: ['ngModel'],
             link: function (scope, el, attrs, ngModel) {
                 var m = ngModel[0];
                 m.$formatters.unshift(function (value) {
-                    var mv = value || m.$modelValue;
-                    //从 model -> view 的转换
-                    if (!!mv && angular.isString(mv)) {
-                        var v = new Date(mv);
-                        if (!isNaN(v.getTime())) {
-                            $timeout(function () {
-                                m.$setViewValue(v);
-                            }, 200);
-                            return $filter('date')(v, 'yyyy-MM-dd');
-                        } else {
-                            return mv;
-                        }
+                    if (angular.isString(m.$modelValue)) {
+                        var v = new Date(m.$modelValue);
+                        m.$setViewValue(v);
+                        return $filter('date')(v, 'yyyy-MM-dd');
+                    } else {
+                        return value;
                     }
-                    return mv;
                 });
             }
         };
