@@ -1083,17 +1083,17 @@
                         //round: true,
                         close: {
                             show: true,
-                            label: 'Close',
+                            label: '关闭',
                             class: '',
                         },
                         clear: {
                             show: true,
-                            label: 'Clear',
+                            label: '清空',
                             class: '',
                         },
                         reset: {
                             show: true,
-                            label: 'Reset',
+                            label: '重置',
                             class: '',
                         }
                     });
