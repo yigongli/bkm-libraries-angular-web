@@ -533,10 +533,11 @@
                             ctrl.formOption = {};
                             var formModel = ctrl.formOption.model = {};
                             var resourceSvc = parentCtrl.formSetting.resourceSvc;
+                            var newFormOption = {};
 
                             //初始化表单数据模型回调
                             if (typeof parentCtrl.formSetting.initFormModelFn == 'function') {
-                                parentCtrl.formSetting.initFormModelFn(formModel, rtnRow, isEdit);
+                                parentCtrl.formSetting.initFormModelFn(newFormOption,formModel, rtnRow, isEdit);
                             }
 
                             //表单标题头提示
@@ -553,7 +554,7 @@
                                             click: submitFn
                                         }]
                                 },
-                                parentCtrl.newformOption
+                                newFormOption
                             );
 
                             //查看详情或编辑时加载数据
