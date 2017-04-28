@@ -1190,7 +1190,9 @@
                 m.$formatters.unshift(function (value) {
                     if (angular.isString(m.$modelValue)) {
                         var v = new Date(m.$modelValue);
-                        m.$setViewValue(v);
+                        setTimeout(function(){
+                            m.$setViewValue(v);
+                        },200);
                         return $filter('date')(v, 'yyyy-MM-dd');
                     } else {
                         return value;
