@@ -29,7 +29,6 @@
   },
   "main": [
     "./src/main.module.js",
-    "./src/directives/textEditor/ckEditor-full.min.js",
     "./src/directives/search/search.js",
     "./src/directives/tree/bkm-tree.directive.js",
     "./src/directives/tree/bkm.tree.css",
