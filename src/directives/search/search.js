@@ -20,10 +20,10 @@
             '<uib-accordion class="row bkm-uib-accordion">\
                 <div uib-accordion-group class="panel-default" is-open="{isExpanded}">\
                     <uib-accordion-heading>\
-                        <div class="col-md-12 bkm-panel-title" ng-click="dCtrl.status=!dCtrl.status" >\
+                        <div class="col-md-12 bkm-panel-title" ng-click="status=!status" >\
                             <span>{title}</span>\
                             <i class="pull-right glyphicon" \
-                               ng-class="{\'glyphicon-chevron-up\': dCtrl.status, \'glyphicon-chevron-down\': !dCtrl.status }">\
+                               ng-class="{\'glyphicon-chevron-up\': status, \'glyphicon-chevron-down\': !status }">\
                             </i>\
                         </div>\
                     </uib-accordion-heading>\
@@ -1154,8 +1154,6 @@
                 accordId: t.accordId,
                 isExpanded: !!t.isExpanded
             };
-            //设置Accordin的初始开合状态图标
-            scope.dCtrl.status = !!t.isExpanded;
             accordElem.append(formatTemplate(accordOptions, uiComponents.accordTemp));
         });
 
