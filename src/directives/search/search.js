@@ -16,13 +16,15 @@
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
         beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;' +
         '<input class="form-control" type="text" placeholder="{endDatePlaceholder}" datepicker-options="{datepickerOptions}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
-        accordTemp: '<uib-accordion close-others="oneAtATime" class="row bkm-uib-accordion">\
-                <div uib-accordion-group class="panel-default" is-open="status.open">\
+        accordTemp:
+            '<uib-accordion class="row bkm-uib-accordion">\
+                <div uib-accordion-group class="panel-default" is-open="{isExpanded}">\
                     <uib-accordion-heading>\
-                        <div class="col-md-12 bkm-panel-title" ng-click="status.open=!!!status.open">\
+                        <div class="col-md-12 bkm-panel-title" ng-click="dCtrl.status=!dCtrl.status" >\
                             <span>{title}</span>\
                             <i class="pull-right glyphicon" \
-                               ng-class="{\'glyphicon-chevron-up\': status.open, \'glyphicon-chevron-down\': !status.open}"></i>\
+                               ng-class="{\'glyphicon-chevron-up\': dCtrl.status, \'glyphicon-chevron-down\': !dCtrl.status }">\
+                            </i>\
                         </div>\
                     </uib-accordion-heading>\
                     <bkm-elements is-accordions=true accordion-id="{accordId}"></bkm-elements>\
@@ -48,7 +50,7 @@
                             <div class="bkm-panel-title" ng-click="status.open=!!!status.open">\
                                 <span>附件列表</span>\
                                 <i class="pull-right glyphicon" \
-                                   ng-class="{\'glyphicon-chevron-down\': status.open, \'glyphicon-chevron-right\': !status.open}"></i>\
+                                   ng-class="{\'glyphicon-chevron-up\': status.open, \'glyphicon-chevron-down\': !status.open}"></i>\
                             </div>\
                         </uib-accordion-heading>\
                         <div class="attaches upfile row" ng-if="options.attaches.isShowUpload">\
@@ -335,7 +337,7 @@
 
                 var formCtrlOpt = ctrl.opt.includeOption || [];
                 if (scope.isAccordions) {
-                    var result = $filter('filter')(ctrl.opt.accordions, {accordId: scope.accordionId});
+                    var result = $filter('filter')(ctrl.opt.accordions, {accordId: scope.accordionId},true);
                     formCtrlOpt = result.length == 0 ? formCtrlOpt : result[0].accordOption;
                 }
                 scope.options = !!scope.includeOption ? scope.includeOption : formCtrlOpt;
@@ -518,7 +520,7 @@
                         backdrop: false,
                         animation: false,
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
-                        controller: function ($scope, $state, $uibModal, toastr) {
+                        controller: function ($scope, $state, $uibModalInstance, toastr) {
 
                             var ctrl = this;
 
@@ -613,6 +615,7 @@
                                                 if (typeof parentCtrl.formSetting.postSubmitFn == 'function') {
                                                     parentCtrl.formSetting.postSubmitFn(formModel);
                                                 }
+                                                $uibModalInstance.close();
                                             })
                                             .catch(function (reason) {
                                                 toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
@@ -867,7 +870,7 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row bkm-form-item"></div><div id="uibAccordions" class="row"></div><div ng-include="options.includeUrl"></div><div ng-include="options.includeAttachesUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
+            template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row bkm-form-item"></div><div id="uibAccordions" class="row"></div><div ng-include="options.includeUrl" style="margin-bottom:16px;"></div><div ng-include="options.includeAttachesUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
 
             link: function (scope, el) {
 
@@ -1081,7 +1084,6 @@
                 };
                 if (!opt.isReadonlyForm) {
                     angular.extend(opt.colorPickerOpt, {
-                        //round: true,
                         close: {
                             show: true,
                             label: '关闭',
@@ -1101,19 +1103,6 @@
                 }
                 previous.append(formatTemplate(elemOptions, uiComponents.colorPickerTemp));
             }
-            //else if (t.type == 'tags') {
-            //    var loadFnName = 'loadFn' + i;
-            //    if (!!t.loadFn) {
-            //        opt[loadFnName] = function (query) {
-            //            t.loadFn(query);
-            //        };
-            //    }
-            //    angular.extend(elemOptions, {
-            //        dispProp: t.dispProp, //配置tags-input的对象显示字段
-            //        loadFn: 'dCtrl.opt.' + loadFnName + '(query)' //配置auto-complete的数据load方法
-            //    });
-            //    previous.append(formatTemplate(elemOptions, uiComponents.tagsTemp));
-            //}
         });
 
         angular.forEach(opt.buttons, function (t, i) {
@@ -1165,6 +1154,8 @@
                 accordId: t.accordId,
                 isExpanded: !!t.isExpanded
             };
+            //设置Accordin的初始开合状态图标
+            scope.dCtrl.status = !!t.isExpanded;
             accordElem.append(formatTemplate(accordOptions, uiComponents.accordTemp));
         });
 
