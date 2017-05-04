@@ -156,9 +156,6 @@
                                     return self.searchSuccessFn();
                                 })
                             }
-                        })
-                        .catch(function (reason) {
-                            toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                         });
                 };
 
@@ -259,9 +256,6 @@
                                     toastr.success("审核成功!");
                                     $uibModalInstance.close();
                                     self.searchData();
-                                })
-                                .catch(function (reason) {
-                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                 });
                         };
 
@@ -295,10 +289,6 @@
                                     toastr.success(bkm.util.format("该{0}已被标记为审核不通过!", promptName));
                                     $uibModalInstance.close();
                                     self.searchData();
-                                })
-                                .catch(function (reason) {
-                                    if ((reason.toString().match('cancel') == null) && (reason.toString().match('escape') == null))
-                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                 });
                         }
                     },
@@ -499,10 +489,6 @@
                         .then(function (result) {
                             ctrl.searchData();
                             toastr.success("已被成功的删除!");
-                        })
-                        .catch(function (reason) {
-                            if (typeof (reason) == 'string') return;
-                            toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                         });
                 }
                 //添加
@@ -580,9 +566,6 @@
                                             angular.extend(ctrl.formOption.attaches.params, attachesPara);
                                             ctrl.formOption.attaches.searchData();
                                         }
-                                    })
-                                    .catch(function (reason) {
-                                        toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                     });
                             } else if (!!parentCtrl.formSetting.hasAttaches) {
                                 angular.extend(ctrl.formOption, {includeAttachesUrl: attachesTempUrl});
@@ -616,9 +599,6 @@
                                                     parentCtrl.formSetting.postSubmitFn(formModel);
                                                 }
                                                 $uibModalInstance.close();
-                                            })
-                                            .catch(function (reason) {
-                                                toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                             });
                                     }
                                     else {
@@ -675,10 +655,6 @@
                             .then(function (result) {
                                 var index = bkm.util.indexOf(attaches.gridOption.data, 'id', row.entity.id);
                                 attaches.gridOption.data.splice(index, 1);
-                            })
-                            .catch(function (reason) {
-                                if ((reason.toString().match('cancel') == null) && (reason.toString().match('escape') == null))
-                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                             });
 
                     };
@@ -720,9 +696,6 @@
                                         files[x].id = response.data[x].id;
                                     }
                                     attaches.gridOption.data = attaches.gridOption.data.concat(files);
-                                })
-                                .catch(function (reason) {
-                                    toastr.warning(bkm.util.format("服务器请求错误: {0} 请稍后重试! ", reason.statusText));
                                 });
                         }
                     };
