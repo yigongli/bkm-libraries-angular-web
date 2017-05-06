@@ -209,7 +209,7 @@
                     backdrop: false,
                     animation: true,
                     template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
-                    controller: function ($uibModalInstance, $scope) {
+                    controller: ['$uibModalInstance', '$scope', function ($uibModalInstance, $scope) {
 
                         //初始化数据模型
                         var ctrl = this;
@@ -291,7 +291,7 @@
                                     self.searchData();
                                 });
                         }
-                    },
+                    }],
                     controllerAs: 'ctrl',
                     size: 'lg',
                     resolve: {
@@ -506,7 +506,7 @@
                         backdrop: false,
                         animation: false,
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
-                        controller: function ($scope, $state, $uibModalInstance, toastr) {
+                        controller: ['$scope', '$state', '$uibModalInstance', 'toastr', function ($scope, $state, $uibModalInstance, toastr) {
 
                             var ctrl = this;
 
@@ -606,7 +606,7 @@
                                     }
                                 });
                             };
-                        },
+                        }],
                         controllerAs: 'ctrl',
                         size: 'lg',
                         resolve: {
