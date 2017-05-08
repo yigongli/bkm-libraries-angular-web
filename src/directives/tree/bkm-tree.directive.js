@@ -28,8 +28,8 @@
                 enable: false
             }
         })
-        .directive('bkmTree', bkmTree)
-        .directive('bkmInputTreeAddress', inputTree)
+        .directive('bkmTree', ['treeSetting', bkmTree])
+        .directive('bkmInputTreeAddress', ['$compile', '$timeout',inputTree])
         .service('bkm.zTree.Data', ['$window', 'abp.services.app.region', '$q', bkmZtreeData])
         .controller('bkmInputTreeAddressCtrl', [
             '$timeout',

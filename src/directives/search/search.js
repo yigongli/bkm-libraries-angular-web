@@ -36,12 +36,12 @@
 
     angular.module('bkm.library.angular.web')
         .controller('directiveCtrl', directiveCtrl)
-        .directive('bkmSearch', bkmSearch)
+        .directive('bkmSearch', ['$compile', bkmSearch])
         .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
-        .directive('bkmElements', bkmElements)
-        .directive('bkmMsgModal', bkmMsgModal)
+        .directive('bkmElements', ['$compile', '$filter', bkmElements])
+        .directive('bkmMsgModal', ['$compile', bkmMsgModal])
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
-        .directive('bkmConverVal2Date', bkmConverVal2Date)
+        .directive('bkmConverVal2Date', ['$filter', bkmConverVal2Date])
         .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', '$timeout', function (toastr, $uibModal, dict, $templateCache, $timeout) {
             $templateCache.put('attatchesList.html',
                 '<uib-accordion close-others="oneAtATime" class="row bkm-uib-accordion" style="margin: 0;">\
