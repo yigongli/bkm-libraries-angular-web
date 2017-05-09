@@ -54,3 +54,7 @@
 .color-picker-wrapper .input-group {
     margin: 0;
 }
+
+.bkm-backdrop {
+    background-color: rgba(10, 10, 10, 0.6);
+}
