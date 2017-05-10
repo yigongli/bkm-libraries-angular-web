@@ -504,6 +504,7 @@
                     $uibModal.open({
                         backdrop: false,
                         animation: false,
+                        windowClass:'bkm-backdrop',
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
                         controller: ['$scope', '$state', '$uibModalInstance', 'toastr', function ($scope, $state, $uibModalInstance, toastr) {
 
