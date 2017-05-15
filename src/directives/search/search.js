@@ -6,6 +6,7 @@
 
     var formComponents = {
         textTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}"  ng-disabled="{readModel}.isRead||{isRead}"   uib-popover="{tooltip}" popover-trigger="\'focus\'"/><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
+        noteTemp: '<div class="{cols}"><div style="position:relative;"><label style="color:red;font-weight:normal;padding-top:5px;">{label}</label></div></div>',
         textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
         dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
         dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-conver-val2-date uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
@@ -969,6 +970,8 @@
 
             if (t.type == 'text' || t.type == 'number' || t.type == 'password' || t.type == 'email') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textTemp));
+            } else if (t.type == 'note') {
+                previous.append(formatTemplate(elemOptions, uiComponents.noteTemp));
             } else if (t.type == 'textarea') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textareaTemp));
             } else if (t.type == 'dropDown') {
