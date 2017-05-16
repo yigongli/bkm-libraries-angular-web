@@ -28,6 +28,7 @@
     "angular-ckeditor": "^1.0.3"
   },
   "main": [
+    "./src/directives/search/angular-locale_zh-cn.js",
     "./src/directives/textEditor/ckEditor-full.min.js",
     "./src/main.module.js",
     "./src/directives/search/search.js",
