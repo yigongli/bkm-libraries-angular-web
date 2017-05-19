@@ -36,7 +36,7 @@
     "./src/directives/tree/bkm-tree.directive.js",
     "./src/directives/tree/bkm.tree.css",
     "./src/directives/search/search.css",
-    "./src/service/bkm.print.service.js",
+    "./src/service/bkm.print.service.js"
   ],
   "devDependencies": {
     "Chart.js": "~1.0.2",
