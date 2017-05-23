@@ -578,6 +578,11 @@
                                 ctrl.formOption.onSubmit(function (validResult) {
                                     if (validResult.isSuccess) {
 
+                                        //设置附件列表的数据
+                                        if (!!parentCtrl.formSetting.hasAttaches) {
+                                            formModel.attachments = ctrl.formOption.attaches.gridOption.data;
+                                        }
+
                                         //数据处理回调
                                         if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
                                             var isGoingon = parentCtrl.formSetting.beforeSubmitFn(formModel);
@@ -586,10 +591,6 @@
                                                 return;
                                         }
 
-                                        //设置附件列表的数据
-                                        if (!!parentCtrl.formSetting.hasAttaches) {
-                                            formModel.attachments = ctrl.formOption.attaches.gridOption.data;
-                                        }
                                         //调用创建或更新服务
                                         (isEdit ? resourceSvc.update(formModel) : resourceSvc.create(formModel))
                                             .then(function (result) {
