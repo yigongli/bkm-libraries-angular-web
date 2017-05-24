@@ -563,7 +563,7 @@
                                         }
                                         if (!!parentCtrl.formSetting.hasAttaches) {
                                             angular.extend(ctrl.formOption, {includeAttachesUrl: attachesTempUrl});
-                                            attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
+                                            attachesFn(ctrl, attachesPara, $scope, isEdit && !formModel.isReadAttaches, !rtnRow);
                                             angular.extend(ctrl.formOption.attaches.params, attachesPara);
                                             ctrl.formOption.attaches.searchData();
                                         }
