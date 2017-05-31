@@ -14,10 +14,10 @@
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
-        beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6"><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div><div class="col-md-6" style="padding-right: 0;"><label>{endDateLabel}</label>&nbsp;&nbsp;' +
-        '<input class="form-control" type="text" placeholder="{endDatePlaceholder}" datepicker-options="{datepickerOptions}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div>',
+        beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6 bkm-date-picker" style="padding-left: 0;"><div class="form-group" {validError}><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div><div class="col-md-6 bkm-date-picker" style="padding-right: 0;"><div class="form-group" {validError}><label>{endDateLabel}</label>&nbsp;&nbsp;' +
+        '<input class="form-control" type="text" placeholder="{endDatePlaceholder}" datepicker-options="{datepickerOptions}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
         accordTemp:
-            '<uib-accordion class="row bkm-uib-accordion">\
+        '<uib-accordion class="row bkm-uib-accordion">\
                 <div uib-accordion-group class="panel-default" is-open="{isExpanded}">\
                     <uib-accordion-heading>\
                         <div class="col-md-12 bkm-panel-title" ng-click="status=!status" >\
@@ -99,10 +99,10 @@
              * @returns {string} 返回替换后的值
              */
             window.baseSearchFn = function ($scope,
-                                            serviceApiFunc,
-                                            paramsSetting,
-                                            isInitLoad,
-                                            registerCustomizedApi) {
+                serviceApiFunc,
+                paramsSetting,
+                isInitLoad,
+                registerCustomizedApi) {
 
                 var self = this;
                 //构造页面查询参数基类对象
@@ -214,7 +214,7 @@
                         //初始化数据模型
                         var ctrl = this;
                         ctrl.formOption = {};
-                        var formModel = ctrl.formOption.model = self.formSetting.approveParams || {relatedId: rtnRows[0].id};
+                        var formModel = ctrl.formOption.model = self.formSetting.approveParams || { relatedId: rtnRows[0].id };
 
                         //表单数据模型绑定
                         $scope.modalTitle = promptName + '审核';
@@ -327,7 +327,7 @@
 
                 var formCtrlOpt = ctrl.opt.includeOption || [];
                 if (scope.isAccordions) {
-                    var result = $filter('filter')(ctrl.opt.accordions, {accordId: scope.accordionId},true);
+                    var result = $filter('filter')(ctrl.opt.accordions, { accordId: scope.accordionId }, true);
                     formCtrlOpt = result.length == 0 ? formCtrlOpt : result[0].accordOption;
                 }
                 scope.options = !!scope.includeOption ? scope.includeOption : formCtrlOpt;
@@ -415,11 +415,11 @@
      *
      */
     function bkmGeneralCrud($compile,
-                            $uibModal,
-                            toastr,
-                            dict,
-                            fileSvc,
-                            bkmUpload) {
+        $uibModal,
+        toastr,
+        dict,
+        fileSvc,
+        bkmUpload) {
 
         return {
             restrict: 'E',
@@ -469,7 +469,7 @@
 
                     var ctrl = parentCtrl;
                     var delSvc = ctrl.formSetting.resourceSvc.delete;
-                    var delParas = ctrl.formSetting.deleteParas || {id: row.entity.id};
+                    var delParas = ctrl.formSetting.deleteParas || { id: row.entity.id };
 
                     var modalInstance = $uibModal.open({
                         backdrop: false,
@@ -505,7 +505,7 @@
                     $uibModal.open({
                         backdrop: false,
                         animation: false,
-                        windowClass:'bkm-backdrop',
+                        windowClass: 'bkm-backdrop',
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
                         controller: ['$scope', '$state', '$uibModalInstance', 'toastr', function ($scope, $state, $uibModalInstance, toastr) {
 
@@ -526,7 +526,7 @@
 
                             //初始化表单数据模型回调
                             if (typeof parentCtrl.formSetting.initFormModelFn == 'function') {
-                                parentCtrl.formSetting.initFormModelFn(newFormOption,formModel, rtnRow, isEdit);
+                                parentCtrl.formSetting.initFormModelFn(newFormOption, formModel, rtnRow, isEdit);
                             }
 
                             //表单标题头提示
@@ -547,10 +547,10 @@
                             );
 
                             //查看详情或编辑时加载数据
-                            var attachesPara = {'relatedId': !!rtnRow ? rtnRow.id : ''};//初始化附件查询参数对象
+                            var attachesPara = { 'relatedId': !!rtnRow ? rtnRow.id : '' };//初始化附件查询参数对象
                             if (rtnRow) {
                                 //获取信息
-                                resourceSvc.get({id: rtnRow.id})
+                                resourceSvc.get({ id: rtnRow.id })
                                     .then(function (result) {
                                         var items = result.data || [];
 
@@ -562,14 +562,14 @@
                                             parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
                                         }
                                         if (!!parentCtrl.formSetting.hasAttaches) {
-                                            angular.extend(ctrl.formOption, {includeAttachesUrl: attachesTempUrl});
+                                            angular.extend(ctrl.formOption, { includeAttachesUrl: attachesTempUrl });
                                             attachesFn(ctrl, attachesPara, $scope, isEdit && !formModel.isReadAttaches, !rtnRow);
                                             angular.extend(ctrl.formOption.attaches.params, attachesPara);
                                             ctrl.formOption.attaches.searchData();
                                         }
                                     });
                             } else if (!!parentCtrl.formSetting.hasAttaches) {
-                                angular.extend(ctrl.formOption, {includeAttachesUrl: attachesTempUrl});
+                                angular.extend(ctrl.formOption, { includeAttachesUrl: attachesTempUrl });
                                 attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                             }
 
@@ -622,10 +622,10 @@
 
                 //附件列表操作
                 function attachesFn(appliedCtrl,
-                                    attchesPara,
-                                    scope,
-                                    isEdit, //附件列表是否处于编辑状态
-                                    isNew //附件列表是否处于新建状态
+                    attchesPara,
+                    scope,
+                    isEdit, //附件列表是否处于编辑状态
+                    isNew //附件列表是否处于新建状态
                 ) {
 
                     //初始化附件数据模型
@@ -665,18 +665,18 @@
                     baseSearchFn.apply(attaches, [scope, fileSvc.getAll, , false]);
 
                     //配置附件列表
-                    angular.extend(attaches.gridOption, {paginationPageSize: 5});
+                    angular.extend(attaches.gridOption, { paginationPageSize: 5 });
                     attaches.gridOption.columnDefs = [
-                        {field: "seq", displayName: "序号", width: 50},
+                        { field: "seq", displayName: "序号", width: 50 },
                         {
                             field: " ",
                             displayName: '附件名称',
                             cellTemplate: '<div class="operation attaches"> <a target="blank" href="{{row.entity.id|pathUrl}}">{{row.entity.name}}</a></div>'
                         },
-                        {field: "contentType", displayName: "附件类型"},
-                        {field: "contentLength", displayName: "附件大小(KB)", cellFilter: "kbSize|number"},
-                        {field: "creatorName", displayName: "创建人"},
-                        {field: "creationTime", displayName: "创建时间", cellFilter: "date:'yyyy-MM-dd HH:mm'"},
+                        { field: "contentType", displayName: "附件类型" },
+                        { field: "contentLength", displayName: "附件大小(KB)", cellFilter: "kbSize|number" },
+                        { field: "creatorName", displayName: "创建人" },
+                        { field: "creationTime", displayName: "创建时间", cellFilter: "date:'yyyy-MM-dd HH:mm'" },
                         {
                             field: "operation",
                             displayName: '操作',
@@ -938,7 +938,7 @@
                 t.placeholder = t.placeholder || ('请输入' + t.label);
             //设置鼠标点击事件函数名称
             var clickFnName = 'click' + i;
-            if (typeof t.click== 'function') {
+            if (typeof t.click == 'function') {
                 opt[clickFnName] = function () {
                     t.click();
                 };
@@ -946,7 +946,7 @@
             //设置动态设置元素disable的函数名称
             var dynaIsReadModel = 'dynaIsReadModel' + i;
             if (typeof t.readModel == 'object') {
-                opt[dynaIsReadModel]=t.readModel;
+                opt[dynaIsReadModel] = t.readModel;
             }
             //设置初始化元素选项
             var elemOptions = {
@@ -965,7 +965,7 @@
                 spanCss: t.spanCss || 'glyphicon glyphicon-search',
                 isShowSpan: !!t.click, //默认不添加span元素
                 readModel: 'dCtrl.opt.' + dynaIsReadModel,
-                isRead:!!opt.isReadonlyForm || !!t.isRead
+                isRead: !!opt.isReadonlyForm || !!t.isRead
             };
 
 
@@ -1127,7 +1127,7 @@
                 });
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.downloadButtonTemp));
             } else if (t.type == 'bkmButton') {
-                angular.extend(btnOptions, {category: t.category});
+                angular.extend(btnOptions, { category: t.category });
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.bkmButtonTemp));
             }
         });
@@ -1164,9 +1164,9 @@
                 m.$formatters.unshift(function (value) {
                     if (angular.isString(m.$modelValue)) {
                         var v = new Date(m.$modelValue);
-                        setTimeout(function(){
+                        setTimeout(function () {
                             m.$setViewValue(v);
-                        },200);
+                        }, 200);
                         return $filter('date')(v, 'yyyy-MM-dd');
                     } else {
                         return value;
