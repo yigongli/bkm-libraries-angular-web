@@ -467,9 +467,8 @@
                             return;
                     }
 
-                    var ctrl = parentCtrl;
-                    var delSvc = ctrl.formSetting.resourceSvc.delete;
-                    var delParas = ctrl.formSetting.deleteParas || { id: row.entity.id };
+                    var delSvc = parentCtrl.formSetting.resourceSvc.delete;
+                    var delParas = parentCtrl.formSetting.deleteParas || { id: row.entity.id };
 
                     var modalInstance = $uibModal.open({
                         backdrop: false,
@@ -487,7 +486,7 @@
                             return delSvc(delParas);
                         })
                         .then(function (result) {
-                            ctrl.searchData();
+                            parentCtrl.searchData();
                             toastr.success("已被成功的删除!");
                         });
                 }
