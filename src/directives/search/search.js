@@ -548,8 +548,13 @@
                             //查看详情或编辑时加载数据
                             var attachesPara = { 'relatedId': !!rtnRow ? rtnRow.id : '' };//初始化附件查询参数对象
                             if (rtnRow) {
+                                var getParas = { id: rtnRow.id };
+                                //判断是否存在get方法的额外参数
+                                if (rtnRow.addiParas) {
+                                    angular.extend(getParas, { type: rtnRow.addiParas });
+                                }
                                 //获取信息
-                                resourceSvc.get({ id: rtnRow.id })
+                                resourceSvc.get(getParas)
                                     .then(function (result) {
                                         var items = result.data || [];
 
