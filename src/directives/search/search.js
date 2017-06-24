@@ -548,33 +548,55 @@
                             //查看详情或编辑时加载数据
                             var attachesPara = { 'relatedId': !!rtnRow ? rtnRow.id : '' };//初始化附件查询参数对象
                             if (rtnRow) {
-                                var getParas = { id: rtnRow.id };
-                                //判断是否存在get方法的额外参数
-                                if (rtnRow.addiParas) {
-                                    angular.extend(getParas, { type: rtnRow.addiParas });
+                                //输入的rtnRow就是要显示的明细结果集
+                                if (rtnRow.isShowData) {
+                                    bindResultToForm(rtnRow);
+                                } else {
+                                    var getParas = { id: rtnRow.id };
+                                    //判断是否存在get方法的额外参数
+                                    if (rtnRow.addiParas) {
+                                        angular.extend(getParas, { type: rtnRow.addiParas });
+                                    }
+                                    //获取信息
+                                    resourceSvc.get(getParas)
+                                        .then(function (result) {
+                                            var items = result.data || [];
+
+                                            //表单数据绑定
+                                            angular.extend(formModel, items);
+
+                                            //表单绑定数据处理回调
+                                            if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
+                                                parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
+                                            }
+                                            if (!!parentCtrl.formSetting.hasAttaches) {
+                                                angular.extend(ctrl.formOption, { includeAttachesUrl: attachesTempUrl });
+                                                attachesFn(ctrl, attachesPara, $scope, isEdit && !formModel.isReadAttaches, !rtnRow);
+                                                angular.extend(ctrl.formOption.attaches.params, attachesPara);
+                                                ctrl.formOption.attaches.searchData();
+                                            }
+                                        });
                                 }
-                                //获取信息
-                                resourceSvc.get(getParas)
-                                    .then(function (result) {
-                                        var items = result.data || [];
-
-                                        //表单数据绑定
-                                        angular.extend(formModel, items);
-
-                                        //表单绑定数据处理回调
-                                        if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
-                                            parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
-                                        }
-                                        if (!!parentCtrl.formSetting.hasAttaches) {
-                                            angular.extend(ctrl.formOption, { includeAttachesUrl: attachesTempUrl });
-                                            attachesFn(ctrl, attachesPara, $scope, isEdit && !formModel.isReadAttaches, !rtnRow);
-                                            angular.extend(ctrl.formOption.attaches.params, attachesPara);
-                                            ctrl.formOption.attaches.searchData();
-                                        }
-                                    });
                             } else if (!!parentCtrl.formSetting.hasAttaches) {
                                 angular.extend(ctrl.formOption, { includeAttachesUrl: attachesTempUrl });
                                 attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
+                            }
+
+                            //数据绑定的函数
+                            function bindResultToForm(items) {
+                                //表单数据绑定
+                                angular.extend(formModel, items);
+
+                                //表单绑定数据处理回调
+                                if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
+                                    parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
+                                }
+                                if (!!parentCtrl.formSetting.hasAttaches) {
+                                    angular.extend(ctrl.formOption, { includeAttachesUrl: attachesTempUrl });
+                                    attachesFn(ctrl, attachesPara, $scope, isEdit && !formModel.isReadAttaches, !rtnRow);
+                                    angular.extend(ctrl.formOption.attaches.params, attachesPara);
+                                    ctrl.formOption.attaches.searchData();
+                                }
                             }
 
                             //提交表单
