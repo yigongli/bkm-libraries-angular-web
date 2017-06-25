@@ -1060,7 +1060,7 @@
                     minDate: new Date(),
                     startingDay: 1
                 };
-                var template = !!options.rendSearch ? uiComponents.beginDateAndEndDateTemp.replace(/class="form-group"/ig, '') : uiComponents.beginDateAndEndDateTemp;
+                var template = !!options.renderSearch ? uiComponents.beginDateAndEndDateTemp.replace(/class="form-group"/ig, '') : uiComponents.beginDateAndEndDateTemp;
                 previous.append(formatTemplate({
                     cols: 'col-md-' + Number(elemCols.substr(elemCols.length - 1, 1)) * 2,
                     beginDateLabel: t.beginDate.label,
