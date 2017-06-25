@@ -384,6 +384,7 @@
             link: function (scope, el, attrs) {
                 //定义默认的布局列数
                 var cols = !!scope.cols ? scope.cols : 3;
+                scope.options.renderSearch = true;
                 linkFunc(
                     scope,
                     el,
@@ -729,7 +730,7 @@
                     };
                 }
 
-
+                scope.options.renderSearch = true;
                 linkFunc(
                     scope,
                     el,
@@ -1059,6 +1060,7 @@
                     minDate: new Date(),
                     startingDay: 1
                 };
+                var template = !!options.rendSearch ? uiComponents.beginDateAndEndDateTemp.replace(/class="form-group"/ig, '') : uiComponents.beginDateAndEndDateTemp;
                 previous.append(formatTemplate({
                     cols: 'col-md-' + Number(elemCols.substr(elemCols.length - 1, 1)) * 2,
                     beginDateLabel: t.beginDate.label,
@@ -1074,7 +1076,7 @@
                     endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click(' + 'options.model,\'' + beginModelName + '\',\'' + endModelName + '\')',
                     datepickerOptions: 'dCtrl.opt.' + isEndOpen + 'Options',
                     formRequired: optionPrompt
-                }, uiComponents.beginDateAndEndDateTemp));
+                }, template));
             } else if (t.type == 'placeHolder') {
                 previous.append(formatTemplate(elemOptions, uiComponents.placeHolderTemp));
             } else if (t.type == 'address') {
