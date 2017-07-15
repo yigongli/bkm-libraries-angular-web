@@ -1,4 +1,4 @@
-.bkm-uib-accordion .panel {
+﻿.bkm-uib-accordion .panel {
     -webkit-box-shadow: none;
     box-shadow: none;
     border: 0 !important;
@@ -57,4 +57,86 @@
 
 .bkm-backdrop {
     background-color: rgba(10, 10, 10, 0.6);
+}
+
+.search-condition .col-md-3 {
+    padding-bottom: 10px;
+}
+
+form .search-condition .search-btn {
+    padding-bottom: 5px;
+}
+
+.search-btn .btn {
+    margin-left: 5px;
+}
+
+ui-view .panel-body .search-condition .form-control {
+    width: 150px;
+}
+
+.modal-body .panel-body .search-condition .form-control {
+    width: 100px;
+}
+
+//搜索条件占位符
+.modal-body .placeholder {
+    visibility: hidden;
+    height: 61px;
+}
+
+
+
+//以下用于设置附件列表的样式
+.attaches a:hover {
+    text-decoration: underline !important;
+}
+
+.upfile {
+    text-align: right;
+    padding-bottom: 2px;
+}
+
+
+.file-download {
+    text-align: center;
+    line-height: 30px;
+    a{
+        cursor: pointer;
+        margin-right:4px;
+    }
+    a:hover{
+        text-decoration:  underline !important;
+    }
+}
+
+//开始和结束日期样式
+.bkm-end-date {
+    padding-right:0px;
+}
+
+//设置input输入框组合图标的样式
+.input-icon {
+    position: absolute;
+    top: auto;
+    bottom: 6px;
+    right: 4px;
+}
+
+.input-datepicker {
+    position: absolute;
+    top: auto;
+    bottom: 6px;
+    right: 1px;
+    font-size: 12px;
+}
+
+
+.input-group-addon {
+    padding: 3px 6px;
+}
+
+.dropdown .input-group {
+    margin-bottom: 0px;
+    width: inherit;
 }

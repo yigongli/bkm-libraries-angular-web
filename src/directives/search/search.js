@@ -9,13 +9,72 @@
         noteTemp: '<div class="{cols}"><div style="position:relative;"><label style="color:red;font-weight:normal;padding-top:5px;">{label}</label></div></div>',
         textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
         dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
-        dateTemp: '<div class="{cols}"><div class="bkm-date-picker"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-conver-val2-date uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" class="form-control" ng-model="{model}" type="datetime" {validateAttr} placeholder="{placeholder}" readOnly="true"  uib-datepicker-popup is-open="{openDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{click}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
+        dateTemp:
+            '<div class="{cols}">\
+                <div class="{formStyle}" {validError}>\
+                    <div class="dropdown">\
+                        <label>{label}{formRequired}</label>&nbsp;&nbsp;\
+                        <div class="input-group">\
+                            <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">\
+                                <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly>\
+                             </a>\
+                            <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
+                                    <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep},dropdownSelector: \'#dropdown2\' }"/>\
+                            </ul>\
+                            <span class="input-group-addon" ng-click="{model}=null">\
+                                    <i class="input-datepicker glyphicon glyphicon-remove"></i>\
+                            </span>\
+                        </div>\
+                     </div>\
+                 </div>\
+              </div>',
         buttonTemp: '<button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
-        beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6 bkm-date-picker" style="padding-left: 0;"><div class="form-group" {validError}><label>{beginDateLabel}</label>&nbsp;&nbsp;<input bkm-conver-val2-date class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div><div class="col-md-6 bkm-date-picker" style="padding-right: 0;"><div class="form-group" {validError}><label>{endDateLabel}</label>&nbsp;&nbsp;' +
-        '<input bkm-conver-val2-date class="form-control" type="text" placeholder="{endDatePlaceholder}" datepicker-options="{datepickerOptions}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
+        //beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6 bkm-date-picker" style="padding-left: 0;"><div class="form-group" {validError}><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div><div class="col-md-6 bkm-date-picker" style="padding-right: 0;"><div class="form-group" {validError}><label>{endDateLabel}</label>&nbsp;&nbsp;' +
+        //'<input class="form-control" type="text" placeholder="{endDatePlaceholder}" datepicker-options="{datepickerOptions}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
+        beginDateAndEndDateTemp: 
+            ' <div class="{cols}">\
+                <div class="col-md-6" style="padding-left: 0;">\
+                        <div class="dropdown dropdown-start-parent">\
+                            <label>{beginDateLabel}{formRequired}&nbsp;&nbsp;</label>\
+                            <div class="input-group date">\
+                                <a class="dropdown-toggle" id="dropdownStart" role="button" data-toggle="dropdown" data-target="#" href="#">\
+                                    <input type="text" class="form-control" ng-model="{beginDateModel}" data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{beginDatePlaceholder}" readOnly>\
+                                </a>\
+                                <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
+                                    <datetimepicker ng-model="{beginDateModel}"\
+                                                    data-datetimepicker-config="{ minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#dropdownStart\', renderOn: \'end-date-changed\' }"\
+                                                    data-on-set-time="startDateOnSetTime()"\
+                                                    data-before-render="startDateBeforeRender($dates)"></datetimepicker>\
+                                </ul>\
+                                <span class="input-group-addon" ng-click="{beginDateModel}=null">\
+                                    <i class="input-datepicker glyphicon glyphicon-remove"></i>\
+                                </span>\
+                            </div>\
+                    </div>\
+                </div>\
+                <div class="col-md-6" style="padding-right: 0;">\
+                        <div class="dropdown dropdown-end-parent" >\
+                            <label>{endDateLabel}{formRequired}&nbsp;&nbsp;</label>\
+                            <div class="input-group date">\
+                                <a class="dropdown-toggle" id="dropdownEnd" role="button" data-toggle="dropdown" data-target="#" href="#">\
+                                    <input type="text" class="form-control" ng-model="{endDateModel}" data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{endDatePlaceholder}" readOnly>\
+                                </a>\
+                                <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
+                                    <datetimepicker ng-model="{endDateModel}"\
+                                                    data-datetimepicker-config="{ minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#dropdownEnd\', renderOn: \'start-date-changed\'}"\
+                                                    data-on-set-time="endDateOnSetTime()"\
+                                                    data-before-render="endDateBeforeRender($view, $dates, $leftDate, $upDate, $rightDate)"></datetimepicker>\
+                                </ul>\
+                                <span class="input-group-addon" ng-click="{endDateModel}=null">\
+                                    <i class="input-datepicker glyphicon glyphicon-remove"></i>\
+                                </span>\
+                            </div>\
+                        </div>\
+                </div>\
+            </div>',
         accordTemp:
         '<uib-accordion class="row bkm-uib-accordion">\
                 <div uib-accordion-group class="panel-default" is-open="{isExpanded}">\
@@ -32,6 +91,13 @@
             </uib-accordion>',
         addressTemp: '<div class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="\'focus\'" /></div></div>',
         colorPickerTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<color-picker ng-model="{model}" class="form-group" options="dCtrl.opt.colorPickerOpt"></color-picker></div></div>'
+    };
+
+    //date filter format definition
+    var dateFormatDef = {
+        day: 'YYYY-MM-DD',
+        hour: 'YYYY-MM-DD HH:MM',
+        minute: 'YYYY-MM-DD HH:MM:SS'
     };
 
     angular.module('bkm.library.angular.web')
@@ -380,10 +446,10 @@
             controller: 'directiveCtrl',
             controllerAs: 'dCtrl',
             replace: true,
-            template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
+            template: '<div class="search-condition "><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
             link: function (scope, el, attrs) {
                 //定义默认的布局列数
-                var cols = !!scope.cols ? scope.cols : 3;
+                var cols = !!scope.cols ? scope.cols : 4;
                 scope.options.renderSearch = true;
                 linkFunc(
                     scope,
@@ -963,6 +1029,8 @@
                 t.placeholder = t.placeholder || ('请填写数字，小数点保留两位');
             if (t.type == 'text' && !opt.isReadonlyForm)
                 t.placeholder = t.placeholder || ('请输入' + t.label);
+            if (t.type == 'date' && !opt.isReadonlyForm)
+                t.placeholder = t.placeholder || ('点击选择日期');
             //设置鼠标点击事件函数名称
             var clickFnName = 'click' + i;
             if (typeof t.click == 'function') {
@@ -1026,57 +1094,29 @@
                 }
 
             } else if (t.type == 'date') {
-                var isOpen = 'openDate' + t.model.replace(/\./g, '_');
-                opt[isOpen] = false;
-                opt[isOpen + 'Click'] = function () {
-                    opt[isOpen] = true;
-                };
                 angular.extend(elemOptions, {
-                    openDate: 'dCtrl.opt.' + isOpen,
-                    click: 'dCtrl.opt.' + isOpen + 'Click()'
+                    minView: !t.minView ? 'day' : t.minView,
+                    minuteStep: !t.minuteStep ? '1' : t.minuteStep
                 });
+                elemOptions.dateFormat = dateFormatDef[elemOptions.minView];
                 previous.append(formatTemplate(elemOptions, uiComponents.dateTemp));
             } else if (t.type == 'beginDateAndEndDate') {
-                var beginModelName = t.beginDate.model;
-                var isBeginOpen = 'beginOpenDate' + beginModelName.replace(/\./g, '_');
-                opt[isBeginOpen] = false;
-                opt[isBeginOpen + 'Click'] = function () {
-                    opt[isBeginOpen] = true;
-                };
-
-                var endModelName = t.endDate.model;
-                var isEndOpen = 'endOpenDate' + endModelName.replace(/\./g, '_');
-                opt[isEndOpen] = false;
-                opt[isEndOpen + 'Click'] = function (model, bName, eName) {
-                    if (!!model[bName]) {
-                        opt[isEndOpen + 'Options'].minDate = model[bName];
-                        if (!!!model[eName]) {
-                            model[eName] = model[bName];
-                        }
-                    }
-                    opt[isEndOpen] = true;
-                };
-                opt[isEndOpen + 'Options'] = {
-                    minDate: new Date(),
-                    startingDay: 1
-                };
                 var template = !!options.renderSearch ? uiComponents.beginDateAndEndDateTemp.replace(/class="form-group"/ig, '') : uiComponents.beginDateAndEndDateTemp;
-                previous.append(formatTemplate({
-                    cols: 'col-md-' + Number(elemCols.substr(elemCols.length - 1, 1)) * 2,
-                    beginDateLabel: t.beginDate.label,
-                    beginDatePlaceholder: t.beginDate.placeholder,
-                    beginDateModel: 'options.model.' + beginModelName,
-                    beginDateOpenDate: 'dCtrl.opt.' + isBeginOpen,
-                    beginDateClick: 'dCtrl.opt.' + isBeginOpen + 'Click()',
-
-                    endDateLabel: t.endDate.label,
-                    endDatePlaceholder: t.endDate.placeholder,
-                    endDateModel: 'options.model.' + endModelName,
-                    endDateOpenDate: 'dCtrl.opt.' + isEndOpen,
-                    endDateClick: 'dCtrl.opt.' + isEndOpen + 'Click(' + 'options.model,\'' + beginModelName + '\',\'' + endModelName + '\')',
-                    datepickerOptions: 'dCtrl.opt.' + isEndOpen + 'Options',
-                    formRequired: optionPrompt
-                }, template));
+                angular.extend(elemOptions, 
+                    {
+                        minView: !t.minView ? 'day' : t.minView,
+                        minuteStep: !t.minuteStep ? '1' : t.minuteStep,
+                        cols: 'col-md-' + Number(elemCols.substr(elemCols.length - 1, 1)) * 2,
+                        beginDateLabel: t.beginDate.label,
+                        beginDatePlaceholder: !t.beginDate.placeholder ? "点击选择日期" : t.beginDate.placeholder,
+                        beginDateModel: 'options.model.' + t.beginDate.model,
+                        endDateLabel: t.endDate.label,
+                        endDatePlaceholder: !t.endDate.placeholder ? "点击选择日期" : t.endDate.placeholder,
+                        endDateModel: 'options.model.' + t.endDate.model
+                    }
+                );
+                elemOptions.dateFormat = dateFormatDef[elemOptions.minView];
+                previous.append(formatTemplate(elemOptions, template));
             } else if (t.type == 'placeHolder') {
                 previous.append(formatTemplate(elemOptions, uiComponents.placeHolderTemp));
             } else if (t.type == 'address') {
