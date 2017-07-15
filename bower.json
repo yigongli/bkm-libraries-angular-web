@@ -23,9 +23,12 @@
     "font-awesome": "fontawesome#~4.7.0",
     "moment": "~2.10.6",
     "bkm-zTree-v3": "4.0.1",
+    "ng-file-upload": "12.2.13",
     "angular-bootstrap-colorpicker": "^3.0.28",
     "angularjs-color-picker": "~2.7.1",
-    "angular-ckeditor": "^1.0.3"
+    "angular-ckeditor": "^1.0.3",
+    "angular-bootstrap-datetimepicker": "^1.1.4",
+    "angular-date-time-input": "^1.2.1"
   },
   "main": [
     "./src/service/jquery.PrintArea.js",
@@ -33,9 +36,9 @@
     "./src/directives/textEditor/ckEditor-full.min.js",
     "./src/main.module.js",
     "./src/directives/search/search.js",
+    "./src/directives/search/search.css",
     "./src/directives/tree/bkm-tree.directive.js",
     "./src/directives/tree/bkm.tree.css",
-    "./src/directives/search/search.css",
     "./src/service/bkm.print.service.js"
   ],
   "devDependencies": {
