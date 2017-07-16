@@ -32,9 +32,7 @@
         downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
         bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
-        //beginDateAndEndDateTemp: '<div class="{cols}"><div class="col-md-6 bkm-date-picker" style="padding-left: 0;"><div class="form-group" {validError}><label>{beginDateLabel}</label>&nbsp;&nbsp;<input class="form-control" type="text" placeholder="{beginDatePlaceholder}" readOnly="true" ng-model="{beginDateModel}" uib-datepicker-popup is-open="{beginDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" class="btn btn-default datepicker" ng-click="{beginDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div><div class="col-md-6 bkm-date-picker" style="padding-right: 0;"><div class="form-group" {validError}><label>{endDateLabel}</label>&nbsp;&nbsp;' +
-        //'<input class="form-control" type="text" placeholder="{endDatePlaceholder}" datepicker-options="{datepickerOptions}" readOnly="true" ng-model="{endDateModel}" uib-datepicker-popup is-open="{endDateOpenDate}" current-text="今天" clear-text="清除" close-text="关闭"/><button type="button" style="right:0;" class="btn btn-default datepicker" ng-click="{endDateClick}"><i class="glyphicon glyphicon-calendar"></i></button></div></div></div>',
-        beginDateAndEndDateTemp: 
+        beginDateAndEndDateTemp:
             ' <div class="{cols}">\
                 <div class="col-md-6" style="padding-left: 0;">\
                         <div class="dropdown dropdown-start-parent">\
@@ -46,8 +44,8 @@
                                 <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
                                     <datetimepicker ng-model="{beginDateModel}"\
                                                     data-datetimepicker-config="{ minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#dropdownStart\', renderOn: \'end-date-changed\' }"\
-                                                    data-on-set-time="startDateOnSetTime()"\
-                                                    data-before-render="startDateBeforeRender($dates)"></datetimepicker>\
+                                                    data-on-set-time="{startDateOnSetTime}"\
+                                                    data-before-render="{startDateBeforeRender}"></datetimepicker>\
                                 </ul>\
                                 <span class="input-group-addon" ng-click="{beginDateModel}=null">\
                                     <i class="input-datepicker glyphicon glyphicon-remove"></i>\
@@ -65,8 +63,8 @@
                                 <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
                                     <datetimepicker ng-model="{endDateModel}"\
                                                     data-datetimepicker-config="{ minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#dropdownEnd\', renderOn: \'start-date-changed\'}"\
-                                                    data-on-set-time="endDateOnSetTime()"\
-                                                    data-before-render="endDateBeforeRender($view, $dates, $leftDate, $upDate, $rightDate)"></datetimepicker>\
+                                                    data-on-set-time="{endDateOnSetTime}"\
+                                                    data-before-render="{endDateBeforeRender}"></datetimepicker>\
                                 </ul>\
                                 <span class="input-group-addon" ng-click="{endDateModel}=null">\
                                     <i class="input-datepicker glyphicon glyphicon-remove"></i>\
@@ -76,19 +74,19 @@
                 </div>\
             </div>',
         accordTemp:
-        '<uib-accordion class="row bkm-uib-accordion">\
-                <div uib-accordion-group class="panel-default" is-open="{isExpanded}">\
-                    <uib-accordion-heading>\
-                        <div class="col-md-12 bkm-panel-title" ng-click="status=!status" >\
-                            <span>{title}</span>\
-                            <i class="pull-right glyphicon" \
-                               ng-class="{\'glyphicon-chevron-up\': status, \'glyphicon-chevron-down\': !status }">\
-                            </i>\
-                        </div>\
-                    </uib-accordion-heading>\
-                    <bkm-elements is-accordions=true accordion-id="{accordId}"></bkm-elements>\
-                </div>\
-            </uib-accordion>',
+            '<uib-accordion class="row bkm-uib-accordion">\
+                    <div uib-accordion-group class="panel-default" is-open="{isExpanded}">\
+                        <uib-accordion-heading>\
+                            <div class="col-md-12 bkm-panel-title" ng-click="status=!status" >\
+                                <span>{title}</span>\
+                                <i class="pull-right glyphicon" \
+                                   ng-class="{\'glyphicon-chevron-up\': status, \'glyphicon-chevron-down\': !status }">\
+                                </i>\
+                            </div>\
+                        </uib-accordion-heading>\
+                        <bkm-elements is-accordions=true accordion-id="{accordId}"></bkm-elements>\
+                    </div>\
+                </uib-accordion>',
         addressTemp: '<div class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="\'focus\'" /></div></div>',
         colorPickerTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<color-picker ng-model="{model}" class="form-group" options="dCtrl.opt.colorPickerOpt"></color-picker></div></div>'
     };
@@ -96,18 +94,17 @@
     //date filter format definition
     var dateFormatDef = {
         day: 'YYYY-MM-DD',
-        hour: 'YYYY-MM-DD HH:MM',
-        minute: 'YYYY-MM-DD HH:MM:SS'
+        hour: 'YYYY-MM-DD HH:mm',
+        minute: 'YYYY-MM-DD HH:mm'
     };
 
-    angular.module('bkm.library.angular.web')
+    angular.module('bkm.library.angular.web', ['ui.dateTimeInput', 'ui.bootstrap.datetimepicker'])
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', ['$compile', bkmSearch])
         .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
         .directive('bkmElements', ['$compile', '$filter', bkmElements])
         .directive('bkmMsgModal', ['$compile', bkmMsgModal])
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
-        .directive('bkmConverVal2Date', ['$filter', bkmConverVal2Date])
         .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', '$timeout', function (toastr, $uibModal, dict, $templateCache, $timeout) {
             $templateCache.put('attatchesList.html',
                 '<uib-accordion close-others="oneAtATime" class="row bkm-uib-accordion" style="margin: 0;">\
@@ -1000,8 +997,7 @@
         //将指令参数配置到Controller上在指令间共享
         var opt = scope.dCtrl.opt = angular.extend({}, options);
 
-        var i, t;
-
+        //定位元素位置
         var previous = selectors.items == '' ? el : el.find(selectors.items);
         var btnPrevious = selectors.buttons == '' ? el : el.find(selectors.buttons);
         var accordElem = !!selectors.accordions ? el.find(selectors.accordions) : null;
@@ -1063,7 +1059,6 @@
                 isRead: !!opt.isReadonlyForm || !!t.isRead
             };
 
-
             if (t.type == 'text' || t.type == 'number' || t.type == 'password' || t.type == 'email') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textTemp));
             } else if (t.type == 'note') {
@@ -1102,17 +1097,65 @@
                 previous.append(formatTemplate(elemOptions, uiComponents.dateTemp));
             } else if (t.type == 'beginDateAndEndDate') {
                 var template = !!options.renderSearch ? uiComponents.beginDateAndEndDateTemp.replace(/class="form-group"/ig, '') : uiComponents.beginDateAndEndDateTemp;
-                angular.extend(elemOptions, 
+
+                var beginDateModel = t.beginDate.model;
+                var endDateModel = t.endDate.model;
+
+                var dateRangeStart = 'options.model.' + beginDateModel;
+                var dateRangeEnd = 'options.model.' + endDateModel;
+
+                var startDateBeforeRender = beginDateModel + 'BeforeRender';
+                opt[startDateBeforeRender] = function ($dates) {
+                    var dateRangeEnd = opt.model[endDateModel];
+                    if (dateRangeEnd) {
+                        var activeDate = moment(dateRangeEnd);
+                        $dates.filter(function (date) {
+                            return date.localDateValue() >= activeDate.valueOf()
+                        }).forEach(function (date) {
+                            date.selectable = false;
+                        })
+                    }
+                }
+
+                var endDateBeforeRender = endDateModel + 'BeforeRender';
+                opt[endDateBeforeRender] = function ($view, $dates) {
+                    var dateRangeStart = opt.model[beginDateModel];
+                    if (dateRangeStart) {
+                        var activeDate = moment(dateRangeStart).subtract(1, $view).add(1, 'minute');
+
+                        $dates.filter(function (date) {
+                            return date.localDateValue() <= activeDate.valueOf()
+                        }).forEach(function (date) {
+                            date.selectable = false;
+                        })
+                    }
+                }
+
+                var startDateOnSetTime = beginDateModel + 'OnSetTime';
+                opt[startDateOnSetTime] = function () {
+                    scope.$broadcast('start-date-changed');
+                }
+
+                var endDateOnSetTime = endDateModel + 'OnSetTime';
+                opt[endDateOnSetTime] = function () {
+                    scope.$broadcast('end-date-changed');
+                }
+
+                angular.extend(elemOptions,
                     {
                         minView: !t.minView ? 'day' : t.minView,
                         minuteStep: !t.minuteStep ? '1' : t.minuteStep,
                         cols: 'col-md-' + Number(elemCols.substr(elemCols.length - 1, 1)) * 2,
                         beginDateLabel: t.beginDate.label,
                         beginDatePlaceholder: !t.beginDate.placeholder ? "点击选择日期" : t.beginDate.placeholder,
-                        beginDateModel: 'options.model.' + t.beginDate.model,
+                        beginDateModel: 'options.model.' + beginDateModel,
                         endDateLabel: t.endDate.label,
                         endDatePlaceholder: !t.endDate.placeholder ? "点击选择日期" : t.endDate.placeholder,
-                        endDateModel: 'options.model.' + t.endDate.model
+                        endDateModel: 'options.model.' + endDateModel,
+                        startDateBeforeRender: 'dCtrl.opt.' + startDateBeforeRender + "($dates)",
+                        endDateBeforeRender: 'dCtrl.opt.' + endDateBeforeRender + "($view, $dates)",
+                        startDateOnSetTime: 'dCtrl.opt.' + startDateOnSetTime + "()",
+                        endDateOnSetTime: 'dCtrl.opt.' + endDateOnSetTime + "()"
                     }
                 );
                 elemOptions.dateFormat = dateFormatDef[elemOptions.minView];
@@ -1221,26 +1264,15 @@
             });
         }
 
+
+
+
+
+
+
+
+
+
     }
 
-    function bkmConverVal2Date($filter) {
-        return {
-            restrict: 'A',
-            require: ['ngModel'],
-            link: function (scope, el, attrs, ngModel) {
-                var m = ngModel[0];
-                m.$formatters.unshift(function (value) {
-                    if (angular.isString(m.$modelValue)) {
-                        var v = new Date(m.$modelValue);
-                        setTimeout(function () {
-                            m.$setViewValue(v);
-                        }, 200);
-                        return $filter('date')(v, 'yyyy-MM-dd');
-                    } else {
-                        return value;
-                    }
-                });
-            }
-        };
-    }
 })();
