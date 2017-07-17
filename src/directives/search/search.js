@@ -15,11 +15,11 @@
                     <div class="dropdown">\
                         <label>{label}{formRequired}</label>&nbsp;&nbsp;\
                         <div class="input-group">\
-                            <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">\
+                            <a class="dropdown-toggle" id="{dropdownId}" role="button" data-toggle="dropdown" data-target="#" href="#">\
                                 <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly>\
                              </a>\
                             <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
-                                    <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep},dropdownSelector: \'#dropdown2\' }"/>\
+                                    <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#{dropdownId}\'}"/>\
                             </ul>\
                             <span class="input-group-addon" ng-click="{model}=null">\
                                     <i class="input-datepicker glyphicon glyphicon-remove"></i>\
@@ -38,12 +38,12 @@
                         <div class="dropdown dropdown-start-parent">\
                             <label>{beginDateLabel}{formRequired}&nbsp;&nbsp;</label>\
                             <div class="input-group date">\
-                                <a class="dropdown-toggle" id="dropdownStart" role="button" data-toggle="dropdown" data-target="#" href="#">\
+                                <a class="dropdown-toggle" id="{dropdownStart}" role="button" data-toggle="dropdown" data-target="#" href="#">\
                                     <input type="text" class="form-control" ng-model="{beginDateModel}" data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{beginDatePlaceholder}" readOnly>\
                                 </a>\
                                 <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
                                     <datetimepicker ng-model="{beginDateModel}"\
-                                                    data-datetimepicker-config="{ minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#dropdownStart\', renderOn: \'end-date-changed\' }"\
+                                                    data-datetimepicker-config="{ minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#{dropdownStart}\', renderOn: \'end-date-changed\' }"\
                                                     data-on-set-time="{startDateOnSetTime}"\
                                                     data-before-render="{startDateBeforeRender}"></datetimepicker>\
                                 </ul>\
@@ -57,12 +57,12 @@
                         <div class="dropdown dropdown-end-parent" >\
                             <label>{endDateLabel}{formRequired}&nbsp;&nbsp;</label>\
                             <div class="input-group date">\
-                                <a class="dropdown-toggle" id="dropdownEnd" role="button" data-toggle="dropdown" data-target="#" href="#">\
+                                <a class="dropdown-toggle" id="{dropdownEnd}" role="button" data-toggle="dropdown" data-target="#" href="#">\
                                     <input type="text" class="form-control" ng-model="{endDateModel}" data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{endDatePlaceholder}" readOnly>\
                                 </a>\
                                 <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
                                     <datetimepicker ng-model="{endDateModel}"\
-                                                    data-datetimepicker-config="{ minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#dropdownEnd\', renderOn: \'start-date-changed\'}"\
+                                                    data-datetimepicker-config="{ minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#{dropdownEnd}\', renderOn: \'start-date-changed\'}"\
                                                     data-on-set-time="{endDateOnSetTime}"\
                                                     data-before-render="{endDateBeforeRender}"></datetimepicker>\
                                 </ul>\
@@ -1091,7 +1091,8 @@
             } else if (t.type == 'date') {
                 angular.extend(elemOptions, {
                     minView: !t.minView ? 'day' : t.minView,
-                    minuteStep: !t.minuteStep ? '1' : t.minuteStep
+                    minuteStep: !t.minuteStep ? '1' : t.minuteStep,
+                    dropdownId: 'dropdown_' + t.model
                 });
                 elemOptions.dateFormat = dateFormatDef[elemOptions.minView];
                 previous.append(formatTemplate(elemOptions, uiComponents.dateTemp));
@@ -1155,7 +1156,9 @@
                         startDateBeforeRender: 'dCtrl.opt.' + startDateBeforeRender + "($dates)",
                         endDateBeforeRender: 'dCtrl.opt.' + endDateBeforeRender + "($view, $dates)",
                         startDateOnSetTime: 'dCtrl.opt.' + startDateOnSetTime + "()",
-                        endDateOnSetTime: 'dCtrl.opt.' + endDateOnSetTime + "()"
+                        endDateOnSetTime: 'dCtrl.opt.' + endDateOnSetTime + "()",
+                        dropdownStart: "dropdownStart_" + beginDateModel,
+                        dropdownEnd: "dropdownEnd_" + endDateModel
                     }
                 );
                 elemOptions.dateFormat = dateFormatDef[elemOptions.minView];
