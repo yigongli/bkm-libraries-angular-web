@@ -27,8 +27,8 @@
     "angular-bootstrap-colorpicker": "^3.0.28",
     "angularjs-color-picker": "~2.7.1",
     "angular-ckeditor": "^1.0.3",
-    "angular-bootstrap-datetimepicker": "^1.1.6",
-    "angular-date-time-input": "^1.2.3"
+    "bkm-bootstrap-datetimepicker": "^1.1.6",
+    "bkm-date-time-input": "^1.2.3"
   },
   "main": [
     "./src/service/jquery.PrintArea.js",

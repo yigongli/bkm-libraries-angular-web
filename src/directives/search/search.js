@@ -98,7 +98,7 @@
         minute: 'YYYY-MM-DD HH:mm'
     };
 
-    angular.module('bkm.library.angular.web', ['ui.dateTimeInput', 'ui.bootstrap.datetimepicker'])
+    angular.module('bkm.library.angular.web')
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', ['$compile', bkmSearch])
         .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])

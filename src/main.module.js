@@ -6,6 +6,8 @@
     angular.module('bkm.library.angular.web', [
         'colorpicker.module',
         'color.picker',
-        'ckeditor'
+        'ckeditor',
+        'ui.dateTimeInput',
+        'ui.bootstrap.datetimepicker'
     ]);
 })();
