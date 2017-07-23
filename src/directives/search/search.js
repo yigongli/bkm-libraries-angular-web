@@ -8,7 +8,7 @@
         textTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}"  ng-disabled="{readModel}.isRead||{isRead}"   uib-popover="{tooltip}" popover-trigger="\'focus\'"/><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
         noteTemp: '<div class="{cols}"><div style="position:relative;"><label style="color:red;font-weight:normal;padding-top:5px;">{label}</label></div></div>',
         textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
-        dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- 所有 --</option></select></div></div>',
+        dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- {placeholder} --</option></select></div></div>',
         dateTemp:
             '<div class="{cols}">\
                 <div class="{formStyle}" {validError}>\
@@ -58,7 +58,7 @@
                             <label>{endDateLabel}{formRequired}&nbsp;&nbsp;</label>\
                             <div class="input-group date">\
                                 <a class="dropdown-toggle" id="{dropdownEnd}" role="button" data-toggle="dropdown" data-target="#" href="#">\
-                                    <input type="text" class="form-control" ng-model="{endDateModel}" data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{endDatePlaceholder}" readOnly>\
+                                    <input type="text" class="form-control" ng-model="{endDateModel}"  data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{endDatePlaceholder}" readOnly>\
                                 </a>\
                                 <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
                                     <datetimepicker ng-model="{endDateModel}"\
@@ -1067,7 +1067,8 @@
                 previous.append(formatTemplate(elemOptions, uiComponents.textareaTemp));
             } else if (t.type == 'dropDown') {
                 angular.extend(elemOptions, {
-                    repeat: 'i.' + t.keyName + ' as i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource'
+                    repeat: 'i.' + t.keyName + ' as i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource',
+                    placeholder: t.placeholder || '所有'
                 });
 
                 if (angular.isFunction(t.onChange)) {
