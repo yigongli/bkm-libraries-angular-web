@@ -63,6 +63,22 @@
     padding-bottom: 10px;
 }
 
+.search-condition .col-md-6 {
+    padding-bottom: 10px;
+}
+
+.search-condition .col-md-6 .col-md-6 {
+    padding-bottom: 0px;
+}
+
+.search-condition .col-md-4 {
+    padding-bottom: 10px;
+}
+
+.search-condition .col-md-12 {
+    padding-bottom: 10px;
+}
+
 form .search-condition .search-btn {
     padding-bottom: 5px;
 }
