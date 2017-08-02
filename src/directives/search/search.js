@@ -201,13 +201,13 @@
                 self.searchData = getData;
                 //查询数据
                 function getData() {
+                    //合并分页查询参数
+                    self.params.skipCount = (typeof self.gridApi.pagination == 'object') ? (self.gridApi.pagination.getPage() - 1) * self.gridOption.paginationPageSize : 0;
+                    self.params.maxResultCount = self.gridOption.paginationPageSize;
                     //查询参数处理回调函数
                     if (typeof paramsSetting == 'function') {
                         paramsSetting();
                     }
-                    //合并分页查询参数
-                    self.params.skipCount = (typeof self.gridApi.pagination == 'object') ? (self.gridApi.pagination.getPage() - 1) * self.gridOption.paginationPageSize : 0;
-                    self.params.maxResultCount = self.gridOption.paginationPageSize;
                     //调用查询服务
                     serviceApiFunc(self.params)
                         .then(function (result) {
