@@ -95,7 +95,7 @@ ui-view .panel-body .search-condition .form-control {
     width: 100px;
 }
 
-//搜索条件占位符
+/* 搜索条件占位符*/
 .modal-body .placeholder {
     visibility: hidden;
     height: 61px;
@@ -103,7 +103,7 @@ ui-view .panel-body .search-condition .form-control {
 
 
 
-//以下用于设置附件列表的样式
+/*以下用于设置附件列表的样式 */
 .attaches a:hover {
     text-decoration: underline !important;
 }
@@ -126,12 +126,12 @@ ui-view .panel-body .search-condition .form-control {
     }
 }
 
-//开始和结束日期样式
+/*开始和结束日期样式*/
 .bkm-end-date {
     padding-right:0px;
 }
 
-//设置input输入框组合图标的样式
+/*设置input输入框组合图标的样式*/
 .input-icon {
     position: absolute;
     top: auto;
