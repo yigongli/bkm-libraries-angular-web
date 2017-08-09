@@ -5,12 +5,12 @@
     'use strict';
 
     var formComponents = {
-        textTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}"  ng-disabled="{readModel}.isRead||{isRead}"   uib-popover="{tooltip}" popover-trigger="\'focus\'"/><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
+        textTemp: '<div ng-hide="{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}"  ng-disabled="{readModel}.isRead||{isRead}"   uib-popover="{tooltip}" popover-trigger="\'focus\'"/><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
         noteTemp: '<div class="{cols}"><div style="position:relative;"><label style="color:red;font-weight:normal;padding-top:5px;">{label}</label></div></div>',
-        textareaTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
-        dropDownTemp: '<div class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- {placeholder} --</option></select></div></div>',
+        textareaTemp: '<div ng-hide="{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
+        dropDownTemp: '<div ng-hide="{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- {placeholder} --</option></select></div></div>',
         dateTemp:
-            '<div class="{cols}">\
+            '<div ng-hide="{isHide}" class="{cols}">\
                 <div class="{formStyle}" {validError}>\
                     <div class="dropdown">\
                         <label>{label}{formRequired}</label>&nbsp;&nbsp;\
@@ -28,12 +28,12 @@
                      </div>\
                  </div>\
               </div>',
-        buttonTemp: '<button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
-        downloadButtonTemp: '<a class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
+        buttonTemp: '<button ng-hide="{hideModel}.isHide||{isHide}" uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
+        downloadButtonTemp: '<a ng-hide="{isHide}" class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
-        bkmButtonTemp: '<bkm-button category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
+        bkmButtonTemp: '<bkm-button ng-hide="{hideModel}.isHide||{isHide}" category="{category}" text="{text}" ng-click="{click}"></bkm-button>',
         beginDateAndEndDateTemp:
-            ' <div class="{cols}">\
+            ' <div ng-hide="{isHide}" class="{cols}">\
                 <div class="col-md-6" style="padding-left: 0;">\
                         <div class="dropdown dropdown-start-parent">\
                             <label>{beginDateLabel}{formRequired}&nbsp;&nbsp;</label>\
@@ -87,8 +87,8 @@
                         <bkm-elements is-accordions=true accordion-id="{accordId}"></bkm-elements>\
                     </div>\
                 </uib-accordion>',
-        addressTemp: '<div class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="\'focus\'" /></div></div>',
-        colorPickerTemp: '<div class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<color-picker ng-model="{model}" class="form-group" options="dCtrl.opt.colorPickerOpt"></color-picker></div></div>'
+        addressTemp: '<div ng-hide="{isHide}" class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="\'focus\'" /></div></div>',
+        colorPickerTemp: '<div ng-hide="{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<color-picker ng-model="{model}" class="form-group" options="dCtrl.opt.colorPickerOpt"></color-picker></div></div>'
     };
 
     //date filter format definition
@@ -216,7 +216,7 @@
 
                             if (typeof self.searchSuccessFn == 'function') {
                                 $timeout(function () {
-                                    return self.searchSuccessFn();
+                                    return self.searchSuccessFn(result.data.items);
                                 })
                             }
                         });
@@ -533,16 +533,17 @@
 
                     var delSvc = parentCtrl.formSetting.resourceSvc.delete;
                     var delParas = parentCtrl.formSetting.deleteParas || { id: row.entity.id };
+                    var delPrompt = parentCtrl.formSetting.delPrompt || "您确认要删除吗?";
 
                     var modalInstance = $uibModal.open({
                         backdrop: false,
                         animation: true,
                         controller: function () {
                             var mCtrl = this;
-                            mCtrl.message = "您确认要删除吗?";
+                            mCtrl.message = delPrompt;
                         },
                         controllerAs: 'mCtrl',
-                        template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="warning" ></bkm-msg-modal>'
+                        template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="danger" ></bkm-msg-modal>'
                     });
 
                     modalInstance.result
@@ -1054,7 +1055,8 @@
                 tooltip: t.tooltip,
                 click: 'dCtrl.opt.' + clickFnName + '()', //input元素的附加span点击
                 spanCss: t.spanCss || 'glyphicon glyphicon-search',
-                isShowSpan: !!t.click, //默认不添加span元素
+                isShowSpan: !!t.click, //默认不添加span元素,
+                isHide: !!t.isHide,
                 readModel: 'dCtrl.opt.' + dynaIsReadModel,
                 isRead: !!opt.isReadonlyForm || !!t.isRead
             };
@@ -1221,11 +1223,19 @@
                 className: t.className,
                 icon: t.icon,
                 tooltip: t.tooltip,
+                isHide: !!t.isHide,
                 click: 'dCtrl.opt.' + btnClickFnName + '()'
             };
             opt[btnClickFnName] = function () {
                 t.click();
             };
+
+            //动态设置元素隐藏
+            if (typeof t.hideModel == 'object') {
+                var hideModel = 'hideModel' + i;
+                opt[hideModel] = t.hideModel;
+                angular.extend(btnOptions, { hideModel: 'dCtrl.opt.' + hideModel, isHide: 'false' });
+            } 
 
             if (t.type == 'button') {
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.buttonTemp));
@@ -1267,15 +1277,6 @@
                 return (format && format[m2]) ? format[m2](dta[m2]) : dta[m2];
             });
         }
-
-
-
-
-
-
-
-
-
 
     }
 
