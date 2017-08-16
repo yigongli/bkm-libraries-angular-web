@@ -520,7 +520,7 @@
 
                     if (!row) {
                         toastr.info("请选择要删除的记录!");
-                        retur;
+                        return;
                     }
 
                     //删除数据回调
