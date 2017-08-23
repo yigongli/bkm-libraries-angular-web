@@ -15,7 +15,7 @@
                     <div class="dropdown">\
                         <label>{label}{formRequired}</label>&nbsp;&nbsp;\
                         <div class="input-group">\
-                            <a class="dropdown-toggle" id="{dropdownId}" role="button" data-toggle="dropdown" data-target="#" href="#">\
+                            <a class="dropdown-toggle" id="{dropdownId}" role="button" data-toggle="dropdown" data-target="#" >\
                                 <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly>\
                              </a>\
                             <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
@@ -38,7 +38,7 @@
                         <div class="dropdown dropdown-start-parent">\
                             <label>{beginDateLabel}{formRequired}&nbsp;&nbsp;</label>\
                             <div class="input-group date">\
-                                <a class="dropdown-toggle" id="{dropdownStart}" role="button" data-toggle="dropdown" data-target="#" href="#">\
+                                <a class="dropdown-toggle" id="{dropdownStart}" role="button" data-toggle="dropdown" data-target="#" >\
                                     <input type="text" class="form-control" ng-model="{beginDateModel}" data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{beginDatePlaceholder}" readOnly>\
                                 </a>\
                                 <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
@@ -57,7 +57,7 @@
                         <div class="dropdown dropdown-end-parent" >\
                             <label>{endDateLabel}{formRequired}&nbsp;&nbsp;</label>\
                             <div class="input-group date">\
-                                <a class="dropdown-toggle" id="{dropdownEnd}" role="button" data-toggle="dropdown" data-target="#" href="#">\
+                                <a class="dropdown-toggle" id="{dropdownEnd}" role="button" data-toggle="dropdown" data-target="#" >\
                                     <input type="text" class="form-control" ng-model="{endDateModel}"  data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{endDatePlaceholder}" readOnly>\
                                 </a>\
                                 <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
