@@ -1149,6 +1149,7 @@
                             item.endDate.model == endDateModel &&
                             !item.minView) {
                             opt.model[endDateModel].setHours(23, 59, 59, 999);
+                            return;
                         }
                     });
                 };
