@@ -680,13 +680,22 @@
                                         //数据处理回调
                                         if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
                                             var isGoingon = parentCtrl.formSetting.beforeSubmitFn(formModel);
-                                            //如果不继续提交则直接返回
-                                            if (isGoingon != undefined && !isGoingon)
-                                                return;
+                                            if (isGoingon.constructor.name == 'Promise') {
+                                                isGoingon.then(function (result) {
+                                                    if (result === true) {
+                                                        updateAndCreateFn();
+                                                    }
+                                                })
+                                            } else if (isGoingon === true || isGoingon == undefined) {
+                                                //如果不继续提交则直接返回
+                                                updateAndCreateFn();
+                                            }
+
                                         }
 
                                         //调用创建或更新服务
-                                        (isEdit ? resourceSvc.update(formModel) : resourceSvc.create(formModel))
+                                        function updateAndCreateFn() {
+                                            (isEdit ? resourceSvc.update(formModel) : resourceSvc.create(formModel))
                                             .then(function (result) {
                                                 toastr.success('提交成功，请继续添加或点击关闭按钮返回！');
                                                 parentCtrl.searchData();
@@ -696,6 +705,7 @@
                                                 }
                                                 $uibModalInstance.close();
                                             });
+                                        }
                                     }
                                     else {
                                         toastr.warning('您有未填写完整的数据，请按照错误提示补充完善，谢谢！');
