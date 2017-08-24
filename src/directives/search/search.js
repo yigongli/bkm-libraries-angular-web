@@ -189,9 +189,11 @@
                     if (isInitLoad == undefined || isInitLoad)
                         getData();
                     //注册UI-GRID翻页函数
-                    gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
-                        getData();
-                    });
+                    if (gridApi.pagination) {
+                        gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                            getData();
+                        });
+                    }
                     //注册Controller自己的UI-GRID 个性化事件
                     if (angular.isFunction(registerCustomizedApi)) {
                         registerCustomizedApi(gridApi);
