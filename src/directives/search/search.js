@@ -499,6 +499,7 @@
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
             link: function (scope, el, attrs) {
 
+
                 //定义附件列表的模板文件地址(缓冲模板文件)
                 var attachesTempUrl = 'attatchesList.html';
 
@@ -1107,9 +1108,6 @@
                 var beginDateModel = t.beginDate.model;
                 var endDateModel = t.endDate.model;
 
-                var dateRangeStart = 'options.model.' + beginDateModel;
-                var dateRangeEnd = 'options.model.' + endDateModel;
-
                 var startDateBeforeRender = beginDateModel + 'BeforeRender';
                 opt[startDateBeforeRender] = function ($dates) {
                     var dateRangeEnd = opt.model[endDateModel];
@@ -1140,12 +1138,20 @@
                 var startDateOnSetTime = beginDateModel + 'OnSetTime';
                 opt[startDateOnSetTime] = function () {
                     scope.$broadcast('start-date-changed');
-                }
+                };
 
                 var endDateOnSetTime = endDateModel + 'OnSetTime';
                 opt[endDateOnSetTime] = function () {
                     scope.$broadcast('end-date-changed');
-                }
+                    //如果设置为天的时候，结束日期自动设置到23点59分59秒
+                    this.items.forEach(function (item) {
+                        if (item.type == "beginDateAndEndDate" &&
+                            item.endDate.model == endDateModel &&
+                            !item.minView) {
+                            opt.model[endDateModel].setHours(23, 59, 59, 999);
+                        }
+                    });
+                };
 
                 angular.extend(elemOptions,
                     {
@@ -1237,7 +1243,7 @@
                 var hideModel = 'hideModel' + i;
                 opt[hideModel] = t.hideModel;
                 angular.extend(btnOptions, { hideModel: 'dCtrl.opt.' + hideModel, isHide: 'false' });
-            } 
+            }
 
             if (t.type == 'button') {
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.buttonTemp));
