@@ -680,17 +680,16 @@
                                         //数据处理回调
                                         if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
                                             var isGoingon = parentCtrl.formSetting.beforeSubmitFn(formModel);
-                                            if (isGoingon.constructor.name == 'Promise') {
+                                            if (isGoingon === true || isGoingon == undefined) {
+                                                //如果不继续提交则直接返回
+                                                updateAndCreateFn();
+                                            }else if (isGoingon.constructor.name == 'Promise') {
                                                 isGoingon.then(function (result) {
                                                     if (result === true) {
                                                         updateAndCreateFn();
                                                     }
-                                                })
-                                            } else if (isGoingon === true || isGoingon == undefined) {
-                                                //如果不继续提交则直接返回
-                                                updateAndCreateFn();
-                                            }
-
+                                                });
+                                            } 
                                         }
 
                                         //调用创建或更新服务
