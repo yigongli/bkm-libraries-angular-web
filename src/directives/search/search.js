@@ -187,11 +187,11 @@
                     self.gridApi = gridApi;
                     //判断在页面第一次加载的时候需要加载数据
                     if (isInitLoad == undefined || isInitLoad)
-                        getData();
+                        getData(1, self.gridOption.paginationPageSize);
                     //注册UI-GRID翻页函数
                     if (gridApi.pagination) {
                         gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
-                            getData();
+                            getData(newPage, pageSize);
                         });
                     }
                     //注册Controller自己的UI-GRID 个性化事件
@@ -202,9 +202,9 @@
 
                 self.searchData = getData;
                 //查询数据
-                function getData() {
+                function getData(newPage, pageSize) {
                     //合并分页查询参数
-                    self.params.skipCount = (typeof self.gridApi.pagination == 'object') ? (self.gridApi.pagination.getPage() - 1) * self.gridOption.paginationPageSize : 0;
+                    self.params.skipCount = ((newPage || 1) -1) * self.gridOption.paginationPageSize;
                     self.params.maxResultCount = self.gridOption.paginationPageSize;
                     //查询参数处理回调函数
                     if (typeof paramsSetting == 'function') {
@@ -683,13 +683,13 @@
                                             if (isGoingon === true || isGoingon == undefined) {
                                                 //如果不继续提交则直接返回
                                                 updateAndCreateFn();
-                                            }else if (isGoingon.constructor.name == 'Promise') {
+                                            } else if (isGoingon.constructor.name == 'Promise') {
                                                 isGoingon.then(function (result) {
                                                     if (result === true) {
                                                         updateAndCreateFn();
                                                     }
                                                 });
-                                            } 
+                                            }
                                         }
 
                                         //调用创建或更新服务
