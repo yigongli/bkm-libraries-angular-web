@@ -1,4 +1,4 @@
-(function () {
+(function() {
     'use strict';
 
     angular.module('bkm.library.angular.web')
@@ -12,18 +12,18 @@
         ctrl.model = context.model;
         ctrl.isPrint = false;
         ctrl.printingStyle = {};
-        ctrl.currentDate=new Date();
-        ctrl.print = function () {
+        ctrl.currentDate = new Date();
+        ctrl.print = function() {
             ctrl.isPrint = true;
             ctrl.printingStyle = {
                 "visibility": "hidden"
             };
-            setTimeout(function () {
+            setTimeout(function() {
                 $(".print-container").printArea();
                 $uibModalInstance.close();
             }, 500);
         };
-        ctrl.getCurrentDate = function(){
+        ctrl.getCurrentDate = function() {
             console.log('当前时间');
             return new Date();
         }
@@ -36,31 +36,30 @@
                 backdrop: false,
                 animation: true,
                 windowClass: 'bkm-backdrop',
-                template:
-                '<div class="modal-content">\
-                            <div class="modal-header" style="background-color:#209e91">\
-                                <i class="ion-information-circled modal-icon"></i>\
-                                <span ng-bind="ctrl.modalTitle"></span>\
-                                <button type="button" class="close" ng-click="$dismiss()" aria-label="Close">\
-                                    <em class="ion-ios-close-empty sn-link-close"></em>\
-                                </button>\
-                            </div>\
-                            <div class="modal-body" style="background-color:#d2d2d2;">\
-                                <div style="border:1px solid #d2d2d2;" class="print-container" ng-include="ctrl.includeUrl"></div>\
-                            </div>\
-                            <div class="modal-footer" style="padding:10px;">\
-                                <button class="btn btn-default" ng-click="$dismiss()">取消</button>\
-                                <button class="btn btn-default" ng-click="ctrl.print()">打印</button>\
-                            </div>\
-                            <script type="text/javascript">\
-                                $(".modal-dialog").drags({ handle: ".modal-header" });\
-                            </script>\
-                        </div>',
+                template: '<div class="modal-content">\
+                        <div class="modal-header" style="background-color:#209e91">\
+                            <i class="ion-information-circled modal-icon"></i>\
+                            <span ng-bind="ctrl.modalTitle"></span>\
+                            <button type="button" class="close" ng-click="$dismiss()" aria-label="Close">\
+                                <em class="ion-ios-close-empty sn-link-close"></em>\
+                            </button>\
+                        </div>\
+                        <div class="modal-body" style="background-color:#d2d2d2;">\
+                            <div class="print-container" ng-include="ctrl.includeUrl"></div>\
+                        </div>\
+                        <div class="modal-footer" style="padding:10px;">\
+                            <button class="btn btn-default" ng-click="$dismiss()">取消</button>\
+                            <button class="btn btn-default" ng-click="ctrl.print()">打印</button>\
+                        </div>\
+                        <script type="text/javascript">\
+                            $(".modal-dialog").drags({ handle: ".modal-header" });\
+                        </script>\
+                    </div>',
                 controller: ctrlFn,
                 controllerAs: 'ctrl',
                 size: 'lg',
                 resolve: {
-                    context: function () {
+                    context: function() {
                         return params;
                     }
                 }
