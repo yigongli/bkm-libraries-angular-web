@@ -40,6 +40,9 @@
             console.log('当前时间');
             return new Date();
         };
+        if (angular.isFunction(context.closed)) {
+            $uibModalInstance.closed.then(context.closed);
+        }
     }
 
     function serviceFn($uibModal) {
