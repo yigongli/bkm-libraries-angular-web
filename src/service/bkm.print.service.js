@@ -14,19 +14,32 @@
         ctrl.printingStyle = {};
         ctrl.currentDate = new Date();
         ctrl.print = function() {
+            var p;
             ctrl.isPrint = true;
             ctrl.printingStyle = {
                 "visibility": "hidden"
             };
-            setTimeout(function() {
-                $(".print-container").printArea();
-                $uibModalInstance.close();
-            }, 500);
+            if (angular.isFunction(context.onPrint)) {
+                p = context.onPrint();
+            }
+
+            if (!!p && p.constructor.name === "Promise") {
+                p.then(_print);
+            } else {
+                _print();
+            }
+
+            function _print() {
+                setTimeout(function() {
+                    $(".print-container").printArea();
+                    $uibModalInstance.close();
+                }, 500);
+            }
         };
         ctrl.getCurrentDate = function() {
             console.log('当前时间');
             return new Date();
-        }
+        };
     }
 
     function serviceFn($uibModal) {
@@ -69,6 +82,6 @@
 
         return {
             preview: preview
-        }
+        };
     }
 })();
