@@ -683,8 +683,8 @@
                                             if (isGoingon === true || isGoingon == undefined) {
                                                 //如果不继续提交则直接返回
                                                 updateAndCreateFn();
-                                            } else if (isGoingon.constructor.name == 'Promise') {
-                                                isGoingon.then(function (result) {
+                                            } else if (!!isGoingon.promise) {
+                                                isGoingon.promise.then(function(result) {
                                                     if (result === true) {
                                                         updateAndCreateFn();
                                                     }
