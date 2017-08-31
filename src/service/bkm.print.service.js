@@ -71,7 +71,7 @@
                             $(".modal-dialog").drags({ handle: ".modal-header" });\
                         </script>\
                     </div>',
-                controller: ctrlFn,
+                controller: 'bkm.print.ctrl',
                 controllerAs: 'ctrl',
                 size: 'lg',
                 resolve: {
