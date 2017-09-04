@@ -1,13 +1,14 @@
 /**
  * Created by gurihui on 2017/4/26.
  */
-(function () {
+(function() {
     'use strict';
     angular.module('bkm.library.angular.web', [
         'colorpicker.module',
         'color.picker',
         'ckeditor',
         'ui.dateTimeInput',
-        'ui.bootstrap.datetimepicker'
+        'ui.bootstrap.datetimepicker',
+        'angucomplete-alt'
     ]);
 })();
