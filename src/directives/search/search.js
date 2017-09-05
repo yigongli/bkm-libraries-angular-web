@@ -86,7 +86,7 @@
                 </uib-accordion>',
         addressTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="\'focus\'" /></div></div>',
         colorPickerTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<color-picker ng-model="{model}" class="form-group" options="dCtrl.opt.colorPickerOpt"></color-picker></div></div>',
-        angucompleteAltTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<div angucomplete-alt bkm-input {angucompleteAltOptAttrs} bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}"  ng-disabled="{readModel}.isRead||{isRead}"   uib-popover="{tooltip}" popover-trigger="\'focus\'"/><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>'
+        angucompleteAltTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<angucomplete-alt name="{formName}"  {angucompleteAltOptAttrs} style="padding:0;border:0;" type="{type}" uib-popover="{tooltip}" popover-trigger="\'focus\'"/></div></div>'
     };
 
     //date filter format definition
@@ -1045,7 +1045,7 @@
             var hideModel = 'hideItemModel' + i;
             opt[hideModel] = t.hideModel || {};
 
-            //设置初始化元素选项
+            //设置初始化元素选项 
             var elemOptions = {
                 label: t.label,
                 type: t.type,
@@ -1216,19 +1216,110 @@
             } else if (t.type == 'angucompleteAlt') {
                 var optAttrs = [],
                     str = '',
-                    regEx = /([A-Z])/g;
+                    pushStr = '',
+                    regEx = /([A-Z])/g,
+                    optStr = 'dCtrl.opt.angucompleteAltOpt.',
+                    optMap = {
+                        // options.onSelectedObject 对应 selectedObject，其他都一一对应
+                        selectedObject: '=',
+                        selectedObjectData: '=',
+                        disableInput: '=',
+                        initialValue: '=',
+                        localData: '=',
+                        localSearch: '&',
+                        remoteUrlRequestFormatter: '=',
+                        remoteUrlRequestWithCredentials: '@',
+                        remoteUrlResponseFormatter: '=',
+                        remoteUrlErrorCallback: '=',
+                        remoteApiHandler: '=',
+                        id: '@',
+                        type: '@',
+                        placeholder: '@',
+                        textSearching: '@',
+                        textNoResults: '@',
+                        remoteUrl: '@',
+                        remoteUrlDataField: '@',
+                        titleField: '@',
+                        descriptionField: '@',
+                        imageField: '@',
+                        inputClass: '@',
+                        pause: '@',
+                        searchFields: '@',
+                        minlength: '@',
+                        matchClass: '@',
+                        clearSelected: '@',
+                        overrideSuggestions: '@',
+                        fieldRequired: '=',
+                        fieldRequiredClass: '@',
+                        inputChanged: '=',
+                        autoMatch: '@',
+                        focusOut: '&',
+                        focusIn: '&',
+                        fieldTabindex: '@',
+                        inputName: '@',
+                        focusFirst: '@',
+                        parseInput: '&'
+                    };
+                if (!!!t.options.inputClass) {
+                    t.options.inputClass = "form-control";
+                }
+                if (!!!scope.options.model) scope.options.mode = {};
+                if (!!!scope.options.model[t.model]) scope.options.model[t.model] = {};
+
+                // onSelectedObject Map to selectedObject
+                t.options.selectedObject = function(value, selectedObjectData) {
+                    if (!!t.options.onSelectedObject) {
+                        if (angular.isFunction(t.options.onSelectedObject)) {
+                            t.options.onSelectedObject(value, selectedObjectData);
+                        } else {
+                            t.options.onSelectedObject = value;
+                        }
+                    }
+                    if (!!value) {
+                        scope.options.model[t.model] = value.originalObject;
+                    } else {
+                        scope.options.model[t.model] = value;
+                    }
+                }
+
+                t.options.inputName = t.model;
+                t.options.fieldRequired = !!!t.option;
+                t.options.disableInput = !!elemOptions.isRead;
+                var unWatchFn = scope.$watch(function() {
+                    return scope.myForm[t.model];
+                }, function(newVal) {
+                    if (newVal) {
+                        unWatchFn();
+                        var regex = /^(.*)-error=".*"$/ig;
+                        var obj = {};
+                        elemOptions.validateAttr.split(' ').forEach(function(c, i, a) {
+                            regex.lastIndex = 0;
+                            if (regex.test(c)) {
+                                regex.lastIndex = 0;
+                                obj[c.replace(regex, "$1Error")] = c.split('=')[1].replace(/["']/g, '');
+                            }
+                        });
+                        scope.myForm[t.model].errorMsg = obj;
+                    }
+                });
                 opt.angucompleteAltOpt = t.options;
                 angular.forEach(t.options, function(v, i) {
+                    pushStr = '';
+                    str = '';
                     regEx.lastIndex = 0;
-                    str = (i + '="dCtrl.angucompleteAltOpt.' + v + '"');
+                    str = i
                     if (regEx.test(i)) {
                         regEx.lastIndex = 0;
-                        var s = i.replace(regEx, function(p) {
+                        str = i.replace(regEx, function(p) {
                             return '-' + p.toLowerCase();
                         });
-                        str = (s + '="dCtrl.angucompleteAltOpt.' + v + '"');
                     }
-                    optAttrs.push(str);
+                    if (optMap[i] == "@") {
+                        pushStr = (str + '="{{' + optStr + i + '}}"');
+                    } else {
+                        pushStr = (str + '="' + optStr + i + '"');
+                    }
+                    optAttrs.push(pushStr);
                 });
                 angular.extend(elemOptions, { angucompleteAltOptAttrs: optAttrs.join(' ') });
                 previous.append(formatTemplate(elemOptions, uiComponents.angucompleteAltTemp));
