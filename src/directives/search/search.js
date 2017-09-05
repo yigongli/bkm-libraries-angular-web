@@ -1213,7 +1213,7 @@
                     });
                 }
                 previous.append(formatTemplate(elemOptions, uiComponents.colorPickerTemp));
-            } else if (t.type == 'angucompleteAlt') {
+            } else if (t.type == 'autoComplate') {
                 var optAttrs = [],
                     str = '',
                     pushStr = '',
