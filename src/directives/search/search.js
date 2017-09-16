@@ -1,7 +1,7 @@
 /**
  * Created by gurihui on 2016/12/30.
  */
-(function() {
+(function () {
     'use strict';
 
     var formComponents = {
@@ -103,7 +103,7 @@
         .directive('bkmElements', ['$compile', '$filter', bkmElements])
         .directive('bkmMsgModal', ['$compile', bkmMsgModal])
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
-        .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', '$timeout', function(toastr, $uibModal, dict, $templateCache, $timeout) {
+        .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', '$timeout', function (toastr, $uibModal, dict, $templateCache, $timeout) {
             $templateCache.put('attatchesList.html',
                 '<uib-accordion close-others="oneAtATime" class="row bkm-uib-accordion" style="margin: 0;">\
                     <div uib-accordion-group class="panel-default bkm-attatches" is-open="status.open">\
@@ -134,7 +134,7 @@
              *
              * @returns {obj} 返回替换后的值
              */
-            window.extendSearchObj = function(obj) {
+            window.extendSearchObj = function (obj) {
                 return angular.extend({}, {
                     dictionaryTypes: [],
                     dictionaryHash: '',
@@ -159,7 +159,7 @@
              * paramsSetting： 在调用searchData方法时需要额外配置的查询参数
              * @returns {string} 返回替换后的值
              */
-            window.baseSearchFn = function($scope,
+            window.baseSearchFn = function ($scope,
                 serviceApiFunc,
                 paramsSetting,
                 isInitLoad,
@@ -173,7 +173,7 @@
                 //配置UI-GRID的grid.appScope的作用域为当前Ctrl
                 self.gridOption.appScopeProvider = self;
                 //UI-GRID高度自动伸缩函数
-                self.gridOption.autoHeight = function() {
+                self.gridOption.autoHeight = function () {
                     return {
                         height: (self.gridOption.paginationPageSize * 24 + 30) + "px"
                     };
@@ -181,14 +181,14 @@
 
                 //注册事件回调函数
                 self.gridApi = {};
-                self.gridOption.onRegisterApi = function(gridApi) {
+                self.gridOption.onRegisterApi = function (gridApi) {
                     self.gridApi = gridApi;
                     //判断在页面第一次加载的时候需要加载数据
                     if (isInitLoad == undefined || isInitLoad)
                         getData(1, self.gridOption.paginationPageSize);
                     //注册UI-GRID翻页函数
                     if (gridApi.pagination) {
-                        gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
+                        gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
                             getData(newPage, pageSize);
                         });
                     }
@@ -202,7 +202,7 @@
                 //查询数据
                 function getData(newPage, pageSize) {
                     //合并分页查询参数
-                    self.params.skipCount = ((newPage || 1) - 1) * self.gridOption.paginationPageSize;
+                    self.params.skipCount = (typeof self.gridApi.pagination == 'object') ? (self.gridApi.pagination.getPage() - 1) * self.gridOption.paginationPageSize : 0;
                     self.params.maxResultCount = self.gridOption.paginationPageSize;
                     //查询参数处理回调函数
                     if (typeof paramsSetting == 'function') {
@@ -210,12 +210,12 @@
                     }
                     //调用查询服务
                     serviceApiFunc(self.params)
-                        .then(function(result) {
+                        .then(function (result) {
                             self.gridOption.data = result.data.items;
                             self.gridOption.totalItems = result.data.totalCount;
 
                             if (typeof self.searchSuccessFn == 'function') {
-                                $timeout(function() {
+                                $timeout(function () {
                                     return self.searchSuccessFn(result.data.items);
                                 })
                             }
@@ -252,7 +252,7 @@
              *
              * @returns {string} 返回替换后的值
              */
-            window.baseApproveFn = function(parentCtrl, rowEntity) {
+            window.baseApproveFn = function (parentCtrl, rowEntity) {
 
                 var self = parentCtrl;
 
@@ -272,7 +272,7 @@
                     backdrop: false,
                     animation: true,
                     template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
-                    controller: ['$uibModalInstance', '$scope', function($uibModalInstance, $scope) {
+                    controller: ['$uibModalInstance', '$scope', function ($uibModalInstance, $scope) {
 
                         //初始化数据模型
                         var ctrl = this;
@@ -283,31 +283,31 @@
                         $scope.modalTitle = promptName + '审核';
                         angular.extend(ctrl.formOption, {
                             items: [{
-                                    type: 'textarea',
-                                    model: 'reason',
-                                    label: '备注',
-                                    option: true,
-                                    cols: 12
-                                },
-                                {
-                                    type: 'dropDown',
-                                    model: 'type',
-                                    label: '拒绝原因',
-                                    option: true,
-                                    cols: 12,
-                                    dataSource: dict.dictionary[dict.AuditType()]
-                                }
+                                type: 'textarea',
+                                model: 'reason',
+                                label: '备注',
+                                option: true,
+                                cols: 12
+                            },
+                            {
+                                type: 'dropDown',
+                                model: 'type',
+                                label: '拒绝原因',
+                                option: true,
+                                cols: 12,
+                                dataSource: dict.dictionary[dict.AuditType()]
+                            }
                             ],
                             buttons: [{
-                                    text: '同意',
-                                    category: 'approve',
-                                    click: approveFn
-                                },
-                                {
-                                    text: '拒绝',
-                                    category: 'reject',
-                                    click: rejectFn
-                                }
+                                text: '同意',
+                                category: 'approve',
+                                click: approveFn
+                            },
+                            {
+                                text: '拒绝',
+                                category: 'reject',
+                                click: rejectFn
+                            }
                             ]
                         });
 
@@ -315,7 +315,7 @@
                         function approveFn() {
                             formModel.isPass = true;
                             approveSvc.approve(formModel)
-                                .then(function(result) {
+                                .then(function (result) {
                                     toastr.success("审核成功!");
                                     $uibModalInstance.close();
                                     self.searchData();
@@ -331,7 +331,7 @@
                             var modalInstance = $uibModal.open({
                                 backdrop: false,
                                 animation: true,
-                                controller: function() {
+                                controller: function () {
                                     var mCtrl = this;
                                     mCtrl.message = "您确认要拒绝吗?";
                                 },
@@ -340,7 +340,7 @@
                             });
 
                             modalInstance.result
-                                .then(function(result) {
+                                .then(function (result) {
                                     angular.extend(formModel, {
                                         isPass: false,
                                         type: formModel.type,
@@ -348,7 +348,7 @@
                                     });
                                     return approveSvc.approve(formModel);
                                 })
-                                .then(function(result) {
+                                .then(function (result) {
                                     toastr.success(bkm.util.format("该{0}已被标记为审核不通过!", promptName));
                                     $uibModalInstance.close();
                                     self.searchData();
@@ -358,7 +358,7 @@
                     controllerAs: 'ctrl',
                     size: 'lg',
                     resolve: {
-                        items: function() {
+                        items: function () {
                             return rtnRows;
                         }
                     }
@@ -386,7 +386,7 @@
             controllerAs: 'dCtrl',
             replace: true,
             template: '<div></div>',
-            link: function(scope, el, attrs, ctrl) {
+            link: function (scope, el, attrs, ctrl) {
 
                 var formCtrlOpt = ctrl.opt.includeOption || [];
                 if (scope.isAccordions) {
@@ -443,7 +443,7 @@
             controllerAs: 'dCtrl',
             replace: true,
             template: '<div class="search-condition "><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
-            link: function(scope, el, attrs) {
+            link: function (scope, el, attrs) {
                 //定义默认的布局列数
                 var cols = !!scope.cols ? scope.cols : 4;
                 scope.options.renderSearch = true;
@@ -493,7 +493,7 @@
             controllerAs: 'dCtrl',
             replace: true,
             template: '<div class="search-condition form-inline text-right"><div class="row"></div><div class="text-right search-btn button-panel btns"></div>',
-            link: function(scope, el, attrs) {
+            link: function (scope, el, attrs) {
 
 
                 //定义附件列表的模板文件地址(缓冲模板文件)
@@ -505,64 +505,64 @@
                 var parentCtrl = scope.options.parentCtrl;
 
                 //显示详情
-                parentCtrl.display = function(row) {
-                        row.isEdit = false;
-                        modalForm(row);
-                    }
-                    //编辑
-                parentCtrl.edit = function(row) {
-                        row.isEdit = true;
-                        modalForm(row);
-                    }
-                    //删除
-                parentCtrl.delete = function(row) {
+                parentCtrl.display = function (row) {
+                    row.isEdit = false;
+                    modalForm(row);
+                }
+                //编辑
+                parentCtrl.edit = function (row) {
+                    row.isEdit = true;
+                    modalForm(row);
+                }
+                //删除
+                parentCtrl.delete = function (row) {
 
-                        if (!row) {
-                            toastr.info("请选择要删除的记录!");
+                    if (!row) {
+                        toastr.info("请选择要删除的记录!");
+                        return;
+                    }
+
+                    //删除数据回调
+                    if (!!parentCtrl.formSetting && typeof parentCtrl.formSetting.deleteRowFn == 'function') {
+                        var isGoingon = parentCtrl.formSetting.deleteRowFn(row.entity);
+                        //如果不继续提交则直接返回
+                        if (isGoingon != undefined && !isGoingon)
                             return;
-                        }
+                    }
 
-                        //删除数据回调
-                        if (!!parentCtrl.formSetting && typeof parentCtrl.formSetting.deleteRowFn == 'function') {
-                            var isGoingon = parentCtrl.formSetting.deleteRowFn(row.entity);
-                            //如果不继续提交则直接返回
-                            if (isGoingon != undefined && !isGoingon)
-                                return;
-                        }
+                    var delSvc = parentCtrl.formSetting.resourceSvc.delete;
+                    var delParas = parentCtrl.formSetting.deleteParas || { id: row.entity.id };
+                    var delPrompt = parentCtrl.formSetting.delPrompt || "您确认要删除吗?";
 
-                        var delSvc = parentCtrl.formSetting.resourceSvc.delete;
-                        var delParas = parentCtrl.formSetting.deleteParas || { id: row.entity.id };
-                        var delPrompt = parentCtrl.formSetting.delPrompt || "您确认要删除吗?";
+                    var modalInstance = $uibModal.open({
+                        backdrop: false,
+                        animation: true,
+                        controller: function () {
+                            var mCtrl = this;
+                            mCtrl.message = delPrompt;
+                        },
+                        controllerAs: 'mCtrl',
+                        template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="danger" ></bkm-msg-modal>'
+                    });
 
-                        var modalInstance = $uibModal.open({
-                            backdrop: false,
-                            animation: true,
-                            controller: function() {
-                                var mCtrl = this;
-                                mCtrl.message = delPrompt;
-                            },
-                            controllerAs: 'mCtrl',
-                            template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="danger" ></bkm-msg-modal>'
+                    modalInstance.result
+                        .then(function (result) {
+                            return delSvc(delParas);
+                        })
+                        .then(function (result) {
+                            parentCtrl.searchData();
+                            toastr.success("已被成功的删除!");
                         });
-
-                        modalInstance.result
-                            .then(function(result) {
-                                return delSvc(delParas);
-                            })
-                            .then(function(result) {
-                                parentCtrl.searchData();
-                                toastr.success("已被成功的删除!");
-                            });
-                    }
-                    //添加
-                parentCtrl.add = function() {
-                        modalForm();
-                    }
-                    //审核操作
-                parentCtrl.approve = function() {
-                        baseApproveFn(parentCtrl);
-                    }
-                    //新建表单
+                }
+                //添加
+                parentCtrl.add = function () {
+                    modalForm();
+                }
+                //审核操作
+                parentCtrl.approve = function () {
+                    baseApproveFn(parentCtrl);
+                }
+                //新建表单
                 function modalForm(row) {
 
                     $uibModal.open({
@@ -570,7 +570,7 @@
                         animation: false,
                         windowClass: 'bkm-backdrop',
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
-                        controller: ['$scope', '$state', '$uibModalInstance', 'toastr', function($scope, $state, $uibModalInstance, toastr) {
+                        controller: ['$scope', '$state', '$uibModalInstance', 'toastr', function ($scope, $state, $uibModalInstance, toastr) {
 
                             var ctrl = this;
 
@@ -598,12 +598,12 @@
 
                             //配置新建表单指令参数
                             angular.extend(ctrl.formOption, {
-                                    buttons: !!rtnRow && !isEdit ? [] : [{
-                                        text: '提交',
-                                        category: 'submit',
-                                        click: submitFn
-                                    }]
-                                },
+                                buttons: !!rtnRow && !isEdit ? [] : [{
+                                    text: '提交',
+                                    category: 'submit',
+                                    click: submitFn
+                                }]
+                            },
                                 newFormOption
                             );
 
@@ -621,7 +621,7 @@
                                     }
                                     //获取信息
                                     resourceSvc.get(getParas)
-                                        .then(function(result) {
+                                        .then(function (result) {
                                             var items = result.data || [];
 
                                             //表单数据绑定
@@ -663,7 +663,7 @@
 
                             //提交表单
                             function submitFn() {
-                                ctrl.formOption.onSubmit(function(validResult) {
+                                ctrl.formOption.onSubmit(function (validResult) {
                                     if (validResult.isSuccess) {
 
                                         //设置附件列表的数据
@@ -677,7 +677,7 @@
                                             if (isGoingon === true || isGoingon == undefined) {
                                                 updateAndCreateFn();
                                             } else if (!!isGoingon.promise) {
-                                                isGoingon.promise.then(function(result) {
+                                                isGoingon.promise.then(function (result) {
                                                     if (result === true) {
                                                         updateAndCreateFn();
                                                     }
@@ -690,15 +690,15 @@
                                         //调用创建或更新服务
                                         function updateAndCreateFn() {
                                             (isEdit ? resourceSvc.update(formModel) : resourceSvc.create(formModel))
-                                            .then(function(result) {
-                                                toastr.success('提交成功，请继续添加或点击关闭按钮返回！');
-                                                parentCtrl.searchData();
-                                                //更新成功处理回调
-                                                if (typeof parentCtrl.formSetting.postSubmitFn == 'function') {
-                                                    parentCtrl.formSetting.postSubmitFn(formModel);
-                                                }
-                                                $uibModalInstance.close();
-                                            });
+                                                .then(function (result) {
+                                                    toastr.success('提交成功，请继续添加或点击关闭按钮返回！');
+                                                    parentCtrl.searchData();
+                                                    //更新成功处理回调
+                                                    if (typeof parentCtrl.formSetting.postSubmitFn == 'function') {
+                                                        parentCtrl.formSetting.postSubmitFn(formModel);
+                                                    }
+                                                    $uibModalInstance.close();
+                                                });
                                         }
                                     } else {
                                         toastr.warning('您有未填写完整的数据，请按照错误提示补充完善，谢谢！');
@@ -709,7 +709,7 @@
                         controllerAs: 'ctrl',
                         size: 'lg',
                         resolve: {
-                            items: function() {
+                            items: function () {
                                 return row;
                             }
                         }
@@ -738,11 +738,11 @@
                     };
 
                     //删除附件
-                    attaches.delAttch = function(row) {
+                    attaches.delAttch = function (row) {
                         var modalInstance = $uibModal.open({
                             backdrop: false,
                             animation: true,
-                            controller: function() {
+                            controller: function () {
                                 var mCtrl = this;
                                 mCtrl.message = "您确认要删除该附件吗?";
                             },
@@ -751,7 +751,7 @@
                         });
 
                         modalInstance.result
-                            .then(function(result) {
+                            .then(function (result) {
                                 var index = bkm.util.indexOf(attaches.gridOption.data, 'id', row.entity.id);
                                 attaches.gridOption.data.splice(index, 1);
                             });
@@ -785,10 +785,10 @@
                         angular.extend(attaches.params, attchesPara);
 
                     //上传附件服务调用
-                    attaches.uploadFiles = function(files) {
+                    attaches.uploadFiles = function (files) {
                         if (files && files.length) {
                             bkmUpload.upload(files, true)
-                                .then(function(response) {
+                                .then(function (response) {
                                     for (var x in files) {
                                         files[x].contentType = files[x].type;
                                         files[x].contentLength = files[x].size;
@@ -832,7 +832,7 @@
             replace: true,
             template: '<div class="modal-content"><div class="modal-header {{dCtrl.modalParas.bgType}}"><i class="{{dCtrl.modalParas.iconClass}} modal-icon"></i><span>{{dCtrl.modalParas.titleType}}</span></div><div class="modal-body text-center">{{dCtrl.modalParas.message}}</div><div class="modal-footer"></div></div>',
 
-            link: function(scope, el) {
+            link: function (scope, el) {
 
                 var msgCollection = {
                     info: {
@@ -870,11 +870,11 @@
                 scope.options = scope.options || {};
                 scope.options.buttons = scope.options.buttons || [];
 
-                scope.cancelMsg = function() {
+                scope.cancelMsg = function () {
                     scope.$parent.$dismiss('cancel');
                 };
 
-                scope.okMsg = function() {
+                scope.okMsg = function () {
                     scope.$parent.$close('ok');
                 };
 
@@ -942,10 +942,10 @@
             replace: true,
             template: '<div class="modal-content" ><div class="modal-header" style="background-color:#209e91"><i class="ion-information-circled modal-icon"></i><span>{{$parent.modalTitle}}</span><button type="button" class="close" ng-click="$parent.$dismiss()" aria-label="Close"><em class="ion-ios-close-empty sn-link-close"></em></button></div><div class="modal-body"><form novalidate  name="myForm"><div class="row bkm-form-item"></div><div id="uibAccordions" class="row"></div><div ng-include="options.includeUrl" style="margin-bottom:16px;"></div><div ng-include="options.includeAttachesUrl"></div></form></div><div class="modal-footer "></div><script type="text/javascript">$(".modal-dialog").drags({handle: ".modal-header"});</script></div>',
 
-            link: function(scope, el) {
+            link: function (scope, el) {
 
                 //定义表单验证的回调函数
-                scope.options.onSubmit = function(onSubmitFn) {
+                scope.options.onSubmit = function (onSubmitFn) {
                     scope.myForm.$setSubmitted(true);
                     bkmFmValSvc.isValid(scope.myForm).then(onSubmitFn, null);
                 };
@@ -984,7 +984,7 @@
 
                 //判断是否移除掉附件列表的翻页控件
                 if (!!scope.options.attaches && !!scope.options.attaches.isRemovePaging) {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         el.find('v-pane-content .ui-grid-pager-panel').remove();
                     }, 0);
                 }
@@ -996,7 +996,7 @@
     function linkFunc(scope, el, uiComponents, selectors, options, cols, formStyle) {
 
         //设置窗体默认列布局
-        var parentCols = !!cols && typeof(cols) == 'number' ? 'col-md-' + cols % 13 : 'col-md-4';
+        var parentCols = !!cols && typeof (cols) == 'number' ? 'col-md-' + cols % 13 : 'col-md-4';
 
         //将指令参数配置到Controller上在指令间共享
         var opt = scope.dCtrl.opt = angular.extend({}, options);
@@ -1006,13 +1006,13 @@
         var btnPrevious = selectors.buttons == '' ? el : el.find(selectors.buttons);
         var accordElem = !!selectors.accordions ? el.find(selectors.accordions) : null;
 
-        angular.forEach(opt.items, function(t, i) {
+        angular.forEach(opt.items, function (t, i) {
             if (!t) return;
             //设置下拉列表默认的key,name标识
             t.keyName = !!t.keyName ? t.keyName : 'key';
             t.valName = !!t.valName ? t.valName : 'name';
             //设置元素默认列布局
-            var elemCols = !!t.cols && typeof(t.cols) == 'number' ? 'col-md-' + t.cols % 13 : parentCols;
+            var elemCols = !!t.cols && typeof (t.cols) == 'number' ? 'col-md-' + t.cols % 13 : parentCols;
             //设置默认的验证要求
             t.validateAttr = t.validateAttr || [];
             if (!t.option && t.validateAttr.toString().indexOf('required') == -1) {
@@ -1034,7 +1034,7 @@
             //设置鼠标点击事件函数名称
             var clickFnName = 'click' + i;
             if (typeof t.click == 'function') {
-                opt[clickFnName] = function() {
+                opt[clickFnName] = function () {
                     t.click();
                 };
             }
@@ -1088,11 +1088,11 @@
                 previous.append(formatTemplate(elemOptions, uiComponents.dropDownTemp));
                 if (!!t.parent) {
                     var modelName = 'options.model.' + t.parent.model;
-                    scope.$watch(modelName, function(n, o) {
+                    scope.$watch(modelName, function (n, o) {
                         if (n === o) return;
                         opt.items[i].dataSource = [];
                         if (!!!n) return;
-                        t.parent.onChange(n).then(function(data) {
+                        t.parent.onChange(n).then(function (data) {
                             opt.items[i].dataSource = data;
                         }, null);
                     });
@@ -1113,42 +1113,42 @@
                 var endDateModel = t.endDate.model;
 
                 var startDateBeforeRender = beginDateModel + 'BeforeRender';
-                opt[startDateBeforeRender] = function($dates) {
+                opt[startDateBeforeRender] = function ($dates) {
                     var dateRangeEnd = opt.model[endDateModel];
                     if (dateRangeEnd) {
                         var activeDate = moment(dateRangeEnd);
-                        $dates.filter(function(date) {
+                        $dates.filter(function (date) {
                             return date.localDateValue() >= activeDate.valueOf()
-                        }).forEach(function(date) {
+                        }).forEach(function (date) {
                             date.selectable = false;
                         })
                     }
                 }
 
                 var endDateBeforeRender = endDateModel + 'BeforeRender';
-                opt[endDateBeforeRender] = function($view, $dates) {
+                opt[endDateBeforeRender] = function ($view, $dates) {
                     var dateRangeStart = opt.model[beginDateModel];
                     if (dateRangeStart) {
                         var activeDate = moment(dateRangeStart).subtract(1, $view).add(1, 'minute');
 
-                        $dates.filter(function(date) {
+                        $dates.filter(function (date) {
                             return date.localDateValue() <= activeDate.valueOf()
-                        }).forEach(function(date) {
+                        }).forEach(function (date) {
                             date.selectable = false;
                         })
                     }
                 }
 
                 var startDateOnSetTime = beginDateModel + 'OnSetTime';
-                opt[startDateOnSetTime] = function() {
+                opt[startDateOnSetTime] = function () {
                     scope.$broadcast('start-date-changed');
                 };
 
                 var endDateOnSetTime = endDateModel + 'OnSetTime';
-                opt[endDateOnSetTime] = function() {
+                opt[endDateOnSetTime] = function () {
                     scope.$broadcast('end-date-changed');
                     //如果设置为天的时候，结束日期自动设置到23点59分59秒
-                    this.items.forEach(function(item) {
+                    this.items.forEach(function (item) {
                         if (item.type == "beginDateAndEndDate" &&
                             item.endDate.model == endDateModel &&
                             !item.minView) {
@@ -1272,7 +1272,7 @@
                 if (!!!scope.options.model[t.model]) scope.options.model[t.model] = {};
 
                 // onSelectedObject Map to selectedObject
-                t.options.selectedObject = function(value, selectedObjectData) {
+                t.options.selectedObject = function (value, selectedObjectData) {
                     if (!!t.options.onSelectedObject) {
                         if (angular.isFunction(t.options.onSelectedObject)) {
                             t.options.onSelectedObject(value, selectedObjectData);
@@ -1290,14 +1290,14 @@
                 t.options.inputName = t.model;
                 t.options.fieldRequired = !!!t.option;
                 t.options.disableInput = !!elemOptions.isRead;
-                var unWatchFn = scope.$watch(function() {
+                var unWatchFn = scope.$watch(function () {
                     return scope.myForm[t.model];
-                }, function(newVal) {
+                }, function (newVal) {
                     if (newVal) {
                         unWatchFn();
                         var regex = /^(.*)-error=".*"$/ig;
                         var obj = {};
-                        elemOptions.validateAttr.split(' ').forEach(function(c, i, a) {
+                        elemOptions.validateAttr.split(' ').forEach(function (c, i, a) {
                             regex.lastIndex = 0;
                             if (regex.test(c)) {
                                 regex.lastIndex = 0;
@@ -1308,14 +1308,14 @@
                     }
                 });
                 opt.angucompleteAltOpt = t.options;
-                angular.forEach(t.options, function(v, i) {
+                angular.forEach(t.options, function (v, i) {
                     pushStr = '';
                     str = '';
                     regEx.lastIndex = 0;
                     str = i
                     if (regEx.test(i)) {
                         regEx.lastIndex = 0;
-                        str = i.replace(regEx, function(p) {
+                        str = i.replace(regEx, function (p) {
                             return '-' + p.toLowerCase();
                         });
                     }
@@ -1331,7 +1331,7 @@
             }
         });
 
-        angular.forEach(opt.buttons, function(t, i) {
+        angular.forEach(opt.buttons, function (t, i) {
 
             //如果空对象或未定义则继续下一个
             if (!t) return;
@@ -1356,14 +1356,14 @@
                 isHide: !!t.isHide,
                 click: 'dCtrl.opt.' + btnClickFnName + '()'
             };
-            opt[btnClickFnName] = function() {
+            opt[btnClickFnName] = function () {
                 t.click();
             };
 
             if (t.type == 'button') {
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.buttonTemp));
             } else if (t.type == 'downloadButton') {
-                opt[btnClickFnName] = function(event) {
+                opt[btnClickFnName] = function (event) {
                     var url = t.click();
                     if (!!url) {
                         event.currentTarget.parentElement.href = url;
@@ -1380,7 +1380,7 @@
             }
         });
 
-        angular.forEach(opt.accordions, function(t, i) {
+        angular.forEach(opt.accordions, function (t, i) {
             var accordOptions = {
                 title: t.title,
                 accordId: t.accordId,
@@ -1391,11 +1391,11 @@
 
         function formatTemplate(dta, tmpl) {
             var format = {
-                name: function(x) {
+                name: function (x) {
                     return x;
                 }
             };
-            return tmpl.replace(/{(\w+)}/g, function(m1, m2) {
+            return tmpl.replace(/{(\w+)}/g, function (m1, m2) {
                 if (!m2) return "";
                 return (format && format[m2]) ? format[m2](dta[m2]) : dta[m2];
             });
