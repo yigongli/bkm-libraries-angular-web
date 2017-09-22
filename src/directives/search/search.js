@@ -502,6 +502,10 @@
                 //定义默认的布局列数
                 var cols = scope.cols ? scope.cols : 3;
                 //获取options中定义的parentCtrl
+                if (!scope.options || !scope.options.parentCtrl) {
+                    toastr.danger("应用内部错误：请将错误截图，联系系统管理员!");
+                    return;
+                }
                 var parentCtrl = scope.options.parentCtrl;
 
                 //显示详情
@@ -610,10 +614,11 @@
                             //查看详情或编辑时加载数据
                             var attachesPara = { 'relatedId': !!rtnRow ? rtnRow.id : '' }; //初始化附件查询参数对象
                             if (rtnRow) {
-                                //输入的rtnRow就是要显示的明细结果集
+                                //直接将rtnRow中的数据绑定在表单上
                                 if (rtnRow.isShowData) {
                                     bindResultToForm(rtnRow);
-                                } else {
+                                } else {//通过rtnRow.id先查询明细，将查询结果绑定在表单上
+                                    //设置Get方法参数的默认值：id
                                     var getParas = { id: rtnRow.id };
                                     //判断是否存在get方法的额外参数
                                     if (rtnRow.addiParas) {
@@ -623,20 +628,7 @@
                                     resourceSvc.get(getParas)
                                         .then(function (result) {
                                             var items = result.data || [];
-
-                                            //表单数据绑定
-                                            angular.extend(formModel, items);
-
-                                            //表单绑定数据处理回调
-                                            if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
-                                                parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
-                                            }
-                                            if (!!parentCtrl.formSetting.hasAttaches) {
-                                                angular.extend(ctrl.formOption, { includeAttachesUrl: attachesTempUrl });
-                                                attachesFn(ctrl, attachesPara, $scope, isEdit && !formModel.isReadAttaches, !rtnRow);
-                                                angular.extend(ctrl.formOption.attaches.params, attachesPara);
-                                                ctrl.formOption.attaches.searchData();
-                                            }
+                                            bindResultToForm(items);
                                         });
                                 }
                             } else if (!!parentCtrl.formSetting.hasAttaches) {
@@ -644,7 +636,7 @@
                                 attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                             }
 
-                            //数据绑定的函数
+                            //数据绑定的公共函数
                             function bindResultToForm(items) {
                                 //表单数据绑定
                                 angular.extend(formModel, items);
@@ -653,6 +645,8 @@
                                 if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
                                     parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
                                 }
+
+                                //表单中的公共附件列表数据绑定
                                 if (!!parentCtrl.formSetting.hasAttaches) {
                                     angular.extend(ctrl.formOption, { includeAttachesUrl: attachesTempUrl });
                                     attachesFn(ctrl, attachesPara, $scope, isEdit && !formModel.isReadAttaches, !rtnRow);
@@ -664,6 +658,12 @@
                             //提交表单
                             function submitFn() {
                                 ctrl.formOption.onSubmit(function (validResult) {
+
+                                    if (!parentCtrl.formSetting) {
+                                        toastr.danger("应用内部错误：请将错误截图，联系系统管理员!");
+                                        return;
+                                    }
+
                                     if (validResult.isSuccess) {
 
                                         //设置附件列表的数据
