@@ -16,12 +16,12 @@
                         <div class="input-group">\
                             <a class="dropdown-toggle" id="{dropdownId}" role="button" data-toggle="dropdown" data-target="#" >\
                                 <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly>\
-                             </a>\
-                            <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
-                                    <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#{dropdownId}\'}"/>\
+                            </a>\
+                            <ul ng-if="!({readModel}.isRead===true)" class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
+                                <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#{dropdownId}\'}"/>\
                             </ul>\
-                            <span class="input-group-addon" ng-click="{model}=null">\
-                                    <i class="input-datepicker glyphicon glyphicon-remove"></i>\
+                            <span ng-if="!({readModel}.isRead===true)" class="input-group-addon" ng-click="{model}=null">\
+                                <i class="input-datepicker glyphicon glyphicon-remove"></i>\
                             </span>\
                         </div>\
                      </div>\
