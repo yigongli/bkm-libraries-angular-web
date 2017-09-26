@@ -1068,7 +1068,7 @@
                 isRead: !!opt.isReadonlyForm || !!t.isRead
             };
 
-            if (t.type == 'text' || t.type == 'number' || t.type == 'password' || t.type == 'email') {
+            if (t.type == 'text' || t.type == 'number' || t.type == 'password' || t.type == 'email' || t.type == 'tel') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textTemp));
             } else if (t.type == 'note') {
                 previous.append(formatTemplate(elemOptions, uiComponents.noteTemp));
