@@ -253,7 +253,7 @@
              *
              * @returns {string} 返回替换后的值
              */
-            window.baseApproveFn = function (parentCtrl, rowEntity) {
+            window.baseApproveFn = function (parentCtrl, rowEntity, rejectSuccessCallback) {
 
                 var self = parentCtrl;
 
@@ -353,6 +353,9 @@
                                     toastr.success(bkm.util.format("该{0}已被标记为审核不通过!", promptName));
                                     $uibModalInstance.close();
                                     self.searchData();
+                                    if (typeof rejectSuccessCallback == 'function') {
+                                        rejectSuccessCallback();
+                                    }
                                 });
                         }
                     }],
