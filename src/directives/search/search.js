@@ -507,7 +507,7 @@
                 var cols = scope.cols ? scope.cols : 3;
                 //获取options中定义的parentCtrl
                 if (!scope.options || !scope.options.parentCtrl) {
-                    toastr.danger("应用内部错误：请将错误截图，联系系统管理员!");
+                    toastr.warning("应用内部错误：请将错误截图，联系系统管理员!");
                     return;
                 }
                 var parentCtrl = scope.options.parentCtrl;
