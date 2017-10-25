@@ -117,7 +117,14 @@
                         </uib-accordion-heading>\
                         <div class="attaches upfile row" ng-if="options.attaches.isShowUpload">\
                             <div class="col-md-6">{{options.attaches.prompt}}</div>\
-                            <div class="col-md-6 operation"><i class="fa fa-upload" aria-hidden="true"></i><a ngf-select="options.attaches.uploadFiles($files)" ngf-pattern="{{options.attaches.attachesPattern}}" ngf-multiple="{{options.attaches.multiple}}">&nbsp;&nbsp;添加附件...</a></div>\
+                            <div class="col-md-6 operation">\
+                                <div ng-if="options.attaches.isShowFileUpType" style="display:inline-block">\
+                                    <select ng-model="options.attaches.upFileTypeValue" ng-change="options.attaches.upFileTypeValueChange()" class="form-control selectpicker ng-pristine ng-invalid ng-invalid-required ng-touched" ng-options="o.name for o in options.attaches.upFileTypeObj">\
+                                        <option value="">-- 请选择附件类型 --</option>\
+                                    </select>\
+                                </div>\
+                                <i class="fa fa-upload" aria-hidden="true"></i><a ngf-select-disabled="options.attaches.fileUpdisabled" ngf-select="options.attaches.uploadFiles($files)" ngf-pattern="{{options.attaches.attachesPattern}}" ngf-multiple="{{options.attaches.multiple}}">&nbsp;&nbsp;添加附件...</a>\
+                            </div>\
                         </div>\
                         <div ui-grid="options.attaches.gridOption" class="grid" ui-grid-selection ui-grid-pagination ui-grid-auto-resize ng-style="options.attaches.gridOption.autoHeight()"></div>\
                     </div>\
@@ -617,6 +624,12 @@
 
                             //查看详情或编辑时加载数据
                             var attachesPara = { 'relatedId': !!rtnRow ? rtnRow.id : '' }; //初始化附件查询参数对象
+                            //对附件类型的处理
+                            if (!!parentCtrl.formSetting.isShowUpFileType) {
+                                attachesPara.isShowUpFileType = parentCtrl.formSetting.isShowUpFileType;
+                                attachesPara.getUpFileTypeFn = parentCtrl.formSetting.getUpFileTypeFn;
+                                attachesPara.rtnRow = rtnRow;
+                            }
                             if (rtnRow) {
                                 //直接将rtnRow中的数据绑定在表单上
                                 if (rtnRow.isShowData) {
@@ -751,9 +764,38 @@
                         isShowUpload: !!isNew || !!isEdit,
                         isRemovePaging: !!isNew || !!isEdit,
                         isShowDelete: !!isNew || !!isEdit,
-                        prompt: "支持文件格式(jpg,png)，文件大小不超过200K" + attchesPara.addiPrompt
+                        prompt: "支持文件格式(jpg,png)，文件大小不超过200K" + attchesPara.addiPrompt,
+                        isShowFileUpType: !!attchesPara.isShowUpFileType || false, //默认为不使用上传文件类型
+                        upFileTypeValue: '', //上传文件的类型
+                        fileUpdisabled: false //是否禁用上传功能,默认禁用
                     };
 
+                    if (!!attaches.isShowFileUpType) {
+
+                        //需要文件类型是请求数据
+                        self.upFileTypeObj = {};
+                        if (typeof attchesPara.getUpFileTypeFn == 'function') {
+                            attchesPara.getUpFileTypeFn(attchesPara.rtnRow)
+                                .then(function(data) {
+                                    angular.extend(self.upFileTypeObj, data.items);
+                                })
+                                .catch(function(e) {
+                                    // 异常处理
+                                });
+                        }
+                        //添加文件类型选择
+                        angular.extend(attaches, {
+                            upFileTypeObj: self.upFileTypeObj,
+                            fileUpdisabled: true,
+                            upFileTypeValueChange: function() {
+                                if (!!attaches.upFileTypeValue) {
+                                    attaches.fileUpdisabled = false;
+                                } else {
+                                    attaches.fileUpdisabled = true;
+                                }
+                            },
+                        });
+                    }
                     //删除附件
                     attaches.delAttch = function(row) {
                         var modalInstance = $uibModal.open({
