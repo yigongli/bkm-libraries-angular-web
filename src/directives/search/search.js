@@ -844,22 +844,14 @@
                         angular.extend(attaches.params, attchesPara);
 
                     //上传附件服务调用
-<<<<<<< HEAD
-                    attaches.uploadFiles = function (files) {
-                        // 现在每次只上传一个
-                        if (files.length > 0) {
-                            files[0].sendFormData = { name: attaches.upFileTypeValue.name };
-=======
                     attaches.uploadFiles = function(files) {
                         // 判断是否需要文件类型
                         if (!!attaches.isShowFileUpType) {
                             if (files.length > 0) {
                                 files[0].sendFormData = { name: attaches.upFileTypeValue.name };
                             }
->>>>>>> f6459ec52b7ba8379cf43338ba5b2b710326af48
                         }
                         if (files && files.length) {
-
                             bkmUpload.upload(files, true)
                                 .then(function (response) {
                                     //把files存放到filesLists中
