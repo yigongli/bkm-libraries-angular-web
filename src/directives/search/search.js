@@ -845,9 +845,11 @@
 
                     //上传附件服务调用
                     attaches.uploadFiles = function(files) {
-                        // 现在每次只上传一个
-                        if (files.length > 0) {
-                            files[0].sendFormData = { name: attaches.upFileTypeValue.name };
+                        // 判断是否需要文件类型
+                        if (!!attaches.isShowFileUpType) {
+                            if (files.length > 0) {
+                                files[0].sendFormData = { name: attaches.upFileTypeValue.name };
+                            }
                         }
                         if (files && files.length) {
 
