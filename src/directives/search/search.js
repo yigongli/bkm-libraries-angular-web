@@ -760,7 +760,7 @@
                     var self = appliedCtrl;
                     attchesPara.addiPrompt = attchesPara.addiPrompt || '';
                     var attaches = self.formOption.attaches = {
-                        attachesPattern: attchesPara.attachTypes.length ? attchesPara.attachTypes.join(',') : "'.jpg,.png'",
+                        attachesPattern: !!attchesPara.attachTypes && attchesPara.attachTypes.length ? attchesPara.attachTypes.join(',') : "'.jpg,.png'",
                         multiple: true,
                         isShowUpload: !!isNew || !!isEdit,
                         isRemovePaging: !!isNew || !!isEdit,
@@ -848,7 +848,7 @@
                     attaches.uploadFiles = function(files) {
                         if (files && files.length) {
                             var f,
-                                imageInfo = attchesPara.attachTypes.length ? {
+                                imageInfo = !!attchesPara.attachTypes && attchesPara.attachTypes.length ? {
                                     type: attchesPara.attachTypes.join('').split('.')
                                 } :
                                 true;
