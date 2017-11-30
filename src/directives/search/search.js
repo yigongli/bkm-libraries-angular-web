@@ -242,7 +242,10 @@
                         useExternalPagination: true,
                         paginationPageSize: 10,
                         paginationPageSizes: [5, 10, 15, 20],
-                        enableColumnMenus: false
+                        enableColumnMenus: false,
+                        enableGridMenu: true,
+                        exporterMenuCsv: false,
+                        exporterMenuPdf: false
                     });
                 };
             };
