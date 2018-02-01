@@ -165,13 +165,15 @@
              * isInitLoad:是否需要在页面首次打开时加载数据
              * registerCustomizedApi: 需要controller中定义的UI-GRID事件方法,
              * paramsSetting： 在调用searchData方法时需要额外配置的查询参数
+             * uiGridName 给每一个grid唯一的一个标识
              * @returns {string} 返回替换后的值
              */
             window.baseSearchFn = function($scope,
                 serviceApiFunc,
                 paramsSetting,
                 isInitLoad,
-                registerCustomizedApi) {
+                registerCustomizedApi,
+                uiGridName) {
 
                 var self = this;
                 //构造页面查询参数基类对象
@@ -189,11 +191,31 @@
 
                 //注册事件回调函数
                 self.gridApi = {};
+                if (angular.isString(uiGridName) && uiGridName.length > 0) {
+                    self.gridOption.gridMenuCustomItems = [{
+                        title: '保存列状态',
+                        action: function($event) {
+                            localStorage.setItem(uiGridName, JSON.stringify(this.grid.api.saveState.save()));
+                        },
+                        order: 210
+                    }];
+                }
+
                 self.gridOption.onRegisterApi = function(gridApi) {
                     self.gridApi = gridApi;
                     //判断在页面第一次加载的时候需要加载数据
                     if (isInitLoad == undefined || isInitLoad)
                         getData(1, self.gridOption.paginationPageSize);
+                    
+                    //判断是否传入了grid标识
+                    if (angular.isString(uiGridName) && uiGridName.length > 0) {
+                        var item = localStorage.getItem(uiGridName);
+                        if (!!item) {
+                            setTimeout(function() {
+                                self.gridApi.saveState.restore(null, JSON.parse(item));
+                            }, 1);
+                        }
+                    }
                     //注册UI-GRID翻页函数
                     if (gridApi.pagination) {
                         gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
