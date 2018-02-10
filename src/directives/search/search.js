@@ -196,6 +196,7 @@
                         title: '保存列状态',
                         action: function($event) {
                             localStorage.setItem(uiGridName, JSON.stringify(this.grid.api.saveState.save()));
+                            toastr.info("列状态保存成功!");
                         },
                         order: 210
                     }];
