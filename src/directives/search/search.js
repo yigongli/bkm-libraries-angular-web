@@ -30,7 +30,7 @@
               </div>',
         buttonTemp: '<button ng-hide="{hideModel}.isHide||{isHide}" uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a ng-hide="{hideModel}.isHide||{isHide}" class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
-        placeHolderTemp: '<div class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
+        placeHolderTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
         bkmButtonTemp: '<bkm-button ng-hide="{hideModel}.isHide||{isHide}" category="{category}" text="{text}" ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}"></bkm-button>',
         beginDateAndEndDateTemp: ' <div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}">\
                 <div class="col-md-6" style="padding-left: 0;">\
@@ -207,7 +207,7 @@
                     //判断在页面第一次加载的时候需要加载数据
                     if (isInitLoad == undefined || isInitLoad)
                         getData(1, self.gridOption.paginationPageSize);
-                    
+
                     //判断是否传入了grid标识
                     if (angular.isString(uiGridName) && uiGridName.length > 0) {
                         var item = localStorage.getItem(uiGridName);
