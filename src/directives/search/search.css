@@ -151,6 +151,7 @@ ui-view .panel-body .search-condition .form-control {
     font-size: 12px;
 }
 
+.dropdown .bkm-form-icon.form-control,
 .date.bkm-form-icon.form-control {
     border: 0px !important;
 }
