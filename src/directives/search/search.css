@@ -4,14 +4,13 @@
     border: 0 !important;
 }
 
-.bkm-uib-accordion .panel-default > .panel-heading + .panel-collapse > .panel-body,
+.bkm-uib-accordion .panel-default>.panel-heading+.panel-collapse>.panel-body,
 .bkm-uib-accordion .panel-group .panel .panel-heading {
     border: 0;
 }
 
-.bkm-uib-accordion .panel-group .panel-heading + .panel-collapse > .panel-body,
-.bkm-uib-accordion .panel-default
-.bkm-uib-accordion .panel-body,
+.bkm-uib-accordion .panel-group .panel-heading+.panel-collapse>.panel-body,
+.bkm-uib-accordion .panel-default .bkm-uib-accordion .panel-body,
 .bkm-attatches .panel-heading {
     padding: 0 !important;
 }
@@ -42,7 +41,7 @@
     width: 100%;
 }
 
-.bkm-uib-accordion .panel-default > .panel-heading {
+.bkm-uib-accordion .panel-default>.panel-heading {
     border: 0;
     background: none;
 }
@@ -95,15 +94,17 @@ ui-view .panel-body .search-condition .form-control {
     width: 100px;
 }
 
+
 /* 搜索条件占位符*/
+
 .modal-body .placeholder {
     visibility: hidden;
     height: 61px;
 }
 
 
-
 /*以下用于设置附件列表的样式 */
+
 .attaches a:hover {
     text-decoration: underline !important;
 }
@@ -113,25 +114,28 @@ ui-view .panel-body .search-condition .form-control {
     padding-bottom: 2px;
 }
 
-
 .file-download {
     text-align: center;
     line-height: 30px;
-    a{
+    a {
         cursor: pointer;
-        margin-right:4px;
+        margin-right: 4px;
     }
-    a:hover{
-        text-decoration:  underline !important;
+    a:hover {
+        text-decoration: underline !important;
     }
 }
+
 
 /*开始和结束日期样式*/
+
 .bkm-end-date {
-    padding-right:0px;
+    padding-right: 0px;
 }
 
+
 /*设置input输入框组合图标的样式*/
+
 .input-icon {
     position: absolute;
     top: auto;
@@ -140,16 +144,26 @@ ui-view .panel-body .search-condition .form-control {
 }
 
 .input-datepicker {
-    position: absolute;
+    /* position: absolute;
     top: auto;
     bottom: 6px;
-    right: 1px;
+    right: 1px; */
     font-size: 12px;
 }
 
+.date.bkm-form-icon.form-control input {
+    border-radius: 0 4px 4px 0;
+}
 
 .input-group-addon {
-    padding: 3px 6px;
+    /* padding: 3px 6px; */
+    top: -.5px;
+    position: absolute;
+    right: 0;
+    padding: 5.8px 15px 5.8px 5px;
+    line-height: 0;
+    display: block;
+    text-align: center;
 }
 
 .dropdown .input-group {

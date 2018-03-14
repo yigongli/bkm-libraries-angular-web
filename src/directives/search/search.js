@@ -14,9 +14,9 @@
                 <div class="{formStyle}" {validError}>\
                     <div class="dropdown">\
                         <label>{label}{formRequired}</label>&nbsp;&nbsp;\
-                        <div class="input-group">\
+                        <div ng-class="{\'date\':!({readModel}.isRead===true)}" class="bkm-form-icon form-control">\
                             <a class="dropdown-toggle" id="{dropdownId}" role="button" data-toggle="dropdown" data-target="#" >\
-                                <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly>\
+                                <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly ng-disabled="{readModel}.isRead||{isRead}">\
                             </a>\
                             <ul ng-if="!({readModel}.isRead===true)" class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
                                 <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#{dropdownId}\'}"/>\
@@ -36,7 +36,7 @@
                 <div class="col-md-6" style="padding-left: 0;">\
                     <div class="dropdown dropdown-start-parent {formStyle}" {beginValidError}>\
                         <label>{beginDateLabel}{formRequired}&nbsp;&nbsp;</label>\
-                        <div class="input-group date">\
+                        <div class="date bkm-form-icon form-control">\
                             <a class="dropdown-toggle" id="{dropdownStart}" role="button" data-toggle="dropdown" data-target="#" >\
                                 <input type="text" class="form-control" ng-model="{beginDateModel}" data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{beginFormName}"  {validateAttr} placeholder="{beginDatePlaceholder}" readOnly>\
                             </a>\
@@ -55,7 +55,7 @@
                 <div class="col-md-6" style="padding-right: 0;">\
                     <div class="dropdown dropdown-start-parent {formStyle}" {endValidError}>\
                         <label>{endDateLabel}{formRequired}&nbsp;&nbsp;</label>\
-                        <div class="input-group date">\
+                        <div class="date bkm-form-icon form-control">\
                             <a class="dropdown-toggle" id="{dropdownEnd}" role="button" data-toggle="dropdown" data-target="#" >\
                                 <input type="text" class="form-control" ng-model="{endDateModel}"  data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{endFormName}"  {validateAttr} placeholder="{endDatePlaceholder}" readOnly>\
                             </a>\
