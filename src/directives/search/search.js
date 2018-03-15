@@ -407,7 +407,7 @@
              * @ngdoc directive
              * @name baseApproveFn
              * @description
-             * 通用的审核功能
+             * 通用的简单form表单
              *
              * @param input {parentCtrl,rowEntity} 接收的值
              * parentCtrl:传入应用所在的ctrl,
