@@ -403,6 +403,98 @@
             };
 
 
+            /**
+             * @ngdoc directive
+             * @name baseApproveFn
+             * @description
+             * 通用的审核功能
+             *
+             * @param input {parentCtrl,rowEntity} 接收的值
+             * parentCtrl:传入应用所在的ctrl,
+             * rowEntity: (可选)审批按钮在行上定义的时候需要传入row.entity对象
+             *
+             * @returns {string} 返回替换后的值
+             */
+            window.simpleFormModelDalg = function(parentCtrl, rowEntity, formOption) {
+
+                var self = parentCtrl;
+
+                //获取所选择审核的记录
+                var rtnRows = [];
+                rtnRows[0] = rowEntity || self.gridApi.selection.getSelectedRows()[0];
+
+                //审核的对话框
+                var uibModalInstance = $uibModal.open({
+                    backdrop: false,
+                    animation: true,
+                    template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
+                    controller: ['$uibModalInstance', '$scope', function($uibModalInstance, $scope) {
+
+                        //初始化数据模型
+                        var ctrl = this;
+                        ctrl.formOption = {};
+                        var formModel = ctrl.formOption.model = self.formSetting.approveParams || rtnRows[0]; // || { relatedId: rtnRows[0].id };
+
+                        angular.forEach(formOption.buttons, function(v, i) {
+                            var tClick = v.click;
+                            v.click = function(e) {
+                                if (!!v.onClickConfirm) {
+                                    confirmFn(v.onClickConfirm, tClick);
+                                } else {
+                                    tClick({ e: e, uibModalInstance: $uibModalInstance, formModel: formModel });
+                                }
+                            };
+                        });
+
+                        //表单数据模型绑定
+                        $scope.modalTitle = formOption.modalTitle; //self.formSetting.modalTitle || (promptName + '审核');
+                        angular.extend(ctrl.formOption, {
+                            items: formOption.items,
+                            buttons: formOption.buttons
+                        });
+
+                        //审核不通过
+                        function confirmFn(opt, clickFn) {
+                            // if (formModel.type == undefined) {
+                            //     toastr.info("请选择拒绝原因的类型!");
+                            //     return;
+                            // }
+                            var modalInstance = $uibModal.open({
+                                backdrop: false,
+                                animation: true,
+                                controller: function() {
+                                    var mCtrl = this;
+                                    mCtrl.message = opt.message; // "您确认要拒绝吗?";
+                                },
+                                controllerAs: 'mCtrl',
+                                template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="danger" ></bkm-msg-modal>'
+                            });
+
+                            modalInstance.result
+                                .then(function(result) {
+                                    return clickFn({ formModel: formModel });
+                                })
+                                .then(function(result) {
+                                    // toastr.success(bkm.util.format("该{0}已被标记为审核不通过!", promptName));
+                                    toastr.success(opt.successMsg);
+                                    $uibModalInstance.close();
+                                    self.searchData();
+                                    if (typeof opt.rejectSuccessCallback == 'function') {
+                                        opt.rejectSuccessCallback(result);
+                                    }
+                                });
+                        }
+                    }],
+                    controllerAs: 'ctrl',
+                    size: 'lg',
+                    resolve: {
+                        items: function() {
+                            return rtnRows;
+                        }
+                    }
+                });
+            };
+
         }]);
 
     function directiveCtrl() {
