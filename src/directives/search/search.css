@@ -90,8 +90,16 @@ ui-view .panel-body .search-condition .form-control {
     width: 150px;
 }
 
+.modal-body .panel-body .search-condition div.tree-address,
 .modal-body .panel-body .search-condition .form-control {
-    width: 100px;
+    width: 67%;
+}
+
+.modal-body .panel-body .search-condition div.tree-address .form-control,
+.modal-body .panel-body .search-condition .form-control input,
+.modal-body .panel-body .search-condition .form-control select,
+.modal-body .panel-body .search-condition .form-control .form-control {
+    width: 100% !important;
 }
 
 
