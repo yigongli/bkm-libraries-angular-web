@@ -1504,23 +1504,25 @@
                 t.options.inputName = t.model;
                 t.options.fieldRequired = !!!t.option;
                 t.options.disableInput = !!elemOptions.isRead;
-                var unWatchFn = scope.$watch(function() {
-                    return scope.myForm[t.model];
-                }, function(newVal) {
-                    if (newVal) {
-                        unWatchFn();
-                        var regex = /^(.*)-error=".*"$/ig;
-                        var obj = {};
-                        elemOptions.validateAttr.split(' ').forEach(function(c, i, a) {
-                            regex.lastIndex = 0;
-                            if (regex.test(c)) {
+                if (scope.myForm) {
+                    var unWatchFn = scope.$watch(function() {
+                        return scope.myForm[t.model];
+                    }, function(newVal) {
+                        if (newVal) {
+                            unWatchFn();
+                            var regex = /^(.*)-error=".*"$/ig;
+                            var obj = {};
+                            elemOptions.validateAttr.split(' ').forEach(function(c, i, a) {
                                 regex.lastIndex = 0;
-                                obj[c.replace(regex, "$1Error")] = c.split('=')[1].replace(/["']/g, '');
-                            }
-                        });
-                        scope.myForm[t.model].errorMsg = obj;
-                    }
-                });
+                                if (regex.test(c)) {
+                                    regex.lastIndex = 0;
+                                    obj[c.replace(regex, "$1Error")] = c.split('=')[1].replace(/["']/g, '');
+                                }
+                            });
+                            scope.myForm[t.model].errorMsg = obj;
+                        }
+                    });
+                }
                 opt.angucompleteAltOpt = t.options;
                 angular.forEach(t.options, function(v, i) {
                     pushStr = '';

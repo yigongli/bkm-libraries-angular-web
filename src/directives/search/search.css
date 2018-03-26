@@ -183,3 +183,18 @@ ui-view .panel-body .search-condition .form-control {
     margin-bottom: 0px;
     width: inherit;
 }
+
+ui-view .panel-body .search-condition angucomplete-alt {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+}
+
+ui-view .panel-body .search-condition .angucomplete-dropdown {
+    width: 150px;
+    text-align: left;
+}
