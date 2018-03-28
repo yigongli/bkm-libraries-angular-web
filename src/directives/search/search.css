@@ -198,3 +198,8 @@ ui-view .panel-body .search-condition .angucomplete-dropdown {
     width: 150px;
     text-align: left;
 }
+
+.angucomplete-dropdown {
+    max-height: 300px;
+    overflow-y: scroll;
+}
