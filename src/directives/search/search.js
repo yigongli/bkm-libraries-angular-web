@@ -1432,7 +1432,7 @@
                     });
                 }
                 previous.append(formatTemplate(elemOptions, uiComponents.colorPickerTemp));
-            } else if (t.type == 'autoComplate') {
+            } else if (t.type == 'autoComplete') {
                 var optAttrs = [],
                     str = '',
                     pushStr = '',
