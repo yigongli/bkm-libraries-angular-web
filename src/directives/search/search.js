@@ -1487,14 +1487,12 @@
 
                 // onSelectedObject Map to selectedObject
                 t.options.selectedObject = function(value, selectedObjectData) {
-                    if (!!t.options.onSelectedObject) {
-                        if (angular.isFunction(t.options.onSelectedObject)) {
-                            t.options.onSelectedObject(value, selectedObjectData);
-                        } else {
-                            t.options.onSelectedObject = value;
+                    if (!!t.options.onSelected) {
+                        if (angular.isFunction(t.options.onSelected)) {
+                            t.options.onSelected(value, selectedObjectData);
                         }
                     }
-                    if (!!value) {
+                    if (angular.isObject(value)) {
                         scope.options.model[t.model] = value.originalObject;
                     } else {
                         scope.options.model[t.model] = value;
