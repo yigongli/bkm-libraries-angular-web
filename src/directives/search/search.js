@@ -1479,6 +1479,9 @@
                         focusFirst: '@',
                         parseInput: '&'
                     };
+                t.options.textSearching = t.options.textSearching || '搜索中...';
+                t.options.textNoResults = t.options.textNoResults || '无返回结果';
+
                 if (!!!t.options.inputClass) {
                     t.options.inputClass = "form-control";
                 }
@@ -1488,7 +1491,7 @@
                 // onSelectedObject Map to selectedObject
                 t.options.selectedObject = function(value, selectedObjectData) {
                     if (!!t.options.onSelected) {
-                        if (angular.isFunction(t.options.onSelected)) {
+                        if (angular.isFunction(t.options.onSelected) && value != null) {
                             t.options.onSelected(value, selectedObjectData);
                         }
                     }
