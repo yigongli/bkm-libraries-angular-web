@@ -1455,7 +1455,7 @@
                     remoteUrlResponseFormatter: t.remoteUrlResponseFormatter,
                     remoteUrlErrorCallback: t.remoteUrlErrorCallback,
                     remoteApiHandler: t.remoteApiHandler,
-                    type: t.autoCompleteType,
+                    type: t.autoCompleteType || 'text',
                     remoteUrl: t.remoteUrl,
                     remoteUrlDataField: t.remoteUrlDataField,
                     descriptionField: t.descriptionField,
