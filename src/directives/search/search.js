@@ -1433,6 +1433,50 @@
                 }
                 previous.append(formatTemplate(elemOptions, uiComponents.colorPickerTemp));
             } else if (t.type == 'autoComplete') {
+                var o = {
+                    textSearching: t.textSearching || '搜索中...',
+                    textNoResults: t.textNoResults || '无返回结果',
+                    focusFirst: (t.focusFirst == null ? true : t.focusFirst),
+                    searchFields: t.searchFields || "name",
+                    titleField: t.titleField || "name",
+                    minlength: t.minlength || 1,
+                    id: t.type + t.model.replace('.', '_') + i,
+                    localData: t.localData,
+                    inputClass: t.inputClass || 'form-control',
+                    placeholder: t.placeholder,
+                    inputName: t.model,
+                    fieldRequired: !!!t.option,
+                    disableInput: !!elemOptions.isRead,
+                    selectedObjectData: t.selectedObjectData,
+                    initialValue: t.initialValue,
+                    localSearch: t.localSearch,
+                    remoteUrlRequestFormatter: t.remoteUrlRequestFormatter,
+                    remoteUrlRequestWithCredentials: t.remoteUrlRequestWithCredentials,
+                    remoteUrlResponseFormatter: t.remoteUrlResponseFormatter,
+                    remoteUrlErrorCallback: t.remoteUrlErrorCallback,
+                    remoteApiHandler: t.remoteApiHandler,
+                    type: t.autoCompleteType,
+                    remoteUrl: t.remoteUrl,
+                    remoteUrlDataField: t.remoteUrlDataField,
+                    descriptionField: t.descriptionField,
+                    imageField: t.imageField,
+                    pause: t.pause,
+                    matchClass: t.matchClass,
+                    clearSelected: t.clearSelected,
+                    overrideSuggestions: t.overrideSuggestions,
+                    fieldRequiredClass: t.fieldRequiredClass,
+                    autoMatch: t.autoMatch,
+                    focusOut: t.focusOut,
+                    focusIn: t.focusIn,
+                    fieldTabindex: t.fieldTabindex,
+                    parseInput: t.parseInput
+                };
+                t.clearInput = function() {
+                    scope.$broadcast('angucomplete-alt:clearInput', o.id);
+                }
+                t.setValue = function(val) {
+                    scope.$broadcast("angucomplete-alt:changeInput", o.id, val);
+                };
                 var optAttrs = [],
                     str = '',
                     pushStr = '',
@@ -1479,32 +1523,39 @@
                         focusFirst: '@',
                         parseInput: '&'
                     };
-                t.options.textSearching = t.options.textSearching || '搜索中...';
-                t.options.textNoResults = t.options.textNoResults || '无返回结果';
 
-                if (!!!t.options.inputClass) {
-                    t.options.inputClass = "form-control";
-                }
-                if (!!!scope.options.model) scope.options.mode = {};
-                if (!!!scope.options.model[t.model]) scope.options.model[t.model] = {};
+                // onSelectedObject Map to selectedObject  value, selectedObjectData
+                o.selectedObject = function(value, selectedObjectData) {
+                    if (angular.isObject(value)) {
+                        if (t.modelKey) {
+                            scope.options.model[t.model] = value.originalObject[t.modelKey] || '';
+                        } else {
+                            scope.options.model[t.model] = value.originalObject || {};
+                        }
+                    } else {
+                        scope.options.model[t.model] = value || '';
+                    }
 
-                // onSelectedObject Map to selectedObject
-                t.options.selectedObject = function(value, selectedObjectData) {
-                    if (!!t.options.onSelected) {
-                        if (angular.isFunction(t.options.onSelected) && value != null) {
-                            t.options.onSelected(value, selectedObjectData);
+                    if (!!t.onSelected) {
+                        if (angular.isFunction(t.onSelected) && value != null) {
+                            t.onSelected(value, selectedObjectData);
                         }
                     }
-                    if (angular.isObject(value)) {
-                        scope.options.model[t.model] = value.originalObject;
-                    } else {
+                }
+
+                o.inputChanged = function(value) {
+                    if (t.modelKey && t.modelKey == t.model) {
                         scope.options.model[t.model] = value;
+                        // 如果 modelKey 和 model 是同一字段时，只要 input 框非空，则设置为非必填
+                        scope.dCtrl.opt.angucompleteAltOpt.fieldRequired = (value == '');
+                    }
+                    if (!!t.inputChanged) {
+                        if (angular.isFunction(t.inputChanged)) {
+                            t.inputChanged(value);
+                        }
                     }
                 }
 
-                t.options.inputName = t.model;
-                t.options.fieldRequired = !!!t.option;
-                t.options.disableInput = !!elemOptions.isRead;
                 if (scope.myForm) {
                     var unWatchFn = scope.$watch(function() {
                         return scope.myForm[t.model];
@@ -1524,8 +1575,9 @@
                         }
                     });
                 }
-                opt.angucompleteAltOpt = t.options;
-                angular.forEach(t.options, function(v, i) {
+                opt.angucompleteAltOpt = o;
+                angular.forEach(o, function(v, i) {
+                    if (v == null) return;
                     pushStr = '';
                     str = '';
                     regEx.lastIndex = 0;
