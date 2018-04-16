@@ -72,7 +72,7 @@
                     </div>\
                 </div>\
             </div>',
-        accordTemp: '<uib-accordion class="row bkm-uib-accordion">\
+        accordTemp: '<uib-accordion class="row bkm-uib-accordion" ng-hide="{hideModel}.isHide||{isHide}">\
                     <div uib-accordion-group class="panel-default" is-open="{isExpanded}">\
                         <uib-accordion-heading>\
                             <div class="col-md-12 bkm-panel-title" ng-click="status=!status" >\
@@ -1656,10 +1656,14 @@
         });
 
         angular.forEach(opt.accordions, function(t, i) {
+            //动态设置元素隐藏
+            var hideModel = 'hideAccordionModel' + i;
+            opt[hideModel] = t.hideModel || {};
             var accordOptions = {
                 title: t.title,
                 accordId: t.accordId,
-                isExpanded: !!t.isExpanded
+                isExpanded: !!t.isExpanded,
+                hideModel: 'dCtrl.opt.' + hideModel
             };
             accordElem.append(formatTemplate(accordOptions, uiComponents.accordTemp));
         });
