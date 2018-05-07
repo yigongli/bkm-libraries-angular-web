@@ -148,7 +148,7 @@
                     dictionaryHash: '',
                     sorting: '',
                     skipCount: '0',
-                    maxResultCount: '500'
+                    maxResultCount: '10'
                 }, obj);
             };
 
