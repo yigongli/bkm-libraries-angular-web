@@ -107,7 +107,7 @@
         .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', '$timeout', function(toastr, $uibModal, dict, $templateCache, $timeout) {
             $templateCache.put('attatchesList.html',
                 '<uib-accordion close-others="oneAtATime" class="row bkm-uib-accordion" style="margin: 0;">\
-                    <div uib-accordion-group class="panel-default bkm-attatches" is-open="status.open">\
+                    <div uib-accordion-group class="panel-default bkm-attatches" is-open="options.attaches.isAttachesExpanded">\
                         <uib-accordion-heading>\
                             <div class="bkm-panel-title" ng-click="status.open=!!!status.open">\
                                 <span>附件列表</span>\
@@ -768,7 +768,10 @@
                                         });
                                 }
                             } else if (!!parentCtrl.formSetting.hasAttaches) {
-                                angular.extend(ctrl.formOption, { includeAttachesUrl: attachesTempUrl });
+                                angular.extend(ctrl.formOption, {
+                                    includeAttachesUrl: attachesTempUrl,
+                                    isAttachesExpanded: parentCtrl.formSetting.isAttachesExpanded || false
+                                });
                                 attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                             }
 
@@ -784,7 +787,10 @@
 
                                 //表单中的公共附件列表数据绑定
                                 if (!!parentCtrl.formSetting.hasAttaches) {
-                                    angular.extend(ctrl.formOption, { includeAttachesUrl: attachesTempUrl });
+                                    angular.extend(ctrl.formOption, {
+                                        includeAttachesUrl: attachesTempUrl,
+                                        isAttachesExpanded: parentCtrl.formSetting.isAttachesExpanded || false
+                                    });
                                     attachesFn(ctrl, attachesPara, $scope, isEdit && !formModel.isReadAttaches, !rtnRow);
                                     angular.extend(ctrl.formOption.attaches.params, attachesPara);
                                     ctrl.formOption.attaches.searchData();
@@ -886,7 +892,8 @@
                         prompt: "支持文件格式(jpg,png)，文件大小不超过200K" + attchesPara.addiPrompt,
                         isShowFileUpType: !!attchesPara.isShowUpFileType || false, //默认为不使用上传文件类型
                         upFileTypeValue: '', //上传文件的类型
-                        fileUpdisabled: false //是否禁用上传功能,默认禁用
+                        fileUpdisabled: false, //是否禁用上传功能,默认禁用
+                        isAttachesExpanded: self.formOption.isAttachesExpanded //附件列表默认不展开
                     };
 
                     if (!!attaches.isShowFileUpType) {
