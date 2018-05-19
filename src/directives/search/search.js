@@ -131,26 +131,8 @@
                 </uib-accordion>'
             );
 
-            /**
-             * @ngdoc directive
-             * @name extendSearchObj
-             * @description
-             * 用于构造通用的查询参数
-             * Construct search parameters object for different controllers usage
-             *
-             * @param input {obj} 接收的值
-             *
-             * @returns {obj} 返回替换后的值
-             */
-            window.extendSearchObj = function(obj) {
-                return angular.extend({}, {
-                    dictionaryTypes: [],
-                    dictionaryHash: '',
-                    sorting: '',
-                    skipCount: '0',
-                    maxResultCount: '10'
-                }, obj);
-            };
+            
+           
 
             /**
              * @ngdoc directive
@@ -270,7 +252,18 @@
                         exporterMenuCsv: false,
                         exporterMenuPdf: false
                     });
-                };
+                }
+
+                //general parameters setting for api request
+                function extendSearchObj(obj) {
+                    return angular.extend({}, {
+                        dictionaryTypes: [],
+                        dictionaryHash: '',
+                        sorting: '',
+                        skipCount: '0',
+                        maxResultCount: '10'
+                    }, obj);
+                }
             };
 
 
@@ -405,7 +398,7 @@
 
             /**
              * @ngdoc directive
-             * @name baseApproveFn
+             * @name simpleFormModelDalg
              * @description
              * 通用的简单form表单
              *
