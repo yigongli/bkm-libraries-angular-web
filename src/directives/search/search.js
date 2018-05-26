@@ -28,6 +28,13 @@
                      </div>\
                  </div>\
               </div>',
+        inputFileBtnTemp: '<button type="button" style="border:0;text-decoration:none;outline:none;padding:0;" ng-hide="{hideModel}.isHide||{isHide}" ng-disabled="{readModel}.isRead||{isRead}">\
+                        <label class="{className}" for="{btnId}">\
+                            <i class="fa fa-upload" aria-hidden="true"></i>\
+                            <span>{text}</span>\
+                        </label>\
+                        <input type="file" bkm-elem-onload event-name="{inputFileOnload}" ng-show="false" id="{btnId}">\
+                    </button>',
         buttonTemp: '<button ng-hide="{hideModel}.isHide||{isHide}" uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<a ng-hide="{hideModel}.isHide||{isHide}" class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
         placeHolderTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
@@ -101,7 +108,7 @@
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', ['$compile', bkmSearch])
         .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
-        .directive('bkmElements', ['$compile', '$filter', bkmElements])
+        .directive('bkmElements', ['$compile', '$filter', 'bkmFileUpload', 'toastr', bkmElements])
         .directive('bkmMsgModal', ['$compile', bkmMsgModal])
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
         .run(['toastr', '$uibModal', 'bkmCommGetDict', '$templateCache', '$timeout', function(toastr, $uibModal, dict, $templateCache, $timeout) {
@@ -131,8 +138,8 @@
                 </uib-accordion>'
             );
 
-            
-           
+
+
 
             /**
              * @ngdoc directive
@@ -494,7 +501,7 @@
         var ctrl = this;
     };
 
-    function bkmElements($compile, $filter) {
+    function bkmElements($compile, $filter, bkmFileUpload, toastr) {
         return {
             restrict: 'E',
             scope: {
@@ -525,7 +532,9 @@
                     },
                     scope.options,
                     scope.cols,
-                    'form-group'
+                    'form-group',
+                    bkmFileUpload,
+                    toastr
                 );
                 $compile(el)(scope);
                 //设置表单对象
@@ -1202,7 +1211,7 @@
         };
     }
 
-    function linkFunc(scope, el, uiComponents, selectors, options, cols, formStyle) {
+    function linkFunc(scope, el, uiComponents, selectors, options, cols, formStyle, bkmFileUpload, toastr) {
 
         //设置窗体默认列布局
         var parentCols = !!cols && typeof(cols) == 'number' ? 'col-md-' + cols % 13 : 'col-md-4';
@@ -1652,6 +1661,54 @@
             } else if (t.type == 'bkmButton') {
                 angular.extend(btnOptions, { category: t.category });
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.bkmButtonTemp));
+            } else if (t.type == 'inputFileBtn') {
+                btnOptions.btnId = 'inputFileBtn' + i;
+                btnOptions.inputFileOnload = 'inputFileOnload' + i;
+                //绑定change事件
+                scope.$on(btnOptions.inputFileOnload, function(sender, obj) {
+                    obj.on('change', onFileInputChange);
+
+                    function onFileInputChange() {
+                        var senderObje = this,
+                            file = this.files[0];
+                        if (!!!file.name.match(t.fileType.join('|'))) {
+                            toastr.warning('文件类型不正确!');
+                            return;
+                        }
+                        bkmFileUpload
+                            .upload([file], { type: t.fileType })
+                            .then(function(response) {
+                                resetInputFile(senderObje);
+                                if (!!!response.data || !!!response.data[0].isSucess) {
+                                    toastr.error('文件上传失败');
+                                    return;
+                                }
+                                t.onUploaded(response);
+                            }).catch(function(result) {
+                                if (result.message) {
+                                    toastr.error(result.message);
+                                }
+                            });
+
+                        function resetInputFile(sender) {
+                            var inputAttr = [],
+                                len = sender.attributes.length,
+                                newInput, parentNode,
+                                inputElemObj = $(sender);
+
+                            parentNode = inputElemObj.parent();
+                            for (var i = 0; i < len; i++) {
+                                inputAttr.push(sender.attributes[i].name + '="' + sender.attributes[i].value + '"');
+                            }
+                            newInput = $('<input ' + inputAttr.join(' ') + '/>');
+                            newInput.on('change', onFileInputChange);
+                            inputElemObj.remove();
+                            parentNode.append(newInput);
+                        }
+
+                    }
+                });
+                btnPrevious.append(formatTemplate(btnOptions, uiComponents.inputFileBtnTemp));
             }
         });
 
