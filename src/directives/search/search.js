@@ -749,8 +749,9 @@
                                 attachesPara.isShowUpFileType = parentCtrl.formSetting.isShowUpFileType;
                                 attachesPara.getUpFileTypeFn = parentCtrl.formSetting.getUpFileTypeFn;
                                 attachesPara.rtnRow = rtnRow;
-                                attachesPara.attachTypes = parentCtrl.formSetting.attachTypes || [];
                             }
+                            attachesPara.attachTypes = parentCtrl.formSetting.attachTypes || [];
+
                             if (rtnRow) {
                                 //直接将rtnRow中的数据绑定在表单上
                                 if (rtnRow.isShowData) {
@@ -884,14 +885,15 @@
 
                     //初始化附件数据模型
                     var self = appliedCtrl;
-                    attchesPara.addiPrompt = attchesPara.addiPrompt || '';
+                    var attachesPattern = angular.isArray(attchesPara.attachTypes) && attchesPara.attachTypes.length > 0 ? attchesPara.attachTypes.join(',') : "'.jpg,.png'";
+                    var addiPrompt = attchesPara.addiPrompt || bkm.util.format("支持文件格式({0})，文件大小不超过200K", attachesPattern);
                     var attaches = self.formOption.attaches = {
-                        attachesPattern: !!attchesPara.attachTypes && attchesPara.attachTypes.length ? attchesPara.attachTypes.join(',') : "'.jpg,.png'",
+                        attachesPattern: attachesPattern,
                         multiple: true,
                         isShowUpload: !!isNew || !!isEdit,
                         isRemovePaging: !!isNew || !!isEdit,
                         isShowDelete: !!isNew || !!isEdit,
-                        prompt: "支持文件格式(jpg,png)，文件大小不超过200K" + attchesPara.addiPrompt,
+                        prompt: addiPrompt,
                         isShowFileUpType: !!attchesPara.isShowUpFileType || false, //默认为不使用上传文件类型
                         upFileTypeValue: '', //上传文件的类型
                         fileUpdisabled: false, //是否禁用上传功能,默认禁用
