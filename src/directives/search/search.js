@@ -221,6 +221,7 @@
                 self.searchData = getData;
                 //查询数据
                 function getData(newPage, pageSize) {
+                    if (!angular.isFunction(serviceApiFunc)) return;
                     //合并分页查询参数
                     self.params.skipCount = (typeof self.gridApi.pagination == 'object') ? (self.gridApi.pagination.getPage() - 1) * self.gridOption.paginationPageSize : 0;
                     self.params.maxResultCount = self.gridOption.paginationPageSize;
