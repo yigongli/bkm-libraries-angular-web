@@ -1402,8 +1402,8 @@
                     endDateBeforeRender: 'dCtrl.opt.' + endDateBeforeRender + "($view, $dates)",
                     startDateOnSetTime: 'dCtrl.opt.' + startDateOnSetTime + "()",
                     endDateOnSetTime: 'dCtrl.opt.' + endDateOnSetTime + "()",
-                    dropdownStart: "dropdownStart_" + beginDateModel,
-                    dropdownEnd: "dropdownEnd_" + endDateModel
+                    dropdownStart: "dropdownStart_" + beginDateModel.replace('.', '_'),
+                    dropdownEnd: "dropdownEnd_" + endDateModel.replace('.', '_')
                 });
                 elemOptions.dateFormat = dateFormatDef[elemOptions.minView];
                 previous.append(formatTemplate(elemOptions, template));
