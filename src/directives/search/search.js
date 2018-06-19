@@ -666,7 +666,7 @@
                                 return;
                         }
 
-                        var delSvc = parentCtrl.formSetting.resourceSvc.delete;
+                        var delSvcFn = parentCtrl.formSetting.delSvcFn || parentCtrl.formSetting.resourceSvc.delete;
                         var delParas = parentCtrl.formSetting.deleteParas || { id: row.entity.id };
                         var delPrompt = parentCtrl.formSetting.delPrompt || "您确认要删除吗?";
 
@@ -683,7 +683,7 @@
 
                         modalInstance.result
                             .then(function(result) {
-                                return delSvc(delParas);
+                                return delSvcFn(delParas);
                             })
                             .then(function(result) {
                                 parentCtrl.searchData();
@@ -719,10 +719,13 @@
                             }
                             //初始化数据模型
                             ctrl.formOption = {};
-                            var formModel = ctrl.formOption.model = {};
-                            var resourceSvc = parentCtrl.formSetting.resourceSvc;
-                            var newFormOption = {};
-
+                            var formModel = ctrl.formOption.model = {},
+                                resourceSvc = parentCtrl.formSetting.resourceSvc,
+                                getSvcFn = parentCtrl.formSetting.getSvcFn || resourceSvc.get,
+                                createSvcFn = parentCtrl.formSetting.createSvcFn || resourceSvc.create,
+                                updateSvcFn = parentCtrl.formSetting.updateSvcFn || resourceSvc.update,
+                                newFormOption = {};
+``
                             //初始化表单数据模型回调
                             if (typeof parentCtrl.formSetting.initFormModelFn == 'function') {
                                 parentCtrl.formSetting.initFormModelFn(newFormOption, formModel, rtnRow, isEdit);
@@ -765,7 +768,7 @@
                                         angular.extend(getParas, { type: rtnRow.addiParas });
                                     }
                                     //获取信息
-                                    resourceSvc.get(getParas)
+                                    getSvcFn(getParas)
                                         .then(function(result) {
                                             var items = result.data || [];
                                             bindResultToForm(items);
@@ -803,53 +806,51 @@
 
                             //提交表单
                             function submitFn() {
-                                ctrl.formOption.onSubmit(function(validResult) {
-
+                                ctrl.formOption.onSubmit(function (validResult) {
                                     if (!parentCtrl.formSetting) {
                                         toastr.danger("应用内部错误：请将错误截图，联系系统管理员!");
                                         return;
                                     }
-
-                                    if (validResult.isSuccess) {
-
-                                        //设置附件列表的数据
-                                        if (!!parentCtrl.formSetting.hasAttaches) {
-                                            formModel.attachments = [];
-                                            angular.forEach(ctrl.formOption.attaches.gridOption.data, function(v, i) {
-                                                formModel.attachments.push({
-                                                    contentLength: v.contentLength,
-                                                    contentType: v.contentType,
-                                                    id: v.id,
-                                                    lastModified: v.lastModified,
-                                                    lastModifiedDate: v.lastModifiedDate,
-                                                    name: v.name,
-                                                    size: v.size,
-                                                    type: v.type,
-                                                    webkitRelativePath: v.webkitRelativePath
-                                                });
+                                    if (!validResult.isSuccess) {
+                                        toastr.warning('您有未填写完整的数据，请按照错误提示补充完善，谢谢！');
+                                        return;
+                                    }
+                                    //设置附件列表的数据
+                                    if (!!parentCtrl.formSetting.hasAttaches) {
+                                        formModel.attachments = [];
+                                        angular.forEach(ctrl.formOption.attaches.gridOption.data, function (v, i) {
+                                            formModel.attachments.push({
+                                                contentLength: v.contentLength,
+                                                contentType: v.contentType,
+                                                id: v.id,
+                                                lastModified: v.lastModified,
+                                                lastModifiedDate: v.lastModifiedDate,
+                                                name: v.name,
+                                                size: v.size,
+                                                type: v.type,
+                                                webkitRelativePath: v.webkitRelativePath
+                                            });
+                                        });
+                                    }
+                                    //数据处理回调
+                                    if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
+                                        var isGoingon = parentCtrl.formSetting.beforeSubmitFn(formModel);
+                                        if (isGoingon === true || isGoingon == undefined) {
+                                            updateAndCreateFn();
+                                        } else if (!!isGoingon.promise) {
+                                            isGoingon.promise.then(function (result) {
+                                                if (result === true) {
+                                                    updateAndCreateFn();
+                                                }
                                             });
                                         }
-
-                                        //数据处理回调
-                                        if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
-                                            var isGoingon = parentCtrl.formSetting.beforeSubmitFn(formModel);
-                                            if (isGoingon === true || isGoingon == undefined) {
-                                                updateAndCreateFn();
-                                            } else if (!!isGoingon.promise) {
-                                                isGoingon.promise.then(function(result) {
-                                                    if (result === true) {
-                                                        updateAndCreateFn();
-                                                    }
-                                                });
-                                            }
-                                        } else {
-                                            updateAndCreateFn();
-                                        }
-
-                                        //调用创建或更新服务
-                                        function updateAndCreateFn() {
-                                            (isEdit ? resourceSvc.update(formModel) : resourceSvc.create(formModel))
-                                            .then(function(result) {
+                                    } else {
+                                        updateAndCreateFn();
+                                    }
+                                    //调用创建或更新服务
+                                    function updateAndCreateFn() {
+                                        (isEdit ? updateSvcFn(formModel) : createSvcFn(formModel))
+                                            .then(function (result) {
                                                 toastr.success('提交成功，请继续添加或点击关闭按钮返回！');
                                                 parentCtrl.searchData();
                                                 //更新成功处理回调
@@ -858,9 +859,6 @@
                                                 }
                                                 $uibModalInstance.close();
                                             });
-                                        }
-                                    } else {
-                                        toastr.warning('您有未填写完整的数据，请按照错误提示补充完善，谢谢！');
                                     }
                                 });
                             };
