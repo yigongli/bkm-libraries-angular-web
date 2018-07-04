@@ -1,6 +1,6 @@
 {
   "name": "bkm-angular-web",
-  "version": "0.0.1",
+  "version": "4.6.6",
   "homepage": "https://git.oschina.net/yigongli/BKM.Library.Angular.Web",
   "authors": [
     "bkm"
@@ -29,7 +29,8 @@
     "angular-ckeditor": "^1.0.3",
     "bkm-angular-datetimepicker": "^1.1.6",
     "bkm-angular-date-time-input": "^1.2.3",
-    "angucomplete-alt": "^3.0.0"
+    "angucomplete-alt": "^3.0.0",
+    "angular-bootstrap-multiselect": "^1.1.11"
   },
   "main": [
     "./src/service/jquery.PrintArea.js",
