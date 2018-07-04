@@ -30,7 +30,7 @@
     "bkm-angular-datetimepicker": "^1.1.6",
     "bkm-angular-date-time-input": "^1.2.3",
     "angucomplete-alt": "^3.0.0",
-    "angular-bootstrap-multiselect": "^1.1.11"
+    "angular-bootstrap-multiselect": "https://github.com/bentorfs/angular-bootstrap-multiselect.git#^1.1.11"
   },
   "main": [
     "./src/service/jquery.PrintArea.js",
