@@ -10,6 +10,7 @@
         noteTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;"><label ng-hide="{hideLabel}.isHide">&nbsp;</label><label class="form-control" style="border:none;color:red;font-weight:normal;padding-top:5px; padding-left:0;">{label}{{{model}}}</label></div></div>',
         textareaTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
         dropDownTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- {placeholder} --</option></select></div></div>',
+        multiSelectTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<multiselect  ng-model="{model}" options="{dataSource}" id-prop="{keyName}" display-prop="{valName}" labels="{disp}" placeholder="{placeholder}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} show-unselect-all="true"  show-tooltip="true" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker"></multiselect></div></div>',
         dateTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}">\
                 <div class="{formStyle}" {validError}>\
                     <div class="dropdown">\
@@ -1301,9 +1302,8 @@
             } else if (t.type == 'dropDown') {
                 angular.extend(elemOptions, {
                     repeat: 'i.' + t.keyName + ' as i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource',
-                    placeholder: t.placeholder || '所有'
+                    placeholder: t.placeholder || '请选择'
                 });
-
                 if (angular.isFunction(t.onChange)) {
                     elemOptions.onChange = 'ng-change="dCtrl.opt.items[' + i + '].onChange(' + elemOptions.model + ',options.model)"';
                 } else {
@@ -1321,7 +1321,19 @@
                         }, null);
                     });
                 }
-
+            } else if (t.type == 'multiSelect') {
+                opt.multiSelectLabels = {
+                    itemsSelected: " 项已选择    ",
+                    unselectAll: "清除选项"
+                };
+                angular.extend(elemOptions, {
+                    dataSource: 'dCtrl.opt.items[' + i + '].dataSource',
+                    placeholder: t.placeholder || '-- 请选择 --',
+                    keyName: t.keyName,
+                    valName: t.valName,
+                    disp: 'dCtrl.opt.multiSelectLabels'
+                });
+                previous.append(formatTemplate(elemOptions, uiComponents.multiSelectTemp));
             } else if (t.type == 'date') {
                 angular.extend(elemOptions, {
                     minView: !t.minView ? 'day' : t.minView,

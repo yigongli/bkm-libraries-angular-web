@@ -4,6 +4,7 @@
 (function() {
     'use strict';
     angular.module('bkm.library.angular.web', [
+        'btorfs.multiselect',
         'colorpicker.module',
         'color.picker',
         'ckeditor',
