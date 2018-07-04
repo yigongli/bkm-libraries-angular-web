@@ -43,7 +43,7 @@
         beginDateAndEndDateTemp: ' <div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}">\
                 <div class="col-md-6" style="padding-left: 0;">\
                     <div class="dropdown dropdown-start-parent {formStyle}" {beginValidError}>\
-                        <label>{beginDateLabel}{formRequired}&nbsp;&nbsp;</label>\
+                        <label>{beginDateLabel}{formRequired}</label>&nbsp;&nbsp;\
                         <div class="date bkm-form-icon form-control">\
                             <a class="dropdown-toggle" id="{dropdownStart}" role="button" data-toggle="dropdown" data-target="#" >\
                                 <input type="text" class="form-control" ng-model="{beginDateModel}" data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{beginFormName}"  {validateAttr} placeholder="{beginDatePlaceholder}" readOnly>\
@@ -62,7 +62,7 @@
                 </div>\
                 <div class="col-md-6" style="padding-right: 0;">\
                     <div class="dropdown dropdown-start-parent {formStyle}" {endValidError}>\
-                        <label>{endDateLabel}{formRequired}&nbsp;&nbsp;</label>\
+                        <label>{endDateLabel}{formRequired}</label>&nbsp;&nbsp;\
                         <div class="date bkm-form-icon form-control">\
                             <a class="dropdown-toggle" id="{dropdownEnd}" role="button" data-toggle="dropdown" data-target="#" >\
                                 <input type="text" class="form-control" ng-model="{endDateModel}"  data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{endFormName}"  {validateAttr} placeholder="{endDatePlaceholder}" readOnly>\
