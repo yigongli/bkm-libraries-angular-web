@@ -210,13 +210,14 @@ multiSelect>.btn-group .btn {
     padding-left: 8px;
     text-align: left;
     font-size: 13px;
-    .caret {
-      position: absolute;
-      top: 8px;
-      right: 3px;
-    }
-  }
-  
-  multiSelect.form-control {
+}
+
+multiSelect>.btn-group .btn .caret {
+    position: absolute;
+    top: 8px;
+    right: 3px;
+}
+
+multiSelect.form-control {
     padding: 0px;
-  }
+}
