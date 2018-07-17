@@ -10,7 +10,7 @@
         noteTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;"><label ng-hide="{hideLabel}.isHide">&nbsp;</label><label class="form-control" style="border:none;color:red;font-weight:normal;padding-top:5px; padding-left:0;">{label}{{{model}}}</label></div></div>',
         textareaTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
         dropDownTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- {placeholder} --</option></select></div></div>',
-        multiSelectTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<multiselect  ng-model="{model}" options="{dataSource}" id-prop="{keyName}" display-prop="{valName}" labels="{disp}" placeholder="{placeholder}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} show-unselect-all="true"  show-tooltip="true" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker"></multiselect></div></div>',
+        multiSelectTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<multiselect  show-search="{isShowSearch}" search-limit="{searchLimit}" ng-model="{model}" options="{dataSource}" id-prop="{keyName}" display-prop="{valName}" labels="{disp}" placeholder="{placeholder}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} show-unselect-all="true"  show-tooltip="true" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker"></multiselect></div></div>',
         dateTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}">\
                 <div class="{formStyle}" {validError}>\
                     <div class="dropdown">\
@@ -1285,8 +1285,14 @@
                 hideModel: 'dCtrl.opt.' + hideModel,
                 isHide: !!t.isHide,
                 readModel: 'dCtrl.opt.' + dynaIsReadModel,
-                isRead: !!opt.isReadonlyForm || !!t.isRead
+                isRead: !!opt.isReadonlyForm || !!t.isRead,
+                onChange: ''
             };
+
+            //onChange方法定义
+            if (angular.isFunction(t.onChange)) {
+                elemOptions.onChange = 'ng-change="dCtrl.opt.items[' + i + '].onChange(' + elemOptions.model + ',options.model)"';
+            }
 
             if (t.type == 'text' || t.type == 'number' || t.type == 'password' || t.type == 'email' || t.type == 'tel') {
                 previous.append(formatTemplate(elemOptions, uiComponents.textTemp));
@@ -1304,11 +1310,6 @@
                     repeat: 'i.' + t.keyName + ' as i.' + t.valName + ' for i in dCtrl.opt.items[' + i + '].dataSource',
                     placeholder: t.placeholder || '请选择'
                 });
-                if (angular.isFunction(t.onChange)) {
-                    elemOptions.onChange = 'ng-change="dCtrl.opt.items[' + i + '].onChange(' + elemOptions.model + ',options.model)"';
-                } else {
-                    elemOptions.onChange = "";
-                }
                 previous.append(formatTemplate(elemOptions, uiComponents.dropDownTemp));
                 if (!!t.parent) {
                     var modelName = 'options.model.' + t.parent.model;
@@ -1331,6 +1332,8 @@
                     placeholder: t.placeholder || '-- 请选择 --',
                     keyName: t.keyName,
                     valName: t.valName,
+                    isShowSearch: t.isShowSearch || false,
+                    searchLimit: t.searchLimit || 10,
                     disp: 'dCtrl.opt.multiSelectLabels'
                 });
                 previous.append(formatTemplate(elemOptions, uiComponents.multiSelectTemp));
