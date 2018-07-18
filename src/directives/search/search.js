@@ -289,78 +289,101 @@
              * @returns {string} 返回替换后的值
              */
             window.baseApproveFn = function(parentCtrl, rowEntity, rejectSuccessCallback) {
-
                 var self = parentCtrl;
-
-                var promptName = self.formSetting.promptName;
-                var approveSvc = self.formSetting.resourceSvc;
-
                 //获取所选择审核的记录
-                var rtnRows = [];
-                rtnRows[0] = rowEntity || self.gridApi.selection.getSelectedRows()[0];
-                if (!rtnRows[0] || !(rtnRows[0].status == 0 || rtnRows[0].status == 1)) {
+                var rtnRow = rowEntity || self.gridApi.selection.getSelectedRows()[0];
+                if (!rtnRow) {
+                    toastr.info("请先选择要审批的记录!");
+                    return;
+                }
+                //初始化审核参数
+                var approveParams = {
+                    promptName: self.formSetting.promptName,
+                    approveSvcFn: self.formSetting.resourceSvc.approve,
+                    validStatus: [0, 1],
+                    statusField: 'status',
+                    items: [],
+                    buttons: []
+                };
+                angular.extend(approveParams, self.formSetting.approveParams);
+                approveParams.formModel = {
+                    relatedId: rtnRow.id
+                };
+                if (angular.isFunction(approveParams.getFormModel)) {
+                    approveParams.getFormModel(approveParams.formModel);
+                }
+                var promptName = approveParams.promptName;
+                var approveSvcFn = approveParams.approveSvcFn;
+                var validStatus = approveParams.validStatus;
+                var formItems = approveParams.items.concat([{
+                        type: 'textarea',
+                        model: 'reason',
+                        label: '备注',
+                        option: true,
+                        cols: 12
+                    },
+                    {
+                        type: 'dropDown',
+                        model: 'type',
+                        label: '拒绝原因',
+                        option: true,
+                        cols: 12,
+                        dataSource: dict.dictionary[dict.AuditType()]
+                    }
+                ]);
+                var statusField = approveParams.statusField;
+                //判断审核状态是否符合条件
+                var found = validStatus.filter(item => item == rtnRow[statusField]);
+                if (found.length == 0) {
                     toastr.info(bkm.util.format("请选择 {0} 状态为待审核的记录!", promptName));
                     return;
                 }
-
                 //审核的对话框
                 var uibModalInstance = $uibModal.open({
                     backdrop: false,
                     animation: true,
                     template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
                     controller: ['$uibModalInstance', '$scope', function($uibModalInstance, $scope) {
-
                         //初始化数据模型
                         var ctrl = this;
                         ctrl.formOption = {};
-                        var formModel = ctrl.formOption.model = self.formSetting.approveParams || { relatedId: rtnRows[0].id };
-
+                        var formModel = ctrl.formOption.model = approveParams.formModel;
                         //表单数据模型绑定
                         $scope.modalTitle = promptName + '审核';
+                        var buttons = approveParams.buttons.concat([{
+                                text: '同意',
+                                category: 'approve',
+                                click: approveFn
+                            },
+                            {
+                                text: '拒绝',
+                                category: 'reject',
+                                click: rejectFn
+                            }
+                        ]);
                         angular.extend(ctrl.formOption, {
-                            items: [{
-                                    type: 'textarea',
-                                    model: 'reason',
-                                    label: '备注',
-                                    option: true,
-                                    cols: 12
-                                },
-                                {
-                                    type: 'dropDown',
-                                    model: 'type',
-                                    label: '拒绝原因',
-                                    option: true,
-                                    cols: 12,
-                                    dataSource: dict.dictionary[dict.AuditType()]
-                                }
-                            ],
-                            buttons: [{
-                                    text: '同意',
-                                    category: 'approve',
-                                    click: approveFn
-                                },
-                                {
-                                    text: '拒绝',
-                                    category: 'reject',
-                                    click: rejectFn
-                                }
-                            ]
+                            items: formItems,
+                            buttons: buttons
                         });
-
                         //审核通过
                         function approveFn() {
-                            formModel.isPass = true;
-                            approveSvc.approve(formModel)
-                                .then(function(result) {
-                                    toastr.success("审核成功!");
-                                    $uibModalInstance.close();
-                                    self.searchData();
-                                });
+                            ctrl.formOption.onSubmit(function (validResult) {
+                                if (!validResult.isSuccess) {
+                                    toastr.warning('您有未填写完整的数据，请按照错误提示补充完善，谢谢！');
+                                    return;
+                                }
+                                formModel.isPass = true;
+                                approveSvcFn(formModel)
+                                    .then(function (result) {
+                                        toastr.success("审核成功!");
+                                        $uibModalInstance.close();
+                                        self.searchData();
+                                    });
+                            });
                         };
-
                         //审核不通过
                         function rejectFn() {
-                            if (formModel.type == undefined) {
+                            if (formModel.type == null) {
                                 toastr.info("请选择拒绝原因的类型!");
                                 return;
                             }
@@ -374,7 +397,6 @@
                                 controllerAs: 'mCtrl',
                                 template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="danger" ></bkm-msg-modal>'
                             });
-
                             modalInstance.result
                                 .then(function(result) {
                                     angular.extend(formModel, {
@@ -382,7 +404,7 @@
                                         type: formModel.type,
                                         reason: formModel.reason
                                     });
-                                    return approveSvc.approve(formModel);
+                                    return approveSvcFn(formModel);
                                 })
                                 .then(function(result) {
                                     toastr.success(bkm.util.format("该{0}已被标记为审核不通过!", promptName));
@@ -396,11 +418,7 @@
                     }],
                     controllerAs: 'ctrl',
                     size: 'lg',
-                    resolve: {
-                        items: function() {
-                            return rtnRows;
-                        }
-                    }
+                    resolve: null
                 });
             };
 
@@ -1166,19 +1184,10 @@
 
                 //定义表单验证的回调函数
                 scope.options.onSubmit = function(onSubmitFn) {
-                    scope.myForm.$setSubmitted(true);
-                    bkmFmValSvc.isValid(scope.myForm).then(onSubmitFn, null);
+                    var myForm = scope.myForm;
+                    myForm.$setSubmitted(true);
+                    bkmFmValSvc.isValid(myForm).then(onSubmitFn, null);
                 };
-
-                ////format footer template
-                ////设置默认的关闭操作按钮
-                //scope.options.buttons = scope.options.buttons || [];
-                ////设置默认的关闭按钮
-                //scope.options.buttons.push({
-                //    text: '关闭',
-                //    category: 'cancel',
-                //    click: scope.$parent.$dismiss
-                //});
 
                 //format body template
                 linkFunc(
