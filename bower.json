@@ -26,7 +26,6 @@
     "ng-file-upload": "12.2.13",
     "angular-bootstrap-colorpicker": "^3.0.28",
     "angularjs-color-picker": "~2.7.1",
-    "angular-ckeditor": "^1.0.3",
     "bkm-angular-datetimepicker": "^1.1.6",
     "bkm-angular-date-time-input": "^1.2.3",
     "angucomplete-alt": "^3.0.0",
@@ -35,7 +34,6 @@
   "main": [
     "./src/service/jquery.PrintArea.js",
     "./src/directives/search/angular-locale_zh-cn.js",
-    "./src/directives/textEditor/ckEditor-full.min.js",
     "./src/main.module.js",
     "./src/directives/search/search.js",
     "./src/directives/search/search.css",

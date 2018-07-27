@@ -7,7 +7,6 @@
         'btorfs.multiselect',
         'colorpicker.module',
         'color.picker',
-        'ckeditor',
         'ui.dateTimeInput',
         'ui.bootstrap.datetimepicker',
         'angucomplete-alt'
