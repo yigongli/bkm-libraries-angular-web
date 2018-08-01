@@ -871,7 +871,9 @@
                                         (isEdit ? updateSvcFn(formModel) : createSvcFn(formModel))
                                             .then(function (result) {
                                                 toastr.success('提交成功，请继续添加或点击关闭按钮返回！');
-                                                parentCtrl.searchData();
+                                                if(typeof parentCtrl.searchData == 'function'  ){
+                                                    parentCtrl.searchData();
+                                                }
                                                 //更新成功处理回调
                                                 if (typeof parentCtrl.formSetting.postSubmitFn == 'function') {
                                                     parentCtrl.formSetting.postSubmitFn(formModel);
