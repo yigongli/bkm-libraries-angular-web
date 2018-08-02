@@ -671,12 +671,10 @@
                     }
                     //删除
                 parentCtrl.delete = function(row) {
-
                         if (!row) {
                             toastr.info("请选择要删除的记录!");
                             return;
                         }
-
                         //删除数据回调
                         if (!!parentCtrl.formSetting && typeof parentCtrl.formSetting.deleteRowFn == 'function') {
                             var isGoingon = parentCtrl.formSetting.deleteRowFn(row.entity);
@@ -684,7 +682,6 @@
                             if (isGoingon != undefined && !isGoingon)
                                 return;
                         }
-
                         var delSvcFn = parentCtrl.formSetting.delSvcFn || parentCtrl.formSetting.resourceSvc.delete;
                         var delParas = parentCtrl.formSetting.deleteParas || { id: row.entity.id };
                         var delPrompt = parentCtrl.formSetting.delPrompt || "您确认要删除吗?";
@@ -699,7 +696,6 @@
                             controllerAs: 'mCtrl',
                             template: '<bkm-msg-modal message="mCtrl.message" cancel=true category="danger" ></bkm-msg-modal>'
                         });
-
                         modalInstance.result
                             .then(function(result) {
                                 return delSvcFn(delParas);
@@ -719,16 +715,14 @@
                     }
                     //新建表单
                 function modalForm(row) {
-
+                    var backdrop = parentCtrl.formSetting ? parentCtrl.formSetting.backdrop : false;
                     $uibModal.open({
                         backdrop: false,
                         animation: false,
-                        windowClass: 'bkm-backdrop',
+                        windowClass: backdrop ? 'bkm-backdrop' : null,
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
                         controller: ['$scope', '$state', '$uibModalInstance', 'toastr', function($scope, $state, $uibModalInstance, toastr) {
-
                             var ctrl = this;
-
                             //获取选择的行记录
                             var rtnRow = null;
                             var isEdit = false;
@@ -749,11 +743,9 @@
                             if (typeof parentCtrl.formSetting.initFormModelFn == 'function') {
                                 parentCtrl.formSetting.initFormModelFn(newFormOption, formModel, rtnRow, isEdit);
                             }
-
                             //表单标题头提示
                             var promptName = parentCtrl.formSetting.promptName || '';
                             $scope.modalTitle = !rtnRow ? '新建' + promptName : promptName + "详情";
-
                             //配置新建表单指令参数
                             angular.extend(ctrl.formOption, {
                                     buttons: !!rtnRow && !isEdit ? [] : [{

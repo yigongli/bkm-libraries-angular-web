@@ -58,6 +58,10 @@
     background-color: rgba(10, 10, 10, 0.6);
 }
 
+.bkm-backdrop .modal-title {
+    color: #ffffff;
+}
+
 .search-condition .col-md-3 {
     padding-bottom: 10px;
 }
