@@ -719,7 +719,7 @@
                     $uibModal.open({
                         backdrop: false,
                         animation: false,
-                        windowClass: backdrop ? 'bkm-backdrop' : null,
+                        windowClass: backdrop == null ? 'bkm-backdrop' : null,
                         template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
                         controller: ['$scope', '$state', '$uibModalInstance', 'toastr', function($scope, $state, $uibModalInstance, toastr) {
                             var ctrl = this;
