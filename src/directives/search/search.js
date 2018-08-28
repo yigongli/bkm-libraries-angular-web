@@ -108,7 +108,7 @@
     angular.module('bkm.library.angular.web')
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', ['$compile', bkmSearch])
-        .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict', 'abp.services.app.file', 'bkmFileUpload', bkmGeneralCrud])
+        .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict', 'abp.services.app.fileUtil', 'bkmFileUpload', bkmGeneralCrud])
         .directive('bkmElements', ['$compile', '$filter', 'bkmFileUpload', 'toastr', bkmElements])
         .directive('bkmMsgModal', ['$compile', bkmMsgModal])
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
