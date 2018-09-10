@@ -37,7 +37,13 @@
                         <input type="file" bkm-elem-onload event-name="{inputFileOnload}" ng-show="false" id="{btnId}">\
                     </button>',
         buttonTemp: '<button ng-hide="{hideModel}.isHide||{isHide}" uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
-        downloadButtonTemp: '<a ng-hide="{hideModel}.isHide||{isHide}" class="down-link" href="javascript:void(0);" target="_blank"><button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button></a>',
+        downloadButtonTemp: '<div class="btn-group" ng-hide="{hideModel}.isHide||{isHide}" >\
+                                <button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" style="margin-left: 5px;" class="{className} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{text}<span class="caret"></span>\
+                                </button>\
+                                <ul class="dropdown-menu"><li ng-repeat="{repeat}"><a ng-click="item.click()" >\
+                                    <i class="{{item.icon}}" aria-hidden="true" style="margin-right:5px;"></i>{{item.text}}</a></li>\
+                                </ul>\
+                            </div>',
         placeHolderTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
         bkmButtonTemp: '<bkm-button ng-hide="{hideModel}.isHide||{isHide}" category="{category}" text="{text}" ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}"></bkm-button>',
         beginDateAndEndDateTemp: ' <div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}">\
@@ -1666,15 +1672,8 @@
             if (t.type == 'button') {
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.buttonTemp));
             } else if (t.type == 'downloadButton') {
-                opt[btnClickFnName] = function(event) {
-                    var url = t.click();
-                    if (!!url) {
-                        event.currentTarget.parentElement.href = url;
-                    }
-                };
                 angular.extend(btnOptions, {
-                    click: 'dCtrl.opt.' + btnClickFnName + '($event)',
-                    model: ''
+                    repeat: 'item in dCtrl.opt.buttons[' + i + '].btns'
                 });
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.downloadButtonTemp));
             } else if (t.type == 'bkmButton') {
