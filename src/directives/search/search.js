@@ -40,8 +40,10 @@
         downloadButtonTemp: '<div class="btn-group" ng-hide="{hideModel}.isHide||{isHide}" >\
                                 <button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" style="margin-left: 5px;" class="{className} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{text}<span class="caret"></span>\
                                 </button>\
-                                <ul class="dropdown-menu"><li ng-repeat="{repeat}"><a ng-click="item.click()" >\
-                                    <i class="{{item.icon}}" aria-hidden="true" style="margin-right:5px;"></i>{{item.text}}</a></li>\
+                                <ul class="dropdown-menu">\
+                                    <li ng-repeat="{repeat}"><a ng-click="item.click()" ng-hide="item.hideModel.isHide" >\
+                                        <i class="{{item.icon}}" aria-hidden="true" style="margin-right:5px;"></i>{{item.text}}</a>\
+                                    </li>\
                                 </ul>\
                             </div>',
         placeHolderTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols} placeholder"> <div class="{formStyle}"></div> </div>',
