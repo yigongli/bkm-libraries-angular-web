@@ -181,6 +181,7 @@
                 isInitLoad = self.isInitLoad != null ? self.isInitLoad : isInitLoad;
                 registerCustomizedApi = angular.isFunction(self.registerCustomizedApi) ? self.registerCustomizedApi : registerCustomizedApi;
                 uiGridName = angular.isString(self.uiGridName) ? self.uiGridName : uiGridName;
+                var isReserveSelection = self.isReserveSelection != null ? self.isReserveSelection : false;
 
                 //构造页面查询参数基类对象
                 self.params = extendSearchObj();
@@ -234,6 +235,15 @@
                     if (angular.isFunction(registerCustomizedApi)) {
                         registerCustomizedApi(gridApi);
                     }
+                    //注册行事件选择
+                    if (angular.isFunction(self.rowSelChangeCallback)){
+                        gridApi.selection.on.rowSelectionChanged($scope, (row) => {
+                            if(isReserveSelection) {
+                                self.currentRowIndex = bkm.util.indexOf(self.gridOption.data, 'id', row.entity.id);
+                            }
+                            self.rowSelChangeCallback(row);
+                        });
+                    }
                 };
 
                 //查询数据
@@ -256,6 +266,9 @@
 
                             if (typeof self.searchSuccessFn == 'function') {
                                 $timeout(function () {
+                                    if (isReserveSelection) {
+                                        self.gridApi.selection.selectRow(self.gridOption.data[self.currentRowIndex > 0 ? self.currentRowIndex : 0]);
+                                    }
                                     return self.searchSuccessFn(result.data.items);
                                 })
                             }
