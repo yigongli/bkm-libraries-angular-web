@@ -914,7 +914,7 @@
                                             }
                                             //更新成功处理回调
                                             if (typeof parentCtrl.formSetting.postSubmitFn == 'function') {
-                                                parentCtrl.formSetting.postSubmitFn(formModel);
+                                                parentCtrl.formSetting.postSubmitFn(formModel, result);
                                             }
                                             $uibModalInstance.close();
                                         });
