@@ -266,11 +266,11 @@
 
                             if (typeof self.searchSuccessFn == 'function') {
                                 $timeout(function () {
-                                    if (isReserveSelection) {
-                                        self.gridApi.selection.selectRow(self.gridOption.data[self.currentRowIndex > 0 ? self.currentRowIndex : 0]);
-                                    }
                                     return self.searchSuccessFn(result.data.items);
                                 })
+                            }
+                            if (isReserveSelection) {
+                                self.gridApi.selection.selectRow(self.gridOption.data[self.currentRowIndex > 0 ? self.currentRowIndex : 0]);
                             }
                         });
                 };
