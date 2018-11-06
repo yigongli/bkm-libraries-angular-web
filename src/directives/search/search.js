@@ -261,14 +261,11 @@
                     //调用查询服务
                     getAllDataFn(self.params)
                         .then(function (result) {
+                            if (typeof self.searchSuccessFn == 'function') {
+                                self.searchSuccessFn(result.data.items)
+                            }
                             self.gridOption.data = result.data.items;
                             self.gridOption.totalItems = result.data.totalCount;
-
-                            if (typeof self.searchSuccessFn == 'function') {
-                                $timeout(function () {
-                                    return self.searchSuccessFn(result.data.items);
-                                })
-                            }
                             if (isReserveSelection) {
                                 $timeout( () => self.gridApi.selection.selectRow(self.gridOption.data[self.currentRowIndex > 0 ? self.currentRowIndex : 0]));
                             }
