@@ -784,15 +784,14 @@
                             var promptName = parentCtrl.formSetting.promptName || '';
                             $scope.modalTitle = !rtnRow ? '新建' + promptName : promptName + "详情";
                             //配置新建表单指令参数
-                            angular.extend(ctrl.formOption, {
-                                    buttons: !!rtnRow && !isEdit ? [] : [{
-                                        text: '提交',
-                                        category: 'submit',
-                                        click: submitFn
-                                    }]
-                                },
-                                newFormOption
-                            );
+                            var btns = newFormOption.buttons || [];
+                            angular.extend(ctrl.formOption, newFormOption, {
+                                buttons: rtnRow && !isEdit ? [] : btns.concat([{
+                                    text: '提交',
+                                    category: 'submit',
+                                    click: submitFn
+                                }])
+                            });
 
                             //查看详情或编辑时加载数据
                             var attachesPara = {
