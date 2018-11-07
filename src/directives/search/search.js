@@ -116,7 +116,7 @@
     angular.module('bkm.library.angular.web')
         .controller('directiveCtrl', directiveCtrl)
         .directive('bkmSearch', ['$compile', bkmSearch])
-        .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'bkmCommGetDict', 'abp.services.app.fileUtil', 'bkmFileUpload', bkmGeneralCrud])
+        .directive('bkmGeneralCrud', ['$compile', '$uibModal', 'toastr', 'abp.services.app.fileUtil', 'bkmFileUpload', bkmGeneralCrud])
         .directive('bkmElements', ['$compile', '$filter', 'bkmFileUpload', 'toastr', bkmElements])
         .directive('bkmMsgModal', ['$compile', bkmMsgModal])
         .directive('bkmModalForm', ['$compile', 'bkmFmValSvc', bkmModalForm])
@@ -666,7 +666,6 @@
     function bkmGeneralCrud($compile,
         $uibModal,
         toastr,
-        dict,
         fileSvc,
         bkmUpload) {
 
@@ -693,7 +692,8 @@
                     toastr.warning("应用内部错误：请将错误截图，联系系统管理员!");
                     return;
                 }
-                var parentCtrl = scope.options.parentCtrl;
+                var parentCtrl = scope.options.parentCtrl,
+                    formSetting = parentCtrl.formSetting;
 
                 //显示详情
                 parentCtrl.display = function (row) {
@@ -712,17 +712,17 @@
                         return;
                     }
                     //删除数据回调
-                    if (!!parentCtrl.formSetting && typeof parentCtrl.formSetting.deleteRowFn == 'function') {
-                        var isGoingon = parentCtrl.formSetting.deleteRowFn(row.entity);
+                    if (!!formSetting && typeof formSetting.deleteRowFn == 'function') {
+                        var isGoingon = formSetting.deleteRowFn(row.entity);
                         //如果不继续提交则直接返回
                         if (isGoingon != undefined && !isGoingon)
                             return;
                     }
-                    var delSvcFn = parentCtrl.formSetting.delSvcFn || parentCtrl.formSetting.resourceSvc.delete;
-                    var delParas = parentCtrl.formSetting.deleteParas || {
+                    var delSvcFn = formSetting.delSvcFn || formSetting.resourceSvc.delete;
+                    var delParas = formSetting.deleteParas || {
                         id: row.entity.id
                     };
-                    var delPrompt = parentCtrl.formSetting.delPrompt || "您确认要删除吗?";
+                    var delPrompt = formSetting.delPrompt || "您确认要删除吗?";
 
                     var modalInstance = $uibModal.open({
                         backdrop: false,
@@ -753,7 +753,7 @@
                 }
                 //新建表单
                 function modalForm(row) {
-                    var backdrop = parentCtrl.formSetting ? parentCtrl.formSetting.backdrop : false;
+                    var backdrop = formSetting ? formSetting.backdrop : false;
                     $uibModal.open({
                         backdrop: false,
                         animation: false,
@@ -771,17 +771,17 @@
                             //初始化数据模型
                             ctrl.formOption = {};
                             var formModel = ctrl.formOption.model = {},
-                                resourceSvc = parentCtrl.formSetting.resourceSvc,
-                                getSvcFn = parentCtrl.formSetting.getSvcFn || resourceSvc.get,
-                                createSvcFn = parentCtrl.formSetting.createSvcFn || resourceSvc.create,
-                                updateSvcFn = parentCtrl.formSetting.updateSvcFn || resourceSvc.update,
+                                resourceSvc = formSetting.resourceSvc,
+                                getSvcFn = formSetting.getSvcFn || resourceSvc.get,
+                                createSvcFn = formSetting.createSvcFn || resourceSvc.create,
+                                updateSvcFn = formSetting.updateSvcFn || resourceSvc.update,
                                 newFormOption = {};
                             //初始化表单数据模型回调
-                            if (typeof parentCtrl.formSetting.initFormModelFn == 'function') {
-                                parentCtrl.formSetting.initFormModelFn(newFormOption, formModel, rtnRow, isEdit);
+                            if (typeof formSetting.initFormModelFn == 'function') {
+                                formSetting.initFormModelFn(newFormOption, formModel, rtnRow, isEdit);
                             }
                             //表单标题头提示
-                            var promptName = parentCtrl.formSetting.promptName || '';
+                            var promptName = formSetting.promptName || '';
                             $scope.modalTitle = !rtnRow ? '新建' + promptName : promptName + "详情";
                             //配置新建表单指令参数
                             var btns = newFormOption.buttons || [];
@@ -798,12 +798,12 @@
                                 'relatedId': !!rtnRow ? rtnRow.id : ''
                             }; //初始化附件查询参数对象
                             //对附件类型的处理
-                            if (!!parentCtrl.formSetting.isShowUpFileType) {
-                                attachesPara.isShowUpFileType = parentCtrl.formSetting.isShowUpFileType;
-                                attachesPara.getUpFileTypeFn = parentCtrl.formSetting.getUpFileTypeFn;
+                            if (!!formSetting.isShowUpFileType) {
+                                attachesPara.isShowUpFileType = formSetting.isShowUpFileType;
+                                attachesPara.getUpFileTypeFn = formSetting.getUpFileTypeFn;
                                 attachesPara.rtnRow = rtnRow;
                             }
-                            attachesPara.attachTypes = parentCtrl.formSetting.attachTypes || [];
+                            attachesPara.attachTypes = formSetting.attachTypes || [];
 
                             if (rtnRow) {
                                 //直接将rtnRow中的数据绑定在表单上
@@ -827,10 +827,10 @@
                                             bindResultToForm(items);
                                         });
                                 }
-                            } else if (!!parentCtrl.formSetting.hasAttaches) {
+                            } else if (!!formSetting.hasAttaches) {
                                 angular.extend(ctrl.formOption, {
                                     includeAttachesUrl: attachesTempUrl,
-                                    isAttachesExpanded: parentCtrl.formSetting.isAttachesExpanded || false
+                                    isAttachesExpanded: formSetting.isAttachesExpanded || false
                                 });
                                 attachesFn(ctrl, attachesPara, $scope, isEdit, !rtnRow);
                             }
@@ -841,15 +841,15 @@
                                 angular.extend(formModel, items);
 
                                 //表单绑定数据处理回调
-                                if (typeof parentCtrl.formSetting.getSuccessFn == 'function') {
-                                    parentCtrl.formSetting.getSuccessFn(formModel, items, attachesPara);
+                                if (typeof formSetting.getSuccessFn == 'function') {
+                                    formSetting.getSuccessFn(formModel, items, attachesPara);
                                 }
 
                                 //表单中的公共附件列表数据绑定
-                                if (!!parentCtrl.formSetting.hasAttaches) {
+                                if (!!formSetting.hasAttaches) {
                                     angular.extend(ctrl.formOption, {
                                         includeAttachesUrl: attachesTempUrl,
-                                        isAttachesExpanded: parentCtrl.formSetting.isAttachesExpanded || false
+                                        isAttachesExpanded: formSetting.isAttachesExpanded || false
                                     });
                                     attachesFn(ctrl, attachesPara, $scope, isEdit && !formModel.isReadAttaches, !rtnRow);
                                     angular.extend(ctrl.formOption.attaches.params, attachesPara);
@@ -860,7 +860,7 @@
                             //提交表单
                             function submitFn() {
                                 ctrl.formOption.onSubmit(function (validResult) {
-                                    if (!parentCtrl.formSetting) {
+                                    if (!formSetting) {
                                         toastr.danger("应用内部错误：请将错误截图，联系系统管理员!");
                                         return;
                                     }
@@ -869,7 +869,7 @@
                                         return;
                                     }
                                     //设置附件列表的数据
-                                    if (!!parentCtrl.formSetting.hasAttaches) {
+                                    if (!!formSetting.hasAttaches) {
                                         formModel.attachments = [];
                                         angular.forEach(ctrl.formOption.attaches.gridOption.data, function (v, i) {
                                             formModel.attachments.push({
@@ -886,8 +886,8 @@
                                         });
                                     }
                                     //数据处理回调
-                                    if (typeof parentCtrl.formSetting.beforeSubmitFn == 'function') {
-                                        var isGoingon = parentCtrl.formSetting.beforeSubmitFn(formModel);
+                                    if (typeof formSetting.beforeSubmitFn == 'function') {
+                                        var isGoingon = formSetting.beforeSubmitFn(formModel);
                                         if (isGoingon === true || isGoingon == undefined) {
                                             updateAndCreateFn();
                                         } else if (!!isGoingon.promise) {
@@ -904,13 +904,13 @@
                                     function updateAndCreateFn() {
                                         (isEdit ? updateSvcFn(formModel) : createSvcFn(formModel))
                                         .then(function (result) {
-                                            toastr.success('提交成功，请继续添加或点击关闭按钮返回！');
-                                            if (typeof parentCtrl.searchData == 'function') {
+                                            if ( (!formSetting.isDisableSubmitRefresh) && typeof parentCtrl.searchData == 'function') {
                                                 parentCtrl.searchData();
+                                                toastr.success('提交成功，请继续添加或点击关闭按钮返回！');
                                             }
                                             //更新成功处理回调
-                                            if (typeof parentCtrl.formSetting.postSubmitFn == 'function') {
-                                                parentCtrl.formSetting.postSubmitFn(formModel, result);
+                                            if (typeof formSetting.postSubmitFn == 'function') {
+                                                formSetting.postSubmitFn(formModel, result);
                                             }
                                             $uibModalInstance.close();
                                         });
