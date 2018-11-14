@@ -181,7 +181,8 @@
                 isInitLoad = self.isInitLoad != null ? self.isInitLoad : isInitLoad;
                 registerCustomizedApi = angular.isFunction(self.registerCustomizedApi) ? self.registerCustomizedApi : registerCustomizedApi;
                 uiGridName = angular.isString(self.uiGridName) ? self.uiGridName : uiGridName;
-                var isReserveSelection = self.isReserveSelection != null ? self.isReserveSelection : false;
+                var rowHeight = self.rowHeight == null ? 30 : self.rowHeight, 
+                    isReserveSelection = self.isReserveSelection != null ? self.isReserveSelection : false;
 
                 //构造页面查询参数基类对象
                 self.params = extendSearchObj();
@@ -192,7 +193,7 @@
                 //UI-GRID高度自动伸缩函数
                 self.gridOption.autoHeight = function () {
                     return {
-                        height: (self.gridOption.paginationPageSize * 24 + 30) + "px"
+                        height: ( (self.gridOption.paginationPageSize  +1) * rowHeight + rowHeight) + "px"
                     };
                 };
 
