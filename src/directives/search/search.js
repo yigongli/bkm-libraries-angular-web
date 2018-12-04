@@ -176,6 +176,7 @@
                 var self = this;
 
                 //兼容参数传递
+                $scope = $scope ? $scope : self.$scope;
                 getAllDataFn = angular.isFunction(self.getAllDataFn) ? self.getAllDataFn : getAllDataFn;
                 paramsSetting = angular.isFunction(self.paramsSetting) ? self.paramsSetting : paramsSetting;
                 isInitLoad = self.isInitLoad != null ? self.isInitLoad : isInitLoad;
