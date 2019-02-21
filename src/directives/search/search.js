@@ -227,6 +227,17 @@
                             }, 1);
                         }
                     }
+
+                    // 注册click事件回调方法 
+                    if (self.gridOption.enableFullRowSelection){
+                        gridApi.grid.element.on('click', (ev, gridApi) => { 
+                            if (ev.target.className.includes('ui-grid-cell-contents')){
+                                gridApi.selection.clearSelectedRows();
+                                gridApi.selection.selectRow(self.selectedRowEntity);
+                            }
+                        });
+                    }
+
                     //注册UI-GRID翻页函数
                     if (gridApi.pagination) {
                         gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
@@ -238,14 +249,16 @@
                         registerCustomizedApi(gridApi);
                     }
                     //注册行事件选择
-                    if (angular.isFunction(self.rowSelChangeCallback)){
-                        gridApi.selection.on.rowSelectionChanged($scope, (row) => {
-                            if(isReserveSelection) {
-                                self.currentRowIndex = bkm.util.indexOf(self.gridOption.data, 'id', row.entity.id);
-                            }
+                    gridApi.selection.on.rowSelectionChanged($scope, (row) => {
+                        if(isReserveSelection) {
+                            self.currentRowIndex = bkm.util.indexOf(self.gridOption.data, 'id', row.entity.id);
+                        }
+                        self.selectedRowEntity = row.entity;
+                        if (angular.isFunction(self.rowSelChangeCallback)){
                             self.rowSelChangeCallback(row);
-                        });
-                    }
+                        }
+                    });
+                    
                 };
 
                 //查询数据
