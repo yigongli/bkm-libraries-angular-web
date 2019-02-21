@@ -230,10 +230,10 @@
 
                     // 注册click事件回调方法 
                     if (self.gridOption.enableFullRowSelection){
-                        gridApi.grid.element.on('click', (ev, gridApi) => { 
+                        gridApi.grid.element.on('click', (ev) => { 
                             if (ev.target.className.includes('ui-grid-cell-contents')){
-                                gridApi.selection.clearSelectedRows();
-                                gridApi.selection.selectRow(self.selectedRowEntity);
+                                self.gridApi.selection.clearSelectedRows();
+                                self.gridApi.selection.selectRow(self.selectedRowEntity);
                             }
                         });
                     }
