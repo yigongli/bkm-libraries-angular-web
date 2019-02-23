@@ -16,7 +16,7 @@
                     <div class="dropdown">\
                         <label>{label}{formRequired}</label>&nbsp;&nbsp;\
                         <div ng-class="{\'date\':!({readModel}.isRead===true)}" class="bkm-form-icon form-control">\
-                            <a class="dropdown-toggle" id="{dropdownId}" role="button" data-toggle="dropdown" data-target="#" >\
+                            <a class="dropdown-toggle" id="{dropdownId}" role="button" data-toggle="dropdown" data-target="#">\
                                 <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly ng-disabled="{readModel}.isRead||{isRead}">\
                             </a>\
                             <ul ng-if="!({readModel}.isRead===true)" class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
@@ -69,7 +69,7 @@
                     </div>\
                 </div>\
                 <div class="col-md-6" style="padding-right: 0;">\
-                    <div class="dropdown dropdown-start-parent {formStyle}" {endValidError}>\
+                    <div class="dropdown dropdown-end-parent {formStyle}" {endValidError}>\
                         <label>{endDateLabel}{formRequired}</label>&nbsp;&nbsp;\
                         <div class="date bkm-form-icon form-control">\
                             <a class="dropdown-toggle" id="{dropdownEnd}" role="button" data-toggle="dropdown" data-target="#" >\
@@ -1429,7 +1429,7 @@
                 angular.extend(elemOptions, {
                     minView: !t.minView ? 'day' : t.minView,
                     minuteStep: !t.minuteStep ? '1' : t.minuteStep,
-                    dropdownId: 'dropdown_' + t.model
+                    dropdownId: 'dropdown_' + t.model + i
                 });
                 elemOptions.dateFormat = dateFormatDef[elemOptions.minView];
                 previous.append(formatTemplate(elemOptions, uiComponents.dateTemp));
@@ -1503,8 +1503,8 @@
                     endDateBeforeRender: 'dCtrl.opt.' + endDateBeforeRender + "($view, $dates)",
                     startDateOnSetTime: 'dCtrl.opt.' + startDateOnSetTime + "()",
                     endDateOnSetTime: 'dCtrl.opt.' + endDateOnSetTime + "()",
-                    dropdownStart: "dropdownStart_" + beginDateModel.replace('.', '_'),
-                    dropdownEnd: "dropdownEnd_" + endDateModel.replace('.', '_')
+                    dropdownStart: "dropdownStart_" + beginDateModel.replace('.', '_') + i,
+                    dropdownEnd: "dropdownEnd_" + endDateModel.replace('.', '_') + i 
                 });
                 elemOptions.dateFormat = dateFormatDef[elemOptions.minView];
                 previous.append(formatTemplate(elemOptions, template));
