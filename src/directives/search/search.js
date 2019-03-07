@@ -1737,7 +1737,7 @@
             var btnClickFnName = 'buttonClick' + i;
             var btnOptions = {
                 text: t.text,
-                className: t.className,
+                className: t.className || 'btn btn-primary',
                 icon: t.icon,
                 tooltip: t.tooltip,
                 hideModel: 'dCtrl.opt.' + hideModel,
