@@ -921,7 +921,8 @@
                                         .then(function (result) {
                                             if ( (!formSetting.isDisableSubmitRefresh) && typeof parentCtrl.searchData == 'function') {
                                                 parentCtrl.searchData();
-                                                toastr.success('提交成功，请继续添加或点击关闭按钮返回！');
+                                                var successMsg = formSetting.addOrUpdateSuccessMsg || '提交成功，请继续添加或点击关闭按钮返回！';
+                                                toastr.success(successMsg);
                                             }
                                             //更新成功处理回调
                                             if (typeof formSetting.postSubmitFn == 'function') {
