@@ -288,7 +288,8 @@
                             if (isReserveSelection) {
                                 $timeout( () => self.gridApi.selection.selectRow(self.gridOption.data[self.currentRowIndex > 0 ? self.currentRowIndex : 0]));
                             }
-                        });
+                        })
+                        .catch(err => toastr.warning(err));
                 };
 
                 //Construct base UI-grid component properties group
