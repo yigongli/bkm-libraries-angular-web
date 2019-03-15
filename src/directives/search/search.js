@@ -186,7 +186,11 @@
                     isReserveSelection = self.isReserveSelection != null ? self.isReserveSelection : false;
 
                 //构造页面查询参数基类对象
-                self.params = extendSearchObj();
+                self.params = self.params || {};
+                angular.extend(self.params, {
+                    skipCount: '0',
+                    maxResultCount: '10'
+                });
                 //设置UI-GRID属性参数
                 self.gridOption = baseUiGridProp();
                 //配置UI-GRID的grid.appScope的作用域为当前Ctrl
@@ -304,17 +308,6 @@
                         exporterMenuCsv: false,
                         exporterMenuPdf: false
                     });
-                }
-
-                //general parameters setting for api request
-                function extendSearchObj(obj) {
-                    return angular.extend({}, {
-                        dictionaryTypes: [],
-                        dictionaryHash: '',
-                        sorting: '',
-                        skipCount: '0',
-                        maxResultCount: '10'
-                    }, obj);
                 }
             };
 
