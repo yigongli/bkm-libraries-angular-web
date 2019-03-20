@@ -321,6 +321,7 @@
                         enableColumnMenus: false,
                         enableGridMenu: true,
                         exporterMenuCsv: false,
+                        exporterMenuExcel: false,
                         exporterMenuPdf: false,
                         exporterSuppressColumns: []
                     });
