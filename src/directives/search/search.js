@@ -219,8 +219,12 @@
                 self.gridOption.onRegisterApi = function (gridApi) {
                     self.gridApi = gridApi;
                     //判断在页面第一次加载的时候需要加载数据
-                    if (isInitLoad == undefined || isInitLoad)
+                    if (isInitLoad == null || isInitLoad) {
                         getData(1, self.gridOption.paginationPageSize);
+                    } else {
+                        // 初始化表格列表的数据为空
+                        self.gridOption.data = self.gridOption.data || [];
+                    }
 
                     //判断是否传入了grid标识
                     if (angular.isString(uiGridName) && uiGridName.length > 0) {
@@ -246,6 +250,10 @@
                     if (gridApi.pagination) {
                         gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
                             getData(newPage, pageSize);
+                            // 翻页事件回调
+                            if(angular.isFunction(self.onPaginationChanged)) {
+                                $timeout(() => self.onPaginationChanged(newPage, pageSize));
+                            }
                         });
                     }
                     //注册Controller自己的UI-GRID 个性化事件
@@ -258,6 +266,7 @@
                             self.currentRowIndex = bkm.util.indexOf(self.gridOption.data, 'id', row.entity.id);
                         }
                         self.selectedRowEntity = row.entity;
+                        // 行选择事件回调
                         if (angular.isFunction(self.rowSelChangeCallback)){
                             self.rowSelChangeCallback(row);
                         }
@@ -284,7 +293,12 @@
                             if (typeof self.searchSuccessFn == 'function') {
                                 self.searchSuccessFn(result.data.items);
                             }
-                            self.gridOption.data = result.data.items;
+                            var gridOptionData = self.gridOption.data || [];
+                            // 先清空原来的数据
+                            gridOptionData.splice(0, gridOptionData.length);
+                            // 再更新为新的数据
+                            gridOptionData.push.apply(gridOptionData, result.data.items);
+
                             if (isReserveSelection) {
                                 $timeout( () => self.gridApi.selection.selectRow(self.gridOption.data[self.currentRowIndex > 0 ? self.currentRowIndex : 0]));
                             }
@@ -307,7 +321,6 @@
                         enableColumnMenus: false,
                         enableGridMenu: true,
                         exporterMenuCsv: false,
-                        exporterMenuPdf: false
                     });
                 }
             };
