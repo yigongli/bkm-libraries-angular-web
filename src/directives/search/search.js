@@ -12,30 +12,23 @@
         dropDownTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}" style="color:{color};font-size:{fontSize}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- {placeholder} --</option></select></div></div>',
         multiSelectTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<multiselect  show-search="{isShowSearch}" search-limit="{searchLimit}" ng-model="{model}" options="{dataSource}" id-prop="{keyName}" display-prop="{valName}" labels="{disp}" placeholder="{placeholder}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} show-unselect-all="true"  show-tooltip="true" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker"></multiselect></div></div>',
         dateTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}">\
-                <div class="{formStyle}" {validError}>\
-                    <div class="dropdown">\
-                        <label>{label}{formRequired}</label>&nbsp;&nbsp;\
-                        <div ng-class="{\'date\':!({readModel}.isRead===true)}" class="bkm-form-icon form-control">\
-                            <a class="dropdown-toggle" id="{dropdownId}" role="button" data-toggle="dropdown" data-target="#">\
-                                <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly ng-disabled="{readModel}.isRead||{isRead}">\
-                            </a>\
-                            <ul ng-if="!({readModel}.isRead===true)" class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
-                                <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#{dropdownId}\'}"/>\
-                            </ul>\
-                            <span ng-if="!({readModel}.isRead===true)" class="input-group-addon" ng-click="{model}=null">\
-                                <i class="input-datepicker glyphicon glyphicon-remove"></i>\
-                            </span>\
+                    <div class="{formStyle}" {validError}>\
+                        <div class="dropdown">\
+                            <label>{label}{formRequired}</label>&nbsp;&nbsp;\
+                            <div ng-class="{\'date\':!({readModel}.isRead===true)}" class="bkm-form-icon form-control">\
+                                <a class="dropdown-toggle" id="{dropdownId}" role="button" data-toggle="dropdown" data-target="#">\
+                                    <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly ng-disabled="{readModel}.isRead||{isRead}">\
+                                </a>\
+                                <ul ng-if="!({readModel}.isRead===true)" class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
+                                    <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#{dropdownId}\'}"/>\
+                                </ul>\
+                                <span ng-if="!({readModel}.isRead===true)" class="input-group-addon" ng-click="{model}=null">\
+                                    <i class="input-datepicker glyphicon glyphicon-remove"></i>\
+                                </span>\
+                            </div>\
                         </div>\
-                     </div>\
-                 </div>\
-              </div>',
-        inputFileBtnTemp: '<button type="button" style="border:0;text-decoration:none;outline:none;padding:0;" ng-hide="{hideModel}.isHide||{isHide}" ng-disabled="{readModel}.isRead||{isRead}">\
-                        <label class="{className}" for="{btnId}">\
-                            <i class="fa fa-upload" aria-hidden="true"></i>\
-                            <span>{text}</span>\
-                        </label>\
-                        <input type="file" bkm-elem-onload event-name="{inputFileOnload}" ng-show="false" id="{btnId}">\
-                    </button>',
+                    </div>\
+                </div>',
         buttonTemp: '<button ng-hide="{hideModel}.isHide||{isHide}" uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<div class="btn-group" ng-hide="{hideModel}.isHide||{isHide}" >\
                                 <button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" style="margin-left: 5px;" class="{className} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{text}<span class="caret"></span>\
@@ -103,7 +96,29 @@
                 </uib-accordion>',
         addressTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" ng-disabled="{readModel}.isRead||{isRead}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="\'focus\'" /></div></div>',
         colorPickerTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<color-picker ng-model="{model}" class="form-group" options="dCtrl.opt.colorPickerOpt"></color-picker></div></div>',
-        angucompleteAltTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<angucomplete-alt name="{formName}"  {angucompleteAltOptAttrs} style="padding:0;border:0;" type="{type}" uib-popover="{tooltip}" popover-trigger="\'focus\'"/></div></div>'
+        angucompleteAltTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<angucomplete-alt name="{formName}"  {angucompleteAltOptAttrs} style="padding:0;border:0;" type="{type}" uib-popover="{tooltip}" popover-trigger="\'focus\'"/></div></div>',
+        inputFileBtnTemp: '<button type="button" style="border:0;text-decoration:none;outline:none;padding:0;" ng-hide="{hideModel}.isHide||{isHide}" ng-disabled="{readModel}.isRead||{isRead}">\
+                                <label class="{className}" for="{btnId}">\
+                                    <i class="fa fa-upload" aria-hidden="true"></i>\
+                                    <span>{text}</span>\
+                                </label>\
+                                <input type="file" bkm-import-sheet options="{importOptions}" ng-show="false" id="{btnId}">\
+                            </button>',
+        importFileTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="col-md-12">\
+                            <div class="{formStyle}" style="position:relative;">\
+                                <label>{label}</label>&nbsp;&nbsp;\
+                                <div>\
+                                    <label class="btn btn-with-icon btn-primary" for="{importId}">\
+                                        <i class="fa fa-upload" aria-hidden="true" style="color:white;"></i>\
+                                        <span>{text}</span>\
+                                    </label>\
+                                    <input type="file" bkm-import-sheet options="{importOptions}" ng-show="false" id="{importId}">\
+                                    <a ng-if="{isShowDemoTemp}" ng-href="{{{demoTempUrl}}}" style="margin-left:14px;">下载模板</a>\
+                                    <span ng-if="{isShowFileInfo}" style="margin-left:14px;">文件名:<strong>{{{fileName}}}</strong></span>\
+                                    <span ng-if="{isShowFileInfo}" style="margin-left:14px;"><strong>{{{fileSize}}}</strong>&nbsp;&nbsp;KB</span>\
+                                </div>\
+                            </div>\
+                        </div>'
     };
 
     //date filter format definition
@@ -578,6 +593,11 @@
 
     function directiveCtrl() {
         var ctrl = this;
+
+        // 初始化显示上传按钮
+        ctrl.isShowUploadBtn = true;
+        ctrl.toggleUploadBtn = () => ctrl.isShowUploadBtn = !ctrl.isShowUploadBtn
+
     };
 
     function bkmElements($compile, $filter, bkmFileUpload, toastr) {
@@ -1360,7 +1380,7 @@
 
             //设置初始化元素选项 
             var elemOptions = {
-                label: t.label,
+                label: t.label || '',
                 type: t.type,
                 placeholder: t.placeholder,
                 model: 'options.model.' + t.model,
@@ -1556,7 +1576,22 @@
                     });
                 }
                 previous.append(formatTemplate(elemOptions, uiComponents.colorPickerTemp));
-            } else if (t.type == 'autoComplete') {
+            } else if(t.type == 'import') {
+                var importOptions = 'dCtrl.opt.items[' + i + '].options',
+                    demoTempUrl = importOptions + '.tempUrl',
+                    fileName = importOptions + '.file.name'; 
+                angular.extend(elemOptions, {
+                    importId: 'importId' + i,
+                    isShowDemoTemp: demoTempUrl + "!=null",
+                    demoTempUrl: demoTempUrl,
+                    importOptions: 'dCtrl.opt.items[' + i + '].options',
+                    text: t.text || '上传文件',
+                    fileName: importOptions + '.file.name',
+                    fileSize: importOptions + '.file.size/1000',
+                    isShowFileInfo: fileName + "!=null"
+                });
+                previous.append(formatTemplate(elemOptions, uiComponents.importFileTemp));
+            }else if (t.type == 'autoComplete') {
                 var o = {
                     textSearching: t.textSearching || '搜索中...',
                     textNoResults: t.textNoResults || '无返回结果',
@@ -1775,53 +1810,7 @@
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.bkmButtonTemp));
             } else if (t.type == 'inputFileBtn') {
                 btnOptions.btnId = 'inputFileBtn' + i;
-                btnOptions.inputFileOnload = 'inputFileOnload' + i;
-                //绑定change事件
-                scope.$on(btnOptions.inputFileOnload, function (sender, obj) {
-                    obj.on('change', onFileInputChange);
-
-                    function onFileInputChange() {
-                        var senderObje = this,
-                            file = this.files[0];
-                        if (!!!file.name.match(t.fileType.join('|'))) {
-                            toastr.warning('文件类型不正确!');
-                            return;
-                        }
-                        bkmFileUpload
-                            .upload([file], {
-                                type: t.fileType
-                            })
-                            .then(function (response) {
-                                resetInputFile(senderObje);
-                                if (!!!response.data || !!!response.data[0].isSucess) {
-                                    toastr.error('文件上传失败');
-                                    return;
-                                }
-                                t.onUploaded(response);
-                            }).catch(function (result) {
-                                if (result.message) {
-                                    toastr.error(result.message);
-                                }
-                            });
-
-                        function resetInputFile(sender) {
-                            var inputAttr = [],
-                                len = sender.attributes.length,
-                                newInput, parentNode,
-                                inputElemObj = $(sender);
-
-                            parentNode = inputElemObj.parent();
-                            for (var i = 0; i < len; i++) {
-                                inputAttr.push(sender.attributes[i].name + '="' + sender.attributes[i].value + '"');
-                            }
-                            newInput = $('<input ' + inputAttr.join(' ') + '/>');
-                            newInput.on('change', onFileInputChange);
-                            inputElemObj.remove();
-                            parentNode.append(newInput);
-                        }
-
-                    }
-                });
+                btnOptions.importOptions = 'dCtrl.opt.buttons[' + i + '].options';
                 btnPrevious.append(formatTemplate(btnOptions, uiComponents.inputFileBtnTemp));
             }
         });
