@@ -63,9 +63,7 @@
                             parseSheet(e, opts.onParseSuccess);
                         }
                     });
-                }
-                // 直接解析Excel文件成功
-                if (angular.isFunction(opts.onParseSuccess)) {
+                } else if (angular.isFunction(opts.onParseSuccess)) { // 直接解析Excel文件成功
                     parseSheet(e, opts.onParseSuccess);
                 }
                 
