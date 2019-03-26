@@ -56,15 +56,17 @@
                         }
                         // 上传文件成功后回调
                         opts.onUploadSuccess(response, file);
-                        // 重置监测状态
-                        resetInputFile(targetElem);
                         // 解析excel文件
                         if (angular.isFunction(opts.onParseSuccess)) {
                             parseSheet(e, opts.onParseSuccess);
                         }
+                        // 重置监测状态
+                        resetInputFile(targetElem);
                     });
                 } else if (angular.isFunction(opts.onParseSuccess)) { // 直接解析Excel文件成功
                     parseSheet(e, opts.onParseSuccess);
+                    // 重置监测状态
+                    resetInputFile(targetElem);
                 }
                 
             }
