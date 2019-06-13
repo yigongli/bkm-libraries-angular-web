@@ -305,14 +305,15 @@
                     getAllDataFn(self.params)
                         .then(function (result) {
                             self.gridOption.totalItems = result.data.totalCount;
+                            var dataItems = result.data.items || [];
                             if (typeof self.searchSuccessFn == 'function') {
-                                self.searchSuccessFn(result.data.items);
+                                self.searchSuccessFn(dataItems);
                             }
                             var gridOptionData = self.gridOption.data || [];
                             // 先清空原来的数据
                             gridOptionData.splice(0, gridOptionData.length);
                             // 再更新为新的数据
-                            gridOptionData.push.apply(gridOptionData, result.data.items);
+                            gridOptionData.push.apply(gridOptionData, dataItems);
 
                             if (isReserveSelection) {
                                 $timeout( () => self.gridApi.selection.selectRow(self.gridOption.data[self.currentRowIndex > 0 ? self.currentRowIndex : 0]));
@@ -1219,7 +1220,7 @@
                     scope.$parent.$close('ok');
                 };
 
-                if (!!scope.cancel) {
+                if (angular.isString(scope.cancel) && scope.cancel.toLowerCase() == 'true') {
                     scope.options.buttons.push({
                         type: 'button',
                         text: '取消',
