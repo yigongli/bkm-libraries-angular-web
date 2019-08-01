@@ -150,11 +150,11 @@
                             <div class="col-md-6">{{options.attaches.prompt}}</div>\
                             <div class="col-md-6 operation">\
                                 <div ng-if="options.attaches.isShowFileUpType" style="display:inline-block">\
-                                    <select ng-model="options.attaches.upFileTypeValue" ng-change="options.attaches.upFileTypeValueChange()" class="form-control selectpicker ng-pristine ng-invalid ng-invalid-required ng-touched" ng-options="o.name for o in options.attaches.upFileTypeObj">\
+                                    <select ng-model="options.attaches.upFileTypeValue" ng-change="options.attaches.upFileTypeValueChange()" class="form-control selectpicker ng-pristine ng-invalid ng-invalid-required ng-touched" ng-options="o.name as o.name for o in options.attaches.upFileTypeObj">\
                                         <option value="">-- 请选择附件类型 --</option>\
                                     </select>\
                                 </div>\
-                                <i class="fa fa-upload" aria-hidden="true"></i><a ngf-select-disabled="options.attaches.fileUpdisabled" ngf-select="options.attaches.uploadFiles($files)" ngf-pattern="{{options.attaches.attachesPattern}}" ngf-multiple="{{options.attaches.multiple}}">&nbsp;&nbsp;添加附件...</a>\
+                                <i ng-if="!options.attaches.fileUpdisabled" class="fa fa-upload" aria-hidden="true"><a ngf-select="options.attaches.uploadFiles($files)" ngf-pattern="{{options.attaches.attachesPattern}}" ngf-multiple="{{options.attaches.multiple}}">&nbsp;&nbsp;添加附件...</a></i>\
                             </div>\
                         </div>\
                         <div ui-grid="options.attaches.gridOption" class="grid" ui-grid-selection ui-grid-pagination ui-grid-auto-resize ng-style="options.attaches.gridOption.autoHeight()"></div>\
@@ -197,7 +197,7 @@
                 isInitLoad = self.isInitLoad != null ? self.isInitLoad : isInitLoad;
                 registerCustomizedApi = angular.isFunction(self.registerCustomizedApi) ? self.registerCustomizedApi : registerCustomizedApi;
                 uiGridName = angular.isString(self.uiGridName) ? self.uiGridName : uiGridName;
-                var rowHeight = self.rowHeight == null ? 30 : self.rowHeight, 
+                var rowHeight = self.rowHeight == null ? 30 : self.rowHeight,
                     isReserveSelection = self.isReserveSelection != null ? self.isReserveSelection : false;
 
                 //构造页面查询参数基类对象
@@ -213,7 +213,7 @@
                 //UI-GRID高度自动伸缩函数
                 self.gridOption.autoHeight = function () {
                     return {
-                        height: ( (self.gridOption.paginationPageSize  +1) * rowHeight + rowHeight) + "px"
+                        height: ((self.gridOption.paginationPageSize + 1) * rowHeight + rowHeight) + "px"
                     };
                 };
 
@@ -252,9 +252,9 @@
                     }
 
                     // 注册click事件回调方法 
-                    if (self.gridOption.enableFullRowSelection){
-                        gridApi.grid.element.on('click', (ev) => { 
-                            if (ev.target.className.includes('ui-grid-cell-contents')){
+                    if (self.gridOption.enableFullRowSelection) {
+                        gridApi.grid.element.on('click', (ev) => {
+                            if (ev.target.className.includes('ui-grid-cell-contents')) {
                                 self.gridApi.selection.clearSelectedRows();
                                 self.gridApi.selection.selectRow(self.selectedRowEntity);
                             }
@@ -266,7 +266,7 @@
                         gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
                             getData(newPage, pageSize);
                             // 翻页事件回调
-                            if(angular.isFunction(self.onPaginationChanged)) {
+                            if (angular.isFunction(self.onPaginationChanged)) {
                                 $timeout(() => self.onPaginationChanged(newPage, pageSize));
                             }
                         });
@@ -277,16 +277,16 @@
                     }
                     //注册行事件选择
                     gridApi.selection.on.rowSelectionChanged($scope, (row) => {
-                        if(isReserveSelection) {
+                        if (isReserveSelection) {
                             self.currentRowIndex = bkm.util.indexOf(self.gridOption.data, 'id', row.entity.id);
                         }
                         self.selectedRowEntity = row.entity;
                         // 行选择事件回调
-                        if (angular.isFunction(self.rowSelChangeCallback)){
+                        if (angular.isFunction(self.rowSelChangeCallback)) {
                             self.rowSelChangeCallback(row);
                         }
                     });
-                    
+
                 };
 
                 //查询数据
@@ -316,7 +316,7 @@
                             gridOptionData.push.apply(gridOptionData, dataItems);
 
                             if (isReserveSelection) {
-                                $timeout( () => self.gridApi.selection.selectRow(self.gridOption.data[self.currentRowIndex > 0 ? self.currentRowIndex : 0]));
+                                $timeout(() => self.gridApi.selection.selectRow(self.gridOption.data[self.currentRowIndex > 0 ? self.currentRowIndex : 0]));
                             }
                         })
                         .catch(err => toastr.warning(err));
@@ -385,20 +385,20 @@
                 var approveSvcFn = approveParams.approveSvcFn;
                 var validStatus = approveParams.validStatus;
                 var formItems = approveParams.items.concat([{
-                        type: 'textarea',
-                        model: 'reason',
-                        label: '备注',
-                        option: true,
-                        cols: 12
-                    },
-                    {
-                        type: 'dropDown',
-                        model: 'type',
-                        label: '拒绝原因类型',
-                        option: true,
-                        cols: 12,
-                        dataSource: dict.dictionary[dict.AuditType()]
-                    }
+                    type: 'textarea',
+                    model: 'reason',
+                    label: '备注',
+                    option: true,
+                    cols: 12
+                },
+                {
+                    type: 'dropDown',
+                    model: 'type',
+                    label: '拒绝原因类型',
+                    option: true,
+                    cols: 12,
+                    dataSource: dict.dictionary[dict.AuditType()]
+                }
                 ]);
                 var statusField = approveParams.statusField;
                 //判断审核状态是否符合条件
@@ -420,15 +420,15 @@
                         //表单数据模型绑定
                         $scope.modalTitle = promptName + '审核';
                         var buttons = approveParams.buttons.concat([{
-                                text: '同意',
-                                category: 'approve',
-                                click: approveFn
-                            },
-                            {
-                                text: '拒绝',
-                                category: 'reject',
-                                click: rejectFn
-                            }
+                            text: '同意',
+                            category: 'approve',
+                            click: approveFn
+                        },
+                        {
+                            text: '拒绝',
+                            category: 'reject',
+                            click: rejectFn
+                        }
                         ]);
                         angular.extend(ctrl.formOption, {
                             items: formItems,
@@ -847,6 +847,7 @@
                             if (!!formSetting.isShowUpFileType) {
                                 attachesPara.isShowUpFileType = formSetting.isShowUpFileType;
                                 attachesPara.getUpFileTypeFn = formSetting.getUpFileTypeFn;
+                                attachesPara.defaultFileType = formSetting.defaultFileType;
                                 attachesPara.rtnRow = rtnRow;
                             }
                             attachesPara.attachTypes = formSetting.attachTypes || [];
@@ -949,18 +950,18 @@
                                     //调用创建或更新服务
                                     function updateAndCreateFn() {
                                         (isEdit ? updateSvcFn(formModel) : createSvcFn(formModel))
-                                        .then(function (result) {
-                                            if ( (!formSetting.isDisableSubmitRefresh) && typeof parentCtrl.searchData == 'function') {
-                                                parentCtrl.searchData();
-                                                var successMsg = formSetting.addOrUpdateSuccessMsg || '提交成功，请继续添加或点击关闭按钮返回！';
-                                                toastr.success(successMsg);
-                                            }
-                                            //更新成功处理回调
-                                            if (typeof formSetting.postSubmitFn == 'function') {
-                                                formSetting.postSubmitFn(formModel, result);
-                                            }
-                                            $uibModalInstance.close();
-                                        });
+                                            .then(function (result) {
+                                                if ((!formSetting.isDisableSubmitRefresh) && typeof parentCtrl.searchData == 'function') {
+                                                    parentCtrl.searchData();
+                                                    var successMsg = formSetting.addOrUpdateSuccessMsg || '提交成功，请继续添加或点击关闭按钮返回！';
+                                                    toastr.success(successMsg);
+                                                }
+                                                //更新成功处理回调
+                                                if (typeof formSetting.postSubmitFn == 'function') {
+                                                    formSetting.postSubmitFn(formModel, result);
+                                                }
+                                                $uibModalInstance.close();
+                                            });
                                     }
                                 });
                             };
@@ -995,36 +996,27 @@
                         isRemovePaging: !!isNew || !!isEdit,
                         isShowDelete: !!isNew || !!isEdit,
                         prompt: addiPrompt,
-                        isShowFileUpType: !!attchesPara.isShowUpFileType || false, //默认为不使用上传文件类型
-                        upFileTypeValue: '', //上传文件的类型
-                        fileUpdisabled: false, //是否禁用上传功能,默认禁用
+                        isShowFileUpType: !!attchesPara.isShowUpFileType, //默认为不使用上传文件类型
+                        upFileTypeValue: attchesPara.defaultFileType, //上传文件的默认类型
+                        fileUpdisabled: false, //是否禁用上传功能,默认启用
                         isAttachesExpanded: self.formOption.isAttachesExpanded //附件列表默认不展开
                     };
-
-                    if (!!attaches.isShowFileUpType) {
-
+                    
+                    // 启用文件类型时初始化
+                    if (attaches.isShowFileUpType) {
                         //需要文件类型是请求数据
                         self.upFileTypeObj = {};
                         if (typeof attchesPara.getUpFileTypeFn == 'function') {
                             attchesPara.getUpFileTypeFn(attchesPara.rtnRow)
-                                .then(function (data) {
+                                .then( (data) => {
                                     angular.extend(self.upFileTypeObj, data.items);
-                                })
-                                .catch(function (e) {
-                                    // 异常处理
                                 });
                         }
                         //添加文件类型选择
                         angular.extend(attaches, {
                             upFileTypeObj: self.upFileTypeObj,
-                            fileUpdisabled: true,
-                            upFileTypeValueChange: function () {
-                                if (!!attaches.upFileTypeValue) {
-                                    attaches.fileUpdisabled = false;
-                                } else {
-                                    attaches.fileUpdisabled = true;
-                                }
-                            },
+                            fileUpdisabled: attaches.upFileTypeValue == null,
+                            upFileTypeValueChange: () => attaches.fileUpdisabled = !attaches.upFileTypeValue
                         });
                     }
                     //删除附件
@@ -1056,42 +1048,41 @@
                         paginationPageSize: 5
                     });
                     attaches.gridOption.columnDefs = [{
-                            field: "seq",
-                            displayName: "序号",
-                            width: 50
-                        },
-                        {
-                            field: " ",
-                            displayName: '附件名称',
-                            cellTemplate: '<div class="operation attaches"> <a target="blank" href="{{row.entity.id|pathUrl}}">{{row.entity.name}}</a></div>'
-                        },
-                        {
-                            field: "contentType",
-                            displayName: "附件类型"
-                        },
-                        {
-                            field: "contentLength",
-                            displayName: "附件大小(KB)",
-                            cellFilter: "kbSize|number"
-                        },
-                        {
-                            field: "creatorName",
-                            displayName: "创建人"
-                        },
-                        {
-                            field: "creationTime",
-                            displayName: "创建时间",
-                            cellFilter: "date:'yyyy-MM-dd HH:mm'"
-                        },
-                        {
-                            field: "operation",
-                            displayName: '操作',
-                            cellTemplate: '<div class="operation"> <a  href="{{row.entity.id|pathUrl:true}}">下载&nbsp;&nbsp;</a><a ng-if="grid.appScope.isShowDelete"  ng-click="grid.appScope.delAttch(row);">删除</a></div>'
-                        }
-                    ];
+                        field: " ",
+                        displayName: '附件名称',
+                        cellTemplate: '<div class="operation attaches"> <a target="blank" href="{{row.entity.id|pathUrl}}">{{row.entity.name}}</a></div>'
+                    },
+                    {
+                        field: "category",
+                        displayName: "业务分类"
+                    },
+                    {
+                        field: "contentType",
+                        displayName: "附件类型"
+                    },
+                    {
+                        field: "contentLength",
+                        displayName: "附件大小(KB)",
+                        cellFilter: "kbSize|number"
+                    },
+                    {
+                        field: "creatorName",
+                        displayName: "创建人"
+                    },
+                    {
+                        field: "creationTime",
+                        displayName: "创建时间",
+                        cellFilter: "date:'yyyy-MM-dd HH:mm'"
+                    },
+                    {
+                        field: "operation",
+                        displayName: '操作',
+                        cellTemplate: '<div class="operation"> <a  href="{{row.entity.id|pathUrl:true}}">下载&nbsp;&nbsp;</a><a ng-if="grid.appScope.isShowDelete"  ng-click="grid.appScope.delAttch(row);">删除</a></div>'
+                    }];
                     //配置查询参数
-                    if (!isNew)
+                    if (!isNew) {
                         angular.extend(attaches.params, attchesPara);
+                    }
 
                     //上传附件服务调用
                     attaches.uploadFiles = function (files) {
@@ -1100,12 +1091,9 @@
                                 imageInfo = !!attchesPara.attachTypes && attchesPara.attachTypes.length ? {
                                     type: attchesPara.attachTypes.join('').split('.')
                                 } :
-                                true;
+                                    true;
                             // 判断是否需要文件类型
                             if (!!attaches.isShowFileUpType) {
-                                // if (files.length > 0) {
-                                //     files[0].sendFormData = { name: attaches.upFileTypeValue.name };
-                                // }
                                 var i,
                                     len = files.length;
                                 f = {
@@ -1116,7 +1104,7 @@
                                 };
                                 for (i = 0; i < len; i++) {
                                     f.sendFormData.fileAdditions.push({
-                                        alias: attaches.upFileTypeValue.name,
+                                        alias: attaches.upFileTypeValue,
                                         name: files[i].name
                                     });
                                 }
@@ -1134,6 +1122,7 @@
                                         fileData.contentType = files[x].type;
                                         fileData.contentLength = files[x].size;
                                         fileData.id = response.data[x].id;
+                                        fileData.category = response.data[0].category;
                                         filesLists.push(fileData);
                                     }
                                     attaches.gridOption.data = attaches.gridOption.data.concat(filesLists);
@@ -1536,7 +1525,7 @@
                     startDateOnSetTime: 'dCtrl.opt.' + startDateOnSetTime + "()",
                     endDateOnSetTime: 'dCtrl.opt.' + endDateOnSetTime + "()",
                     dropdownStart: "dropdownStart_" + beginDateModel.replace('.', '_') + i,
-                    dropdownEnd: "dropdownEnd_" + endDateModel.replace('.', '_') + i 
+                    dropdownEnd: "dropdownEnd_" + endDateModel.replace('.', '_') + i
                 });
                 elemOptions.dateFormat = dateFormatDef[elemOptions.minView];
                 previous.append(formatTemplate(elemOptions, template));
@@ -1577,10 +1566,10 @@
                     });
                 }
                 previous.append(formatTemplate(elemOptions, uiComponents.colorPickerTemp));
-            } else if(t.type == 'import') {
+            } else if (t.type == 'import') {
                 var importOptions = 'dCtrl.opt.items[' + i + '].options',
                     demoTempUrl = importOptions + '.tempUrl',
-                    fileName = importOptions + '.file.name'; 
+                    fileName = importOptions + '.file.name';
                 angular.extend(elemOptions, {
                     importId: 'importId' + i,
                     isShowDemoTemp: demoTempUrl + "!=null",
@@ -1592,7 +1581,7 @@
                     isShowFileInfo: fileName + "!=null"
                 });
                 previous.append(formatTemplate(elemOptions, uiComponents.importFileTemp));
-            }else if (t.type == 'autoComplete') {
+            } else if (t.type == 'autoComplete') {
                 var o = {
                     textSearching: t.textSearching || '搜索中...',
                     textNoResults: t.textNoResults || '无返回结果',
