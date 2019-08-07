@@ -847,10 +847,10 @@
                             if (!!formSetting.isShowUpFileType) {
                                 attachesPara.isShowUpFileType = formSetting.isShowUpFileType;
                                 attachesPara.getUpFileTypeFn = formSetting.getUpFileTypeFn;
-                                attachesPara.defaultFileType = formSetting.defaultFileType;
                                 attachesPara.rtnRow = rtnRow;
                             }
                             attachesPara.attachTypes = formSetting.attachTypes || [];
+                            attachesPara.defaultFileType = formSetting.defaultFileType;
 
                             if (rtnRow) {
                                 //直接将rtnRow中的数据绑定在表单上
@@ -866,6 +866,10 @@
                                         angular.extend(getParas, {
                                             type: rtnRow.addiParas
                                         });
+                                    }
+                                    // 判断是否存在get方法的额外参数对象
+                                    if (angular.isObject(rtnRow.addiParasObj)) {
+                                        angular.extend(getParas, rtnRow.addiParasObj);
                                     }
                                     //获取信息
                                     getSvcFn(getParas)
@@ -1001,14 +1005,14 @@
                         fileUpdisabled: false, //是否禁用上传功能,默认启用
                         isAttachesExpanded: self.formOption.isAttachesExpanded //附件列表默认不展开
                     };
-                    
+
                     // 启用文件类型时初始化
                     if (attaches.isShowFileUpType) {
                         //需要文件类型是请求数据
                         self.upFileTypeObj = {};
                         if (typeof attchesPara.getUpFileTypeFn == 'function') {
                             attchesPara.getUpFileTypeFn(attchesPara.rtnRow)
-                                .then( (data) => {
+                                .then((data) => {
                                     angular.extend(self.upFileTypeObj, data.items);
                                 });
                         }
@@ -1086,48 +1090,45 @@
 
                     //上传附件服务调用
                     attaches.uploadFiles = function (files) {
-                        if (files && files.length) {
-                            var f,
-                                imageInfo = !!attchesPara.attachTypes && attchesPara.attachTypes.length ? {
-                                    type: attchesPara.attachTypes.join('').split('.')
-                                } :
-                                    true;
-                            // 判断是否需要文件类型
-                            if (!!attaches.isShowFileUpType) {
-                                var i,
-                                    len = files.length;
-                                f = {
-                                    sendFormData: {
-                                        fileAdditions: []
-                                    },
-                                    uploadFiles: files
-                                };
-                                for (i = 0; i < len; i++) {
-                                    f.sendFormData.fileAdditions.push({
-                                        alias: attaches.upFileTypeValue,
-                                        name: files[i].name
-                                    });
-                                }
-                            } else {
-                                f = files;
-                            }
-
-                            bkmUpload.upload(f, imageInfo)
-                                .then(function (response) {
-                                    //把files存放到filesLists中
-                                    var filesLists = [];
-                                    for (var x in files) {
-                                        var fileData = {};
-                                        fileData.name = response.data[0].name;
-                                        fileData.contentType = files[x].type;
-                                        fileData.contentLength = files[x].size;
-                                        fileData.id = response.data[x].id;
-                                        fileData.category = response.data[0].category;
-                                        filesLists.push(fileData);
-                                    }
-                                    attaches.gridOption.data = attaches.gridOption.data.concat(filesLists);
-                                });
+                        if (!files || !files.length) {
+                            return;
                         }
+                        var f = {
+                            sendFormData: {
+                                fileAdditions: []
+                            },
+                            uploadFiles: files
+                        },
+                            imageInfo = !!attchesPara.attachTypes && attchesPara.attachTypes.length ? {
+                                type: attchesPara.attachTypes.join('').split('.')
+                            } : true;
+                        // 文件业务类型
+                        if (attaches.upFileTypeValue != null) {
+                            for (var i = 0; i < files.length; i++) {
+                                f.sendFormData.fileAdditions.push({
+                                    alias: attaches.upFileTypeValue,
+                                    name: files[i].name
+                                });
+                            }
+                        } else {
+                            f = files;
+                        }
+
+                        bkmUpload.upload(f, imageInfo)
+                            .then((response) => {
+                                //把files存放到filesLists中
+                                var filesLists = [];
+                                for (var x in files) {
+                                    var fileData = {};
+                                    fileData.name = response.data[0].name;
+                                    fileData.contentType = files[x].type;
+                                    fileData.contentLength = files[x].size;
+                                    fileData.id = response.data[x].id;
+                                    fileData.category = response.data[0].category;
+                                    filesLists.push(fileData);
+                                }
+                                attaches.gridOption.data = attaches.gridOption.data.concat(filesLists);
+                            });
                     };
                 }
 
