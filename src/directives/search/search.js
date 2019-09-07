@@ -292,7 +292,7 @@
                 //查询数据
                 self.searchData = getData;
 
-                function getData(newPage, pageSize) {
+                function getData(customParams) {
                     if (!angular.isFunction(getAllDataFn)) return;
                     //合并分页查询参数
                     self.params.skipCount = (typeof self.gridApi.pagination == 'object') ? (self.gridApi.pagination.getPage() - 1) * self.gridOption.paginationPageSize : 0;
@@ -301,13 +301,20 @@
                     if (typeof paramsSetting == 'function') {
                         paramsSetting();
                     }
+                    var getAllInput =  self.params;
+                    // 如果提供了直接查询参数对象，则不使用内置参数对象
+                    if ( angular.isObject(customParams) ) {
+                        customParams.skipCount = customParams.skipCount == null ? self.params.skipCount : customParams.skipCount;
+                        customParams.maxResultCount = customParams.maxResultCount == null ? self.params.maxResultCount : customParams.maxResultCount;
+                        getAllInput = customParams;
+                    }
                     //调用查询服务
-                    getAllDataFn(self.params)
+                    getAllDataFn(getAllInput)
                         .then(function (result) {
                             self.gridOption.totalItems = result.data.totalCount;
                             var dataItems = result.data.items || [];
                             if (typeof self.searchSuccessFn == 'function') {
-                                self.searchSuccessFn(dataItems);
+                                self.searchSuccessFn(dataItems, getAllInput);
                             }
                             var gridOptionData = self.gridOption.data || [];
                             // 先清空原来的数据
