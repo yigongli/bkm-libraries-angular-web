@@ -933,6 +933,7 @@
                                         formModel.attachments = [];
                                         angular.forEach(ctrl.formOption.attaches.gridOption.data, function (v, i) {
                                             formModel.attachments.push({
+                                                category: v.category,
                                                 contentLength: v.contentLength,
                                                 contentType: v.contentType,
                                                 id: v.id,
