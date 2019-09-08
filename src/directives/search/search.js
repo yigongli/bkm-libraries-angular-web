@@ -20,7 +20,7 @@
                                     <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly ng-disabled="{readModel}.isRead||{isRead}">\
                                 </a>\
                                 <ul ng-if="!({readModel}.isRead===true)" class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
-                                    <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep}, dropdownSelector: \'#{dropdownId}\'}"/>\
+                                    <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep}, startView:\'{startView}\', dropdownSelector: \'#{dropdownId}\'}"/>\
                                 </ul>\
                                 <span ng-if="!({readModel}.isRead===true)" class="input-group-addon" ng-click="{model}=null">\
                                     <i class="input-datepicker glyphicon glyphicon-remove"></i>\
@@ -123,6 +123,8 @@
 
     //date filter format definition
     var dateFormatDef = {
+        year: 'YYYY',
+        month: 'YYYY-MM',
         day: 'YYYY-MM-DD',
         hour: 'YYYY-MM-DD HH:mm',
         minute: 'YYYY-MM-DD HH:mm'
@@ -1456,6 +1458,7 @@
                 previous.append(formatTemplate(elemOptions, uiComponents.multiSelectTemp));
             } else if (t.type == 'date') {
                 angular.extend(elemOptions, {
+                    startView: !t.startView ? 'day' : t.startView,
                     minView: !t.minView ? 'day' : t.minView,
                     minuteStep: !t.minuteStep ? '1' : t.minuteStep,
                     dropdownId: 'dropdown_' + t.model + i
