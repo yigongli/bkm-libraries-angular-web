@@ -159,7 +159,7 @@
                                 <i ng-if="!options.attaches.fileUpdisabled" class="fa fa-upload" aria-hidden="true"><a ngf-select="options.attaches.uploadFiles($files)" ngf-pattern="{{options.attaches.attachesPattern}}" ngf-multiple="{{options.attaches.multiple}}">&nbsp;&nbsp;添加附件...</a></i>\
                             </div>\
                         </div>\
-                        <div ui-grid="options.attaches.gridOption" class="grid" ui-grid-selection ui-grid-pagination ui-grid-auto-resize ng-style="options.attaches.gridOption.autoHeight()"></div>\
+                        <div ui-grid="options.attaches.gridOption" class="grid" ui-grid-selection ui-grid-auto-resize ng-style="options.attaches.gridOption.autoHeight()"></div>\
                     </div>\
                 </uib-accordion>'
             );
@@ -301,7 +301,7 @@
                     self.params.maxResultCount = self.gridOption.paginationPageSize;
                     //查询参数处理回调函数
                     if (typeof paramsSetting == 'function') {
-                        paramsSetting();
+                        paramsSetting(self.params);
                     }
                     var getAllInput =  self.params;
                     // 如果提供了直接查询参数对象，则不使用内置参数对象
@@ -1054,13 +1054,14 @@
 
                     };
 
-                    //继承基类查询对象
-                    baseSearchFn.apply(attaches, [scope, fileSvc.getAll, , false]);
+                    //继承基类查询对象, 附件不分页，默认返回最大1000条数据
+                    baseSearchFn.apply(attaches, [scope, fileSvc.getAll, (params) => params.maxResultCount = 1000, false]);
 
-                    //配置附件列表
+                    //配置附件列表的高度，默认为5个行高
                     angular.extend(attaches.gridOption, {
                         paginationPageSize: 5
                     });
+
                     attaches.gridOption.columnDefs = [{
                         field: " ",
                         displayName: '附件名称',
