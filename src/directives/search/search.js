@@ -1314,7 +1314,11 @@
                 $compile(el)(scope);
 
                 //用于初始化Password输入框的show/hide功能
-                el.find('.password').password();
+                var pwdElm = el.find('.password');
+                if ( pwdElm != null && angular.isFunction(pwdElm.password) ) {
+                    pwdElm.password();
+                }
+                
 
                 //判断是否移除掉附件列表的翻页控件
                 if (!!scope.options.attaches && !!scope.options.attaches.isRemovePaging) {
