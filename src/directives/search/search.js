@@ -808,7 +808,8 @@
                 }
                 //新建表单
                 function modalForm(row) {
-                    var backdrop = formSetting ? formSetting.backdrop : false;
+                    var backdrop = formSetting ? formSetting.backdrop : false,
+                        modalSize = formSetting && formSetting.size ? formSetting.size : 'lg';
                     $uibModal.open({
                         backdrop: false,
                         animation: false,
@@ -981,7 +982,7 @@
                             };
                         }],
                         controllerAs: 'ctrl',
-                        size: 'lg',
+                        size: modalSize,
                         resolve: {
                             items: function () {
                                 return row;
