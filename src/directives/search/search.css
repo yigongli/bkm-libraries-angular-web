@@ -225,3 +225,8 @@ multiSelect>.btn-group .btn .caret {
 multiSelect.form-control {
     padding: 0px;
 }
+
+.input-append.input-group span {
+    font-size: inherit;
+    z-index: 1000;
+  }
