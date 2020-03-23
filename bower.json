@@ -1,6 +1,6 @@
 {
   "name": "bkm-angular-web",
-  "version": "4.8.37",
+  "version": "4.8.38",
   "homepage": "https://git.oschina.net/yigongli/BKM.Library.Angular.Web",
   "authors": [
     "bkm"
@@ -29,6 +29,7 @@
     "bkm-angular-datetimepicker": "^1.1.6",
     "bkm-angular-date-time-input": "^1.2.3",
     "angucomplete-alt": "^3.0.0",
+    "js-xlsx": "~0.14.0",
     "angular-bootstrap-multiselect": "https://github.com/bentorfs/angular-bootstrap-multiselect.git#^1.1.11"
   },
   "main": [
