@@ -514,7 +514,7 @@
                     },
                     scope.options,
                     scope.cols,
-                    'form-group',
+                    'form-group'
                 );
                 $compile(el)(scope);
                 //设置表单对象
@@ -896,7 +896,7 @@
             });
 
             modalInstance.result
-                .then( () => {
+                .then(() => {
                     var index = bkm.util.indexOf(attaches.gridOption.data, 'id', row.entity.id);
                     attaches.gridOption.data.splice(index, 1);
                 });
@@ -948,7 +948,7 @@
             displayName: '操作',
             cellTemplate: '<div class="operation"> <a  href="{{row.entity.id|pathUrl:true}}">下载&nbsp;&nbsp;</a><a ng-if="grid.appScope.isShowDelete"  ng-click="grid.appScope.delAttch(row);">删除</a></div>'
         }];
-        
+
 
         //上传附件服务调用
         attaches.uploadFiles = function (files) {
@@ -1034,13 +1034,13 @@
                 $scope.modalTitle = !rtnRow ? '新建' + promptName : promptName + "详情";
                 //配置新建表单指令参数
                 let btns = newFormOption.buttons || [];
-                Object.assign(ctrl.formOption, newFormOption, {
-                    buttons: rtnRow && !isEdit ? [] : btns.concat([{
+                Object.assign(ctrl.formOption, newFormOption, isEdit ? {
+                    buttons: btns.concat([{
                         text: '提交',
                         category: 'submit',
                         click: submitFn
                     }])
-                });
+                } : {});
 
                 //定义附件列表的模板文件地址(缓冲模板文件)
                 let attachesTempUrl = 'attatchesList.html';
