@@ -1015,6 +1015,7 @@
             controller: ['$scope', '$uibModalInstance', 'toastr', function ($scope, $uibModalInstance, toastr) {
                 let ctrl = this,
                     rtnRow = row != null ? row.entity : null,
+                    isNew = !rtnRow,
                     isEdit = row != null ? row.isEdit : false;
 
                 //初始化数据模型
@@ -1034,7 +1035,7 @@
                 $scope.modalTitle = !rtnRow ? '新建' + promptName : promptName + "详情";
                 //配置新建表单指令参数
                 let btns = newFormOption.buttons || [];
-                Object.assign(ctrl.formOption, newFormOption, isEdit ? {
+                Object.assign(ctrl.formOption, newFormOption, (isEdit || isNew) ? {
                     buttons: btns.concat([{
                         text: '提交',
                         category: 'submit',
