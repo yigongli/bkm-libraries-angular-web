@@ -969,7 +969,8 @@
                 for (var i = 0; i < files.length; i++) {
                     f.sendFormData.fileAdditions.push({
                         alias: attaches.upFileTypeValue,
-                        name: files[i].name
+                        name: files[i].name,
+                        renameFile: false
                     });
                 }
             } else {
@@ -981,7 +982,7 @@
                 let filesLists = [];
                 for (var x in files) {
                     var fileData = {};
-                    fileData.name = response.data[0].name;
+                    fileData.name = response.data[0].key;
                     fileData.contentType = files[x].type;
                     fileData.contentLength = files[x].size;
                     fileData.id = response.data[x].id;
