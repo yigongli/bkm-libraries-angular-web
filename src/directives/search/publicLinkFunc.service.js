@@ -299,10 +299,13 @@
                 var accordOptions = {
                     title: t.title,
                     accordId: t.accordId,
-                    isExpanded: !!t.isExpanded,
-                    hideModel: 'dCtrl.opt.' + hideModel
+                    isExpanded: t.isExpanded,
+                    hideModel: 'dCtrl.opt.' + hideModel,
+                    isHide: t.isHide
                 };
-                accordElem.append(formatTemplate(accordOptions, formComponents.accordTemp));
+                if (!t.isHide) {
+                    accordElem.append(formatTemplate(accordOptions, formComponents.accordTemp));
+                }
             });
         }
 
