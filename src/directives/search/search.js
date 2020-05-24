@@ -905,6 +905,14 @@
         //继承基类查询对象, 附件不分页，默认返回最大1000条数据
         baseSearchFn.apply(attaches, [scope, attaches.getAllFn, (params) => params.maxResultCount = 1000, false]);
 
+        attaches.searchSuccessFn = function (result) {
+            // 对结果进行排序
+            if (result && attchesPara.sortByName) {
+                result.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            result.map(x => x.name = x.name.replace(/-|_/g, ''));
+        };
+
         //配置查询参数
         if (!isNew) {
             angular.extend(attaches.params, attchesPara.queryParam);
@@ -966,9 +974,10 @@
             // 文件业务类型
             if (attaches.upFileTypeValue != null) {
                 for (var i = 0; i < files.length; i++) {
+                    let fileName = files[i].name;
                     f.sendFormData.fileAdditions.push({
                         alias: attaches.upFileTypeValue,
-                        name: files[i].name,
+                        name: fileName,
                         renameFile: false
                     });
                 }
@@ -981,7 +990,8 @@
                 let filesLists = [];
                 for (var x in files) {
                     var fileData = {};
-                    fileData.name = response.data[0].key;
+                    fileData.name = response.data[0].key || '';
+                    fileData.name = fileData.name.replace(/-|_/g, '');
                     fileData.contentType = files[x].type;
                     fileData.contentLength = files[x].size;
                     fileData.id = response.data[x].id;
