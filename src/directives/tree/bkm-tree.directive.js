@@ -29,7 +29,7 @@
             }
         })
         .directive('bkmTree', ['treeSetting', bkmTree])
-        .directive('bkmInputTreeAddress', ['$compile', '$timeout',inputTree])
+        .directive('bkmInputTreeAddress', ['$compile', '$timeout', inputTree])
         .service('bkm.zTree.Data', ['$window', 'abp.services.app.region', '$q', bkmZtreeData])
         .controller('bkmInputTreeAddressCtrl', [
             '$timeout',
@@ -38,7 +38,7 @@
         ]);
 
     var treeTemplate =
-          '<div class="tree-address">\
+        '<div class="tree-address">\
                 <div temp></div>\
                 <span data-bkm-address class="icon glyphicon glyphicon-list" ng-click="dCtrl.showMenu($event)"></span>\
                 <div class="ztree-box" ng-show="dCtrl.show"> \
@@ -60,12 +60,12 @@
                 key = parentId || "root",
                 data;
             data = $window.localStorage["addressData"];
-            if (!!!data) {
+            if (!data) {
                 data = {};
                 $window.localStorage["addressData"] = "";
             } else {
                 data = JSON.parse(data);
-                if (!!data[key]) {
+                if (data[key]) {
                     return $q.resolve(data[key]);
                 }
             }
@@ -75,9 +75,14 @@
                 "sorting": "code",
                 "skipCount": 0,
                 "maxResultCount": 999
-            }).then(function (result) {
-                data[key] = result.data.items;
-                $window.localStorage["addressData"] = JSON.stringify(data);
+            }).then((result) => {
+                var dataItems = result.data.items || [];
+                data[key] = dataItems;
+                $window.localStorage["addressData"] = JSON.stringify(data); 
+                if (dataItems.length === 0) {
+                    // address has been updated, clear cache
+                    $window.localStorage["addressData"] = "";
+                }
                 deferred.resolve(data[key]);
             }).catch(function (result) {
                 deferred.reject();
@@ -279,11 +284,11 @@
             return false;
         }
 
-        
+
     }
 
     function inputTree($compile, $timeout) {
-        
+
         return {
             restrict: 'EA',
             require: "ngModel",
@@ -345,7 +350,7 @@
                     e.stopPropagation();
                 });
 
-                
+
             }
         };
     }
@@ -362,11 +367,11 @@
         return guid;
     }
 
-    
 
-   
 
-    
+
+
+
 
 
 
