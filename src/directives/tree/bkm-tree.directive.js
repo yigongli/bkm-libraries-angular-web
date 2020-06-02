@@ -54,15 +54,17 @@
             </div>';
 
     function bkmZtreeData($window, regionAipService, $q) {
-        var self = this;
+        let self = this;
+        const ADDRESS_KEY = "addressData";
+
         self.getData = function (parentId) {
             var deferred = $q.defer(),
                 key = parentId || "root",
                 data;
-            data = $window.localStorage["addressData"];
+            data = localStorage.getItem(ADDRESS_KEY);
             if (!data) {
                 data = {};
-                $window.localStorage["addressData"] = "";
+                localStorage.removeItem(ADDRESS_KEY);
             } else {
                 data = JSON.parse(data);
                 if (data[key]) {
@@ -78,10 +80,10 @@
             }).then((result) => {
                 var dataItems = result.data.items || [];
                 data[key] = dataItems;
-                $window.localStorage["addressData"] = JSON.stringify(data); 
+                localStorage.setItem(ADDRESS_KEY, JSON.stringify(data));
                 if (dataItems.length === 0) {
                     // address has been updated, clear cache
-                    $window.localStorage["addressData"] = "";
+                    localStorage.removeItem(ADDRESS_KEY);
                 }
                 deferred.resolve(data[key]);
             }).catch(function (result) {
