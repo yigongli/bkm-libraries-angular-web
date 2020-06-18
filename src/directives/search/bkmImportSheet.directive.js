@@ -47,7 +47,7 @@
                 if (angular.isFunction(opts.onUploadSuccess)) {
                     // 上传文件
                     bkmFileUpload.upload([file], {
-                        type: ['xlsx', 'xls']
+                        type: fileType
                     }).then((response) => {
                         if (!response.data || !response.data[0].isSucess) {
                             toastr.error('文件上传失败');
@@ -55,7 +55,7 @@
                             return;
                         }
                         // 上传文件成功后回调
-                        opts.onUploadSuccess(response, file);
+                        opts.onUploadSuccess(response.data, file);
                         // 解析excel文件
                         if (angular.isFunction(opts.onParseSuccess)) {
                             parseSheet(e, opts.onParseSuccess);
