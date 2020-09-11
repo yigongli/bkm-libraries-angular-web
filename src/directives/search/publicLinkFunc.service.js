@@ -562,7 +562,7 @@
                 str = '',
                 pushStr = '',
                 regEx = /([A-Z])/g,
-                optStr = 'dCtrl.opt.angucompleteAltOpt.',
+                optStr = `dCtrl.opt.angucompleteAltOpt${i}.`,
                 optMap = {
                     // options.onSelectedObject 对应 selectedObject，其他都一一对应
                     selectedObject: '=',
@@ -628,7 +628,7 @@
                 if (t.modelKey && t.modelKey == t.model) {
                     opt.model[t.model] = value;
                     // 如果 modelKey 和 model 是同一字段时，只要 input 框非空，则设置为非必填
-                    $scope.dCtrl.opt.angucompleteAltOpt.fieldRequired = (value == '');
+                    $scope.dCtrl.opt[`angucompleteAltOpt${i}`].fieldRequired = (value == '');
                 }
                 if (!!t.inputChanged) {
                     if (typeof t.inputChanged == 'function') {
@@ -656,7 +656,7 @@
                     }
                 });
             }
-            opt.angucompleteAltOpt = autoOption;
+            opt[`angucompleteAltOpt${i}`] = autoOption;
             for (let x in autoOption) {
                 if (autoOption[x] == null) continue;
                 pushStr = '';
