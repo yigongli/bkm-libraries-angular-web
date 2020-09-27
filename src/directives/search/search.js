@@ -611,8 +611,10 @@
                     modalForm(row, formSetting, bkmUpload.upload, fileSvc.getAll, $uibModal);
                 }
                 //编辑
-                parentCtrl.edit = function (row) {
-                    row.isEdit = true;
+                parentCtrl.edit = function (row, addiParas) {
+                    addiParas = addiParas || {};
+                    row.isEdit = !addiParas.isCopy;
+                    row.isCopy = !!addiParas.isCopy;
                     modalForm(row, formSetting, bkmUpload.upload, fileSvc.getAll, $uibModal, parentCtrl.searchData);
                 }
                 //删除
@@ -1025,7 +1027,7 @@
             controller: ['$scope', '$uibModalInstance', 'toastr', function ($scope, $uibModalInstance, toastr) {
                 let ctrl = this,
                     rtnRow = row != null ? row.entity : null,
-                    isNew = !rtnRow,
+                    isNew = !rtnRow || row.isCopy,
                     isEdit = row != null ? row.isEdit : false;
 
                 //初始化数据模型
@@ -1098,7 +1100,7 @@
                         includeAttachesUrl: attachesTempUrl,
                         isAttachesExpanded: attachesPara.isAttachesExpanded || false
                     });
-                    attachesFn(ctrl, $uibModal, attachesPara, $scope, isEdit, !rtnRow);
+                    attachesFn(ctrl, $uibModal, attachesPara, $scope, isEdit, isNew);
                 }
 
                 //数据绑定的公共函数
@@ -1115,7 +1117,7 @@
                             includeAttachesUrl: attachesTempUrl,
                             isAttachesExpanded: attachesPara.isAttachesExpanded || false
                         });
-                        attachesFn(ctrl, $uibModal, attachesPara, $scope, isEdit && !formModel.isReadAttaches, !rtnRow);
+                        attachesFn(ctrl, $uibModal, attachesPara, $scope, isEdit && !formModel.isReadAttaches, isNew);
                         angular.extend(ctrl.formOption.attaches.params, attachesPara.queryParam);
                         ctrl.formOption.attaches.searchData();
                     }
