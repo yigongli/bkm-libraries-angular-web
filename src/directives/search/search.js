@@ -606,8 +606,10 @@
                     formSetting = parentCtrl.formSetting;
 
                 //显示详情
-                parentCtrl.display = function (row) {
+                parentCtrl.display = function (row, addiParas) {
+                    addiParas = addiParas || {};
                     row.isEdit = false;
+                    row.isCopy = false;
                     modalForm(row, formSetting, bkmUpload.upload, fileSvc.getAll, $uibModal);
                 }
                 //编辑
@@ -1043,8 +1045,11 @@
                     formSetting.initFormModelFn(newFormOption, formModel, rtnRow, isEdit);
                 }
                 //表单标题头提示
-                let promptName = formSetting.promptName || '';
-                $scope.modalTitle = !rtnRow ? '新建' + promptName : promptName + "详情";
+                let promptName = formSetting.promptName || '',
+                    newPrompt = formSetting.newPrompt || '新建',
+                    editPrompt = formSetting.editPrompt || '修改';
+                $scope.modalTitle = isNew ? (newPrompt + promptName) : (isEdit ? (editPrompt + promptName) : (promptName + "详情"));
+                $scope.modalTitle = formSetting.customTitle || $scope.modalTitle;
                 //配置新建表单指令参数
                 let btns = newFormOption.buttons || [];
                 Object.assign(ctrl.formOption, newFormOption, (isEdit || isNew) ? {
