@@ -15,11 +15,11 @@
     };
 
     const formComponents = {
-        textTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" {onChange} class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}"  ng-disabled="{readModel}.isRead||{isRead}"  data-toggle="password" uib-popover="{tooltip}" popover-trigger="\'focus\'"/><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
-        cbxTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" ><label class="checkbox-inline custom-checkbox nowrap"><input  type="checkbox" ng-model="{model}"  ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}" uib-popover="{tooltip}" popover-trigger="\'focus\'"/><span class="group-header">{label}{formRequired}</span></label></div></div>',
+        textTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" {onChange} class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}"  ng-disabled="{readModel}.isRead||{isRead}"  data-toggle="password" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'"/><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
+        cbxTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" ><label class="checkbox-inline custom-checkbox nowrap"><input  type="checkbox" ng-model="{model}"  ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'"/><span class="group-header">{label}{formRequired}</span></label></div></div>',
         noteTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;"><label ng-hide="{hideLabel}.isHide">&nbsp;</label><label  style="border:none;color:{color};font-weight:normal;padding-top:5px; padding-left:0;">{label}{{{model}}}</label></div></div>',
-        textareaTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
-        dropDownTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}" style="color:{color};font-size:{fontSize}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- {placeholder} --</option></select></div></div>',
+        textareaTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
+        dropDownTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}" style="color:{color};font-size:{fontSize}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- {placeholder} --</option></select></div></div>',
         multiSelectTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<multiselect  show-search="{isShowSearch}" search-limit="{searchLimit}" ng-model="{model}" options="{dataSource}" id-prop="{keyName}" display-prop="{valName}" labels="{disp}" placeholder="{placeholder}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} show-unselect-all="true"  show-tooltip="true" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker"></multiselect></div></div>',
         dateTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}">\
                     <div class="{formStyle}" {validError}>\
@@ -27,7 +27,7 @@
                             <label>{label}{formRequired}</label>&nbsp;&nbsp;\
                             <div ng-class="{\'date\':!({readModel}.isRead===true)}" class="bkm-form-icon form-control">\
                                 <a class="dropdown-toggle" id="{dropdownId}" role="button" data-toggle="dropdown" data-target="#">\
-                                    <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly ng-disabled="{readModel}.isRead||{isRead}">\
+                                    <input type="text" class="form-control" data-date-time-input="{dateFormat}" ng-model="{model}"  uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" bkm-input name="{formName}"  {validateAttr} placeholder="{placeholder}" readOnly ng-disabled="{readModel}.isRead||{isRead}">\
                                 </a>\
                                 <ul ng-if="!({readModel}.isRead===true)" class="dropdown-menu  pull-right" role="menu" aria-labelledby="dLabel">\
                                     <datetimepicker ng-model="{model}" data-datetimepicker-config="{minView:\'{minView}\', minuteStep:{minuteStep}, startView:\'{startView}\', dropdownSelector: \'#{dropdownId}\'}"/>\
@@ -39,9 +39,9 @@
                         </div>\
                     </div>\
                 </div>',
-        buttonTemp: '<button ng-hide="{hideModel}.isHide||{isHide}" uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" class="{className}" ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
+        buttonTemp: '<button ng-hide="{hideModel}.isHide||{isHide}" uib-popover="{tooltip}"popover-placement="auto bottom-left"  popover-trigger="\'focus\'" type="button" class="{className}" ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}"><i class="{icon}"></i><span>&nbsp;{text}</span></button>',
         downloadButtonTemp: '<div class="btn-group" ng-hide="{hideModel}.isHide||{isHide}" >\
-                                <button uib-popover="{tooltip}" popover-trigger="\'focus\'" type="button" style="margin-left: 5px;" class="{className} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{text}<span class="caret"></span>\
+                                <button uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" type="button" style="margin-left: 5px;" class="{className} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{text}<span class="caret"></span>\
                                 </button>\
                                 <ul class="dropdown-menu">\
                                     <li ng-repeat="{repeat}"><a ng-click="item.click()" ng-hide="item.hideModel.isHide" >\
@@ -57,7 +57,7 @@
                         <label>{beginDateLabel}{formRequired}</label>&nbsp;&nbsp;\
                         <div class="date bkm-form-icon form-control">\
                             <a class="dropdown-toggle" id="{dropdownStart}" role="button" data-toggle="dropdown" data-target="#" >\
-                                <input type="text" class="form-control" ng-model="{beginDateModel}" data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{beginFormName}"  {validateAttr} placeholder="{beginDatePlaceholder}" readOnly>\
+                                <input type="text" class="form-control" ng-model="{beginDateModel}" data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" bkm-input name="{beginFormName}"  {validateAttr} placeholder="{beginDatePlaceholder}" readOnly>\
                             </a>\
                             <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
                                 <datetimepicker ng-model="{beginDateModel}"\
@@ -76,7 +76,7 @@
                         <label>{endDateLabel}{formRequired}</label>&nbsp;&nbsp;\
                         <div class="date bkm-form-icon form-control">\
                             <a class="dropdown-toggle" id="{dropdownEnd}" role="button" data-toggle="dropdown" data-target="#" >\
-                                <input type="text" class="form-control" ng-model="{endDateModel}"  data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-trigger="\'focus\'" bkm-input name="{endFormName}"  {validateAttr} placeholder="{endDatePlaceholder}" readOnly>\
+                                <input type="text" class="form-control" ng-model="{endDateModel}"  data-date-time-input="{dateFormat}" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" bkm-input name="{endFormName}"  {validateAttr} placeholder="{endDatePlaceholder}" readOnly>\
                             </a>\
                             <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">\
                                 <datetimepicker ng-model="{endDateModel}"\
@@ -104,9 +104,9 @@
                         <bkm-elements is-accordions=true accordion-id="{accordId}"></bkm-elements>\
                     </div>\
                 </uib-accordion>',
-        addressTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" ng-disabled="{readModel}.isRead||{isRead}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-trigger="\'focus\'" /></div></div>',
+        addressTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}"  {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-input-tree-address choose-level="{level}" ng-disabled="{readModel}.isRead||{isRead}" show-full-name="{isFullName}" name="{formName}" class="form-control " type="text" placeholder="{placeholder}" {validateAttr} ng-model="{model}" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" /></div></div>',
         colorPickerTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<color-picker ng-model="{model}" class="form-group" options="dCtrl.opt.colorPickerOpt"></color-picker></div></div>',
-        angucompleteAltTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<angucomplete-alt name="{formName}"  {angucompleteAltOptAttrs} style="padding:0;border:0;" type="{type}" uib-popover="{tooltip}" popover-trigger="\'focus\'"/></div></div>',
+        angucompleteAltTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<angucomplete-alt name="{formName}"  {angucompleteAltOptAttrs} style="padding:0;border:0;" type="{type}" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'"/></div></div>',
         inputFileBtnTemp: '<button type="button" style="border:0;text-decoration:none;outline:none;padding:0;" ng-hide="{hideModel}.isHide||{isHide}" ng-disabled="{readModel}.isRead||{isRead}">\
                                 <label class="{className}" for="{btnId}">\
                                     <i class="fa fa-upload" aria-hidden="true"></i>\
