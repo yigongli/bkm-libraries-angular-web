@@ -355,7 +355,8 @@
         function multiSelectFunc(previous, elemOptions, elemTemp, t, i, opt) {
             opt.multiSelectLabels = {
                 itemsSelected: " 项已选择    ",
-                unselectAll: "清除选项"
+                unselectAll: "清除选项",
+                search: "搜索..."
             };
             Object.assign(elemOptions, {
                 dataSource: 'dCtrl.opt.items[' + i + '].dataSource',
