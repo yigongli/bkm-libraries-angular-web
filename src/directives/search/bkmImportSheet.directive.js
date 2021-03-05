@@ -89,7 +89,8 @@
                             });
                             sheets.push({
                                 name: sheetName,
-                                items: results
+                                items: results,
+                                wbSheet: wb.Sheets[sheetName]
                             });
                         });
                         if (angular.isFunction(onParseSuccess)) {
