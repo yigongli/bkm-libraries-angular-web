@@ -130,7 +130,7 @@
                         gridApi.grid.element.on('click', (ev) => {
                             if (ev.target.className.includes('ui-grid-cell-contents')) {
                                 self.gridApi.selection.clearSelectedRows();
-                                self.gridApi.selection.selectRow(self.selectedRowEntity);
+                                self.gridApi.selection.selectRow(self.selectedRowEntity, { isItemClick: true });
                             }
                         });
                     }
@@ -150,13 +150,16 @@
                         registerCustomizedApi(gridApi);
                     }
                     //注册行事件选择
-                    gridApi.selection.on.rowSelectionChanged($scope, (row) => {
+                    gridApi.selection.on.rowSelectionChanged($scope, (row, evt) => {
                         if (isReserveSelection) {
                             self.currentRowIndex = bkm.util.indexOf(self.gridOption.data, 'id', row.entity.id);
                         }
                         self.selectedRowEntity = row.entity;
+
                         // 行选择事件回调
-                        if (angular.isFunction(self.rowSelChangeCallback)) {
+                        // 如果 evt.isItemClick = true,则说明是通过 gridApi.grid.element.on('click',fun) 触发的事件（grid 行点击事件触发的 selection.selectRow 设置选中行）
+                        // 无需执行 self.rowSelChangeCallback，否则会触发多次服务端 Api 请求
+                        if ((!evt || !evt.isItemClick) && angular.isFunction(self.rowSelChangeCallback)) {
                             self.rowSelChangeCallback(row);
                         }
                     });
