@@ -15,7 +15,15 @@
     };
 
     const formComponents = {
-        textTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<input bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" {onChange} class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-model-options="{modelOptions}"  ng-disabled="{readModel}.isRead||{isRead}"  data-toggle="password" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'"/><span ng-if={isShowSpan} class="input-icon {spanCss} " ng-click="{click}" ></span></div></div>',
+        textTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}">\
+                        <div class= "{formStyle}" style="position:relative;" { validError }> <label>{label}{formRequired}</label>&nbsp;&nbsp;\
+                            <input bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" {onChange} class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-model-options="{modelOptions}" ng-disabled="{readModel}.isRead||{isRead}" data-toggle="password" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" />\
+                            <span class="input-icon" ng-if={isShowSpan} >\
+                                <span class="{spanCss} " ng-click="{click}"></span>\
+                                <span class="fa fa-times" ng-click="{onCleanClick}"></span>\
+                            </span>\
+                        </div>\
+                    </div>',
         cbxTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" ><label class="checkbox-inline custom-checkbox nowrap"><input  type="checkbox" ng-model="{model}"  ng-disabled="{readModel}.isRead||{isRead}" ng-click="{click}" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'"/><span class="group-header">{label}{formRequired}</span></label></div></div>',
         noteTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" style="position:relative;"><label ng-hide="{hideLabel}.isHide">&nbsp;</label><label  style="border:none;color:{color};font-weight:normal;padding-top:5px; padding-left:0;">{label}{{{model}}}</label></div></div>',
         textareaTemp: '<div ng-hide="{hideModel}.isHide||{isHide}" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-model-options="{modelOptions}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
@@ -214,6 +222,42 @@
                     onChange: '',
                     modelOptions: t.modelOptions
                 };
+
+                // 清空文本框的值,在配置中增加 onClean 属性，返回 true 则清空文本框，返回 false 则不清空
+                // 由于 ng-model 有可能带有多个 key 值，如：ng-model='purchaser.name'，需要根据符号“.”拆分因此
+                // 参数需要传两个参数(model, modelKey)
+                // 使用示例: { onClean: (model, modelKey) => { return true | false;  } 
+                // 
+                if (!!t.onClean && typeof t.onClean === 'function') {
+                    let onCleanFnName = 'onClean' + i;
+                    elemOptions.onCleanClick = 'dCtrl.opt.' + onCleanFnName + '(options.model,\'' + t.model + '\')';
+                    opt[onCleanFnName] = (m, k) => {
+                        cleanTextModelView(m, k, t.onClean);
+                    };
+                } else if (!t.onClean && t.type === 'text' && elemOptions.isShowSpan) {
+                    let onCleanFnName = 'onClean' + i;
+                    elemOptions.onCleanClick = 'dCtrl.opt.' + onCleanFnName + '(options.model,\'' + t.model + '\')';
+                    opt[onCleanFnName] = cleanTextModelView;
+                }
+
+                // 清空文本框的值
+                function cleanTextModelView(m, k, fn) {
+                    let keys = k.split('.');
+                    keys.forEach((itemK, indx) => {
+                        if (indx === keys.length - 1) {
+                            if (!!fn && typeof fn === 'function') {
+                                if (fn(m, itemK)) {
+                                    m[itemK] = undefined;
+                                }
+                            } else {
+                                m[itemK] = undefined;
+                            }
+                        } else {
+                            m = m[itemK];
+                        }
+                    });
+                }
+
                 //onChange方法定义
                 if (typeof t.onChange == 'function') {
                     elemOptions.onChange = 'ng-change="dCtrl.opt.items[' + i + '].onChange(' + elemOptions.model + ',options.model)"';
