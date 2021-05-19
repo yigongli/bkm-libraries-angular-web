@@ -20,7 +20,7 @@
                             <input bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" {onChange} class="form-control {type}" type="{type}" placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-model-options="{modelOptions}" ng-disabled="{readModel}.isRead||{isRead}" data-toggle="password" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" />\
                             <span class="input-icon" ng-if={isShowSpan} >\
                                 <span class="{spanCss} " ng-click="{click}"></span>\
-                                <span class="fa fa-times" ng-click="{onCleanClick}"></span>\
+                                <span ng-if="{isShowCleanBtn}" class="fa fa-times" ng-click="{onCleanClick}"></span>\
                             </span>\
                         </div>\
                     </div>',
@@ -213,6 +213,7 @@
                     click: 'dCtrl.opt.' + clickFnName + '()', //input元素的附加span点击
                     spanCss: t.spanCss || 'glyphicon glyphicon-search',
                     isShowSpan: !!t.click, //默认不添加span元素,
+                    isShowCleanBtn: t.isShowCleanBtn === true, // 默认不显示带有索引文本框的清空按钮
                     hideModel: 'dCtrl.opt.' + hideModel,
                     isHide: !!t.isHide,
                     readModel: 'dCtrl.opt.' + dynaIsReadModel,
@@ -228,13 +229,13 @@
                 // 参数需要传两个参数(model, modelKey)
                 // 使用示例: { onClean: (model, modelKey) => { return true | false;  } 
                 // 
-                if (!!t.onClean && typeof t.onClean === 'function') {
+                if (elemOptions.isShowSpan && !!t.onClean && typeof t.onClean === 'function') {
                     let onCleanFnName = 'onClean' + i;
                     elemOptions.onCleanClick = 'dCtrl.opt.' + onCleanFnName + '(options.model,\'' + t.model + '\')';
                     opt[onCleanFnName] = (m, k) => {
                         cleanTextModelView(m, k, t.onClean);
                     };
-                } else if (!t.onClean && t.type === 'text' && elemOptions.isShowSpan) {
+                } else if (elemOptions.isShowSpan && !t.onClean && t.type === 'text' && elemOptions.isShowSpan) {
                     let onCleanFnName = 'onClean' + i;
                     elemOptions.onCleanClick = 'dCtrl.opt.' + onCleanFnName + '(options.model,\'' + t.model + '\')';
                     opt[onCleanFnName] = cleanTextModelView;
@@ -247,15 +248,23 @@
                         if (indx === keys.length - 1) {
                             if (!!fn && typeof fn === 'function') {
                                 if (fn(m, itemK)) {
-                                    m[itemK] = undefined;
+                                    setModelVal(m, itemK, undefined);
                                 }
                             } else {
-                                m[itemK] = undefined;
+                                setModelVal(m, itemK, undefined);
                             }
                         } else {
-                            m = m[itemK];
+                            if (!!m && !!m[itemK]) {
+                                m = m[itemK];
+                            }
                         }
                     });
+
+                    function setModelVal(m, k, val) {
+                        if (!!m && !!m[k]) {
+                            m[k] = val;
+                        }
+                    }
                 }
 
                 //onChange方法定义
