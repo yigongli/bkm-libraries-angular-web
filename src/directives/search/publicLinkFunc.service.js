@@ -205,7 +205,7 @@
                     model: 'options.model.' + t.model,
                     formRequired: optionPrompt,
                     validateAttr: t.validateAttr.join(' '),
-                    formName: t.model,
+                    formName: t.model + '_' + i, // 避免一个字段绑定多个 Input 造成 name 属性重复
                     validError: validError,
                     cols: elemCols,
                     formStyle: formStyle,
