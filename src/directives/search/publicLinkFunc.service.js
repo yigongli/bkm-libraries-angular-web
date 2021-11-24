@@ -28,7 +28,7 @@
         noteTemp: '<div ng-if="!({hideModel}.isHide||{isHide})" class="{cols}"><div class="{formStyle}" style="position:relative;"><label ng-if="!({hideLabel}.isHide)">&nbsp;</label><label  style="border:none;color:{color};font-weight:normal;padding-top:5px; padding-left:0;">{label}{{{model}}}</label></div></div>',
         textareaTemp: '<div ng-if="!({hideModel}.isHide||{isHide})" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<textarea bkm-input bkm-form-valid-icon={isShowSpan} name="{formName}" class="form-control "  placeholder="{placeholder}" {validateAttr} ng-model="{model}" ng-model-options="{modelOptions}" ng-disabled="{readModel}.isRead||{isRead}" uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" ng-click="{click}" /></div></div>',
         dropDownTemp: '<div ng-if="!({hideModel}.isHide||{isHide})" class="{cols}" style="color:{color};font-size:{fontSize}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<select uib-popover="{tooltip}" popover-placement="auto bottom-left" popover-trigger="\'focus\'" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker" selectpicker ng-model="{model}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} ng-options="{repeat}" ><option value="">-- {placeholder} --</option></select></div></div>',
-        multiSelectTemp: '<div ng-if="!({hideModel}.isHide||{isHide})" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<multiselect  show-search="{isShowSearch}" search-limit="{searchLimit}" ng-model="{model}" options="{dataSource}" id-prop="{keyName}" display-prop="{valName}" labels="{disp}" placeholder="{placeholder}" ng-disabled="{readModel}.isRead||{isRead}" {onChange} show-unselect-all="{showUnselectAll}"  show-tooltip="true" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker {className}"></multiselect></div></div>',
+        multiSelectTemp: '<div ng-if="!({hideModel}.isHide||{isHide})" class="{cols}"><div class="{formStyle}" {validError}><label>{label}{formRequired}</label>&nbsp;&nbsp;<multiselect  show-search="{isShowSearch}" search-limit="{searchLimit}" ng-model="{model}" options="{dataSource}" id-prop="{keyName}" display-prop="{valName}" labels="{disp}" placeholder="{placeholder}" ng-disabled="{readModel}.isRead||{isRead}" search-filter="{searchFilter}" {onChange} show-unselect-all="{showUnselectAll}"  show-tooltip="true" bkm-input name="{formName}" {validateAttr} class="form-control selectpicker {className}"></multiselect></div></div>',
         dateTemp: '<div ng-if="!({hideModel}.isHide||{isHide})" class="{cols}">\
                     <div class="{formStyle}" {validError}>\
                         <div class="dropdown">\
@@ -411,7 +411,8 @@
             opt.multiSelectLabels = {
                 itemsSelected: " 项已选择    ",
                 unselectAll: "清除选项",
-                search: "搜索..."
+                search: "搜索...",
+                searchFilter: undefined
             };
             Object.assign(elemOptions, {
                 dataSource: 'dCtrl.opt.items[' + i + '].dataSource',
@@ -422,7 +423,9 @@
                 searchLimit: t.searchLimit || 10,
                 disp: 'dCtrl.opt.multiSelectLabels',
                 showUnselectAll: t.showUnselectAll,
-                className: t.className
+                searchFilter: 'dCtrl.opt.multiSelectLabels.searchFilter',
+                className: t.className,
+                onChange: 'ng-change="dCtrl.opt.items[' + i + '].onChange(' + elemOptions.model + ',options.model,dCtrl.opt.multiSelectLabels)"'
             });
             previous.append(formatTemplate(elemOptions, elemTemp));
         }
