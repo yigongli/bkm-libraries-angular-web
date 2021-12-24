@@ -253,7 +253,7 @@
                     promptName: self.formSetting.approveTitle || self.formSetting.promptName,
                     approveSvcFn: self.formSetting.approveSvcFn || self.formSetting.resourceSvc.approve,
                     rejectSuccessCallback: self.formSetting.approveRejectSuccessCallback,
-                    validStatus: [0, 3],
+                    validStatus: self.formSetting.validApproveStatus || [0, 1, 3],
                     rejectReasonSource: self.formSetting.rejectReasonSource,
                     statusField: self.formSetting.approveStatusFieldName || 'status',
                     items: [],
