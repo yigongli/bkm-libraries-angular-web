@@ -1,6 +1,6 @@
 {
   "name": "bkm-angular-web",
-  "version": "4.8.41",
+  "version": "4.9.0",
   "homepage": "https://git.oschina.net/yigongli/BKM.Library.Angular.Web",
   "authors": [
     "bkm"
@@ -40,6 +40,7 @@
     "./src/directives/search/publicLinkFunc.service.js",
     "./src/directives/search/search.css",
     "./src/directives/search/bkmImportSheet.directive.js",
+    "./src/directives/search/bkmButton.directive.js",
     "./src/directives/tree/bkm-tree.directive.js",
     "./src/directives/tree/bkm.tree.css",
     "./src/service/bkm.print.service.js"

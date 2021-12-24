@@ -229,18 +229,18 @@
 
 
             /**
-             * @ngdoc directive
-             * @name baseApproveFn
-             * @description
-             * 通用的审核功能
-             *
-             * @param input {parentCtrl,rowEntity} 接收的值
-             * parentCtrl:传入应用所在的ctrl,
-             * rowEntity: (可选)审批按钮在行上定义的时候需要传入row.entity对象
-             *
-             * @returns {string} 返回替换后的值
-             */
-            window.baseApproveFn = function (parentCtrl, rowEntity, rejectSuccessCallback) {
+            * @ngdoc directive
+            * @name baseApproveFn
+            * @description
+            * 通用的审核功能
+            *
+            * @param input {parentCtrl,rowEntity} 接收的值
+            * parentCtrl:传入应用所在的ctrl,
+            * rowEntity: (可选)审批按钮在行上定义的时候需要传入row.entity对象
+            *
+            * @returns {string} 返回替换后的值
+            */
+            window.baseApproveFn = function (parentCtrl, rowEntity) {
                 var self = parentCtrl;
                 //获取所选择审核的记录
                 var rtnRow = rowEntity || self.gridApi.selection.getSelectedRows()[0];
@@ -250,16 +250,19 @@
                 }
                 //初始化审核参数
                 var approveParams = {
-                    promptName: self.formSetting.promptName || '',
+                    promptName: self.formSetting.approveTitle || self.formSetting.promptName,
                     approveSvcFn: self.formSetting.approveSvcFn || self.formSetting.resourceSvc.approve,
-                    validStatus: [0, 1],
-                    statusField: 'status',
+                    rejectSuccessCallback: self.formSetting.approveRejectSuccessCallback,
+                    validStatus: [0, 3],
+                    rejectReasonSource: self.formSetting.rejectReasonSource,
+                    statusField: self.formSetting.approveStatusFieldName || 'status',
                     items: [],
                     buttons: []
                 };
                 angular.extend(approveParams, self.formSetting.approveParams);
                 approveParams.formModel = {
-                    relatedId: rtnRow.id
+                    relatedId: rtnRow.id,
+                    reason: ""
                 };
                 if (angular.isFunction(approveParams.getFormModel)) {
                     approveParams.getFormModel(approveParams.formModel);
@@ -267,6 +270,7 @@
                 var promptName = approveParams.promptName;
                 var approveSvcFn = approveParams.approveSvcFn;
                 var validStatus = approveParams.validStatus;
+                let typeDataSource = approveParams.rejectReasonSource || dict.dictionary[dict.AuditType()];
                 var formItems = approveParams.items.concat([{
                     type: 'textarea',
                     model: 'reason',
@@ -277,21 +281,28 @@
                 {
                     type: 'dropDown',
                     model: 'type',
-                    label: '拒绝原因类型',
+                    label: '常用拒绝原因',
                     option: true,
                     cols: 12,
-                    dataSource: dict.dictionary[dict.AuditType()]
+                    dataSource: typeDataSource,
+                    onChange: () => {
+                        let found = typeDataSource.filter(x => x.key == approveParams.formModel.type);
+                        if (found.length != 0) {
+                            let typeReason = found[0].name;
+                            approveParams.formModel.reason = approveParams.formModel.reason + typeReason + ";"
+                        }
+                    },
                 }
                 ]);
                 var statusField = approveParams.statusField;
                 //判断审核状态是否符合条件
-                var found = validStatus.filter(item => item == rtnRow[statusField]);
+                let found = validStatus.filter(item => item == rtnRow[statusField]);
                 if (found.length == 0) {
                     toastr.info(bkm.util.format("请选择 {0} 状态为待审核的记录!", promptName));
                     return;
                 }
                 //审核的对话框
-                var uibModalInstance = $uibModal.open({
+                $uibModal.open({
                     backdrop: false,
                     animation: true,
                     template: '<bkm-modal-form options="ctrl.formOption"></bkm-modal-form>',
@@ -332,11 +343,11 @@
                                         self.searchData();
                                     });
                             });
-                        };
+                        }
                         //审核不通过
                         function rejectFn() {
-                            if (formModel.type == null) {
-                                toastr.info("请选择拒绝原因的类型!");
+                            if (!formModel.reason) {
+                                toastr.info("请填写拒绝的原因!");
                                 return;
                             }
                             var modalInstance = $uibModal.open({
@@ -362,8 +373,8 @@
                                     toastr.success(bkm.util.format("该{0}已被标记为审核不通过!", promptName));
                                     $uibModalInstance.close();
                                     self.searchData();
-                                    if (typeof rejectSuccessCallback == 'function') {
-                                        rejectSuccessCallback();
+                                    if (typeof approveParams.rejectSuccessCallback == 'function') {
+                                        approveParams.rejectSuccessCallback();
                                     }
                                 });
                         }
@@ -660,8 +671,8 @@
                     modalForm(null, formSetting, bkmUpload.upload, fileSvc.getAll, $uibModal, parentCtrl.searchData);
                 }
                 //审核操作
-                parentCtrl.approve = function () {
-                    baseApproveFn(parentCtrl);
+                parentCtrl.approve = function (rowEntity) {
+                    baseApproveFn(parentCtrl, rowEntity);
                 }
                 // 渲染search区域时，组件样式的处理
                 scope.options.renderSearch = true;
